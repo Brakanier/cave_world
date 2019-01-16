@@ -1,0 +1,3 @@
+port 5432
+login postgres
+pass 13032005zZ
