@@ -26,7 +26,7 @@ def index(request):
                     return
                 vk = vk_api.get_api()
                 user_id = data['object']['user_id']
-                vk.masseges.send(access_token=token, user_id=str(user_id), message='Ответ бота'
+                vk.masseges.send(access_token=token, user_id=str(user_id), message='Ответ бота')
                 return HttpResponse('ok', content_type="text/plain", status=200)
     else:
         return HttpResponse('Сайт находится в разработке!')
