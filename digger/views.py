@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 from decouple import config
-import vk_api
+import json, vk_api
 
 # Create your views here.
 
