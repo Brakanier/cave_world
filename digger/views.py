@@ -26,7 +26,7 @@ def index(request):
                     print(error_msg)
                     return
                 vk = vk_api.get_api()
-                user_id = data['object']['user_id']
+                user_id = data['object']['from_id']
                 vk.masseges.send(access_token=token, user_id=str(user_id), message='Ответ бота')
                 return HttpResponse('ok', content_type="text/plain", status=200)
     else:
