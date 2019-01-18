@@ -30,8 +30,7 @@ def index(request):
                 vk_session = vk_api.VkApi(token=token)
                 vk = vk_session.get_api()
                 user_id = data['object']['from_id']
-                reg = register(user_id=user_id)
-                print(reg)
+                reg = register(vk=vk, user_id=user_id)
                 if reg == 'new':
                     vk.messages.send(
                         access_token=token,
@@ -41,12 +40,7 @@ def index(request):
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
-                    vk.messages.send(
-                        access_token=token,
-                        user_id=str(user_id),
-                        message='Ответ бота',
-                        random_id=get_random_id()
-                    )
+                    command(vk=vk, text=data['object']['text'], user_id=user_id)
                     return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
@@ -55,11 +49,9 @@ def index(request):
         return HttpResponse('Сайт находится в разработке!')
 
 
-def register(user_id):
+def register(vk, user_id):
     if not Player.objects.filter(user_id=user_id).exists():
         player = Player.objects.create(user_id=user_id)
-        vk_session = vk_api.VkApi(token=token)
-        vk = vk_session.get_api()
         user = vk.users.get(user_ids=str(user_id))
         user = user[0]
         if user['first_name']:
@@ -69,3 +61,20 @@ def register(user_id):
             player.save()
         return 'new'
     return 'old'
+
+
+def command(vk, text, user_id):
+    if text.lower() == 'профиль':
+        profile(vk=vk, user_id=user_id)
+
+
+
+def profile(vk, user_id):
+    player = Player.objects.get(user_id=user_id)
+    message = 'Имя: ' + player.first_name + "\n" + 'Фамилия: ' + player.last_name + "\n" + 'ID: ' + str(player.user_id)
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        message=message,
+        random_id=get_random_id()
+    )
