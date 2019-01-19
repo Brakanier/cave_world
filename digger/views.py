@@ -216,14 +216,14 @@ def get_keyboard(player):
             keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
         keyboard.add_line()
-        keyboard.add_button('Здания', color=VkKeyboardColor.DEFAULT)
+        keyboard.add_button('Здания', color=VkKeyboardColor.DEFAULT, payload={"command": "cave_build"})
         if player.build.forge:
             keyboard.add_button('⚒ Изготовить', color=VkKeyboardColor.DEFAULT)
         if player.build.tavern:
             keyboard.add_button('Нанять', color=VkKeyboardColor.DEFAULT)
         keyboard.add_line()
         keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
-        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT)
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
     if player.place == 'cave_build':
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "build_stock"})
         keyboard.add_button('Печь', color=VkKeyboardColor.DEFAULT, payload={"command": "build_furnace"})
@@ -242,6 +242,6 @@ def get_keyboard(player):
         keyboard.add_button('⛏ Добыть', color=VkKeyboardColor.POSITIVE)
         keyboard.add_line()
         keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
-        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT)
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
     return keyboard.get_keyboard()
 
