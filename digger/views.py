@@ -65,7 +65,7 @@ def register(vk, user_id):
             player.first_name = user['first_name']
         if user['last_name']:
             player.last_name = user['last_name']
-            player.save()
+        player.save()
         return 'new'
     return 'old'
 
