@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Player
+from .models import Player, Stock, Build
 
 # Register your models here.
 # admin.site.register(Player)
@@ -7,4 +7,16 @@ from .models import Player
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'first_name', 'last_name', 'nickname')
+    list_display = ('user_id', 'nickname', 'first_name', 'last_name')
+
+
+@admin.register(Stock)
+class StockAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'lvl')
+
+
+@admin.register(Build)
+class BuildAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'forge', 'tavern', 'lift')
+
+

@@ -2,10 +2,13 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 from decouple import config
-import json, vk_api
+import json
+import vk_api
 import random
+from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
-from .models import Player
+
+from .models import Player, Stock, Build
 
 # Create your views here.
 
@@ -40,7 +43,9 @@ def index(request):
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
-                    command(vk=vk, text=data['object']['text'], user_id=user_id)
+                    payload = json.loads(data['object']['payload'])
+                    command = payload['command']
+                    action(vk=vk, command=command, user_id=user_id)
                     return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
@@ -51,7 +56,9 @@ def index(request):
 
 def register(vk, user_id):
     if not Player.objects.filter(user_id=user_id).exists():
-        player = Player.objects.create(user_id=user_id)
+        stock = Stock.objects.create(user_id=user_id)
+        build = Build.objects.create(user_id=user_id)
+        player = Player.objects.create(user_id=user_id, stock=stock, build=build)
         user = vk.users.get(user_ids=str(user_id))
         user = user[0]
         if user['first_name']:
@@ -63,18 +70,178 @@ def register(vk, user_id):
     return 'old'
 
 
-def command(vk, text, user_id):
-    if text.lower() == 'профиль':
+def action(vk, command, user_id):
+    if command.lower() == 'profile':
         profile(vk=vk, user_id=user_id)
-
+    elif command.lower() == 'stock':
+        stock(vk=vk, user_id=user_id)
+    elif command.lower() == 'mine':
+        mine(vk=vk, user_id=user_id)
+    elif command.lower() == 'cave':
+        cave(vk=vk, user_id=user_id)
+    elif command.lower() == 'cave_build':
+        cave_build(vk=vk, user_id=user_id)
+    elif command.lower() == 'build_forge':
+        build_forge(vk=vk, user_id=user_id)
+    elif command.lower() == 'build_tavern':
+        build_tavern(vk=vk,user_id=user_id)
 
 
 def profile(vk, user_id):
     player = Player.objects.get(user_id=user_id)
-    message = 'Имя: ' + player.first_name + "\n" + 'Фамилия: ' + player.last_name + "\n" + 'ID: ' + str(player.user_id)
+    message = 'Имя: ' + player.first_name + "\n" + \
+              'Фамилия: ' + player.last_name + "\n" + \
+              'ID: ' + str(player.user_id) + "\n" + \
+              'Местоположение: ' + player.place
     vk.messages.send(
         access_token=token,
         user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
+
+
+def stock(vk, user_id):
+    player = Player.objects.get(user_id=user_id)
+    stock = player.stock
+    message = 'Склад - ' + str(stock.lvl) + ' ур.' + '\n' + \
+              'Камень: ' + str(stock.stone) + '/' + str(stock.stone_max) + '\n' + \
+              'Железная руда: ' + str(stock.ore_iron) + '/' + str(stock.ore_iron_max) + '\n' + \
+              'Золотая руда: ' + str(stock.ore_gold) + '/' + str(stock.ore_gold_max) + '\n' + \
+              'Слитки железа: ' + str(stock.ingot_iron) + '/' + str(stock.ingot_iron_max) + '\n' + \
+              'Слитки золота: ' + str(stock.ingot_gold) + '/' + str(stock.ingot_gold_max) + '\n' + \
+              'Черепа: ' + str(stock.skull) + ' 💀'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def mine(vk, user_id):
+    player = Player.objects.get(user_id=user_id)
+    if player.place == 'mine':
+        message = 'Вы уже в шахте'
+    else:
+        player.place = 'mine'
+        player.save()
+        message = 'Вы спустили в шахту'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def cave(vk, user_id):
+    player = Player.objects.get(user_id=user_id)
+    if player.place == 'cave':
+        message = 'Вы уже в подземелье'
+    else:
+        player.place = 'cave'
+        player.save()
+        message = 'Вы вернулись в подземелье'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def cave_build(vk, user_id):
+    player = Player.objects.get(user_id=user_id)
+    if player.place == 'cave_build':
+        message = 'Выберите постройку'
+    else:
+        player.place = 'cave_build'
+        player.save()
+        message = 'Выберите здание для строительства или улучшения'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def build_forge(vk, user_id):
+    player = Player.objects.get(user_id=user_id)
+    if not player.build.forge:
+        player.build.forge = True
+        player.build.save()
+        message = 'Кузница построена'
+    else:
+        message = 'У вас уже есть Кузница'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def build_tavern(vk, user_id):
+    player = Player.objects.get(user_id=user_id)
+    if not player.build.tavern:
+        player.build.tavern = True
+        player.build.save()
+        message = 'Таверна построена'
+    else:
+        message = 'У вас уже есть Таверна'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+
+
+
+def get_keyboard(player):
+    keyboard = VkKeyboard()
+    if player.place == 'cave':
+        if player.build.lift:
+            keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
+        keyboard.add_line()
+        keyboard.add_button('Здания', color=VkKeyboardColor.DEFAULT)
+        if player.build.forge:
+            keyboard.add_button('⚒ Изготовить', color=VkKeyboardColor.DEFAULT)
+        if player.build.tavern:
+            keyboard.add_button('Нанять', color=VkKeyboardColor.DEFAULT)
+        keyboard.add_line()
+        keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT)
+    if player.place == 'cave_build':
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "build_stock"})
+        keyboard.add_button('Печь', color=VkKeyboardColor.DEFAULT, payload={"command": "build_furnace"})
+        keyboard.add_line()
+        if not player.build.forge:
+            keyboard.add_button('Кузница', color=VkKeyboardColor.DEFAULT, payload={"command": "build_forge"})
+        if not player.build.tavern:
+            keyboard.add_button('Таверна', color=VkKeyboardColor.DEFAULT, payload={"command": "build_tavern"})
+        if not player.build.lift:
+            keyboard.add_button('Лифт', color=VkKeyboardColor.DEFAULT, payload={"command": "build_lift"})
+        keyboard.add_line()
+        keyboard.add_button('Меню подземелья', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+    if player.place == 'mine':
+        keyboard.add_button('Вернуться в подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_line()
+        keyboard.add_button('⛏ Добыть', color=VkKeyboardColor.POSITIVE)
+        keyboard.add_line()
+        keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT)
+    return keyboard.get_keyboard()
+
