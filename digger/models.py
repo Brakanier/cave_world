@@ -10,7 +10,10 @@ class Stock(models.Model):
         null=True,
     )
     lvl = models.IntegerField(
-        default=0,
+        default=1,
+    )
+    need = models.IntegerField(
+        default=50,
     )
     # Materials
     stone = models.IntegerField(
