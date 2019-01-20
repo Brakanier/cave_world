@@ -5,6 +5,7 @@ from decouple import config
 import json
 import vk_api
 import random
+import time
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 
 
@@ -48,7 +49,8 @@ def index(request):
                     if 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
                         command = payload['command']
-                        action(vk=vk, command=command, user_id=user_id)
+                        action_time = data['object']['date']
+                        action(vk=vk, command=command, user_id=user_id, action_time=action_time)
                     else:
                         vk.messages.send(
                             access_token=token,
@@ -81,7 +83,7 @@ def register(vk, user_id):
     return 'old'
 
 
-def action(vk, command, user_id):
+def action(vk, command, user_id, action_time):
     if command.lower() == 'profile':
         profile(vk=vk, user_id=user_id)
     elif command.lower() == 'stock':
@@ -96,6 +98,8 @@ def action(vk, command, user_id):
         build_forge(vk=vk, user_id=user_id)
     elif command.lower() == 'build_tavern':
         build_tavern(vk=vk,user_id=user_id)
+    elif command.lower() == 'dig':
+        dig(vk=vk, user_id=user_id, action_time=action_time)
 
 
 def profile(vk, user_id):
@@ -250,9 +254,40 @@ def get_keyboard(player):
     if player.place == 'mine':
         keyboard.add_button('Вернуться в подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
-        keyboard.add_button('⛏ Добыть', color=VkKeyboardColor.POSITIVE)
+        keyboard.add_button('⛏ Добыть', color=VkKeyboardColor.POSITIVE, payload={"command": "dig"})
         keyboard.add_line()
         keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
     return keyboard.get_keyboard()
 
+
+def dig(vk, user_id, action_time):
+    need_energy = 1
+    player = Player.objects.get(user_id=user_id)
+    player = energy(player=player, action_time=action_time)
+    if player.energy > need_energy:
+        player.energy = player.energy - need_energy
+        player.stock.stone = player.stock.stone + 2
+        player.stock.save()
+        player.save()
+        message = 'Добыто: Камень 2шт.'
+    else:
+        message = 'Недостаточно энергии'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def energy(player, action_time):
+    delta = action_time - player.last_energy_action
+    delta = delta//60
+    if delta >= 10:
+        energy_new = (delta//10)*player.energy_regen
+        energy_max = energy_new + player.energy
+        player.energy = min(energy_max, player.max_energy)
+        player.last_energy_action = player.last_energy_action + (energy_new*600)
+    return player

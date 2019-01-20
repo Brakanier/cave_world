@@ -109,6 +109,12 @@ class Player(models.Model):
     max_energy = models.IntegerField(
         default=10,
     )
+    last_energy_action = models.BigIntegerField(
+        default=0,
+    )
+    energy_regen = models.IntegerField(
+        default=1,
+    )
     place = models.CharField(
         max_length=50,
         default='cave',
