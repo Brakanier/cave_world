@@ -50,7 +50,15 @@ def index(request):
                         if s.lower() == 'ник':
                             player.nickname = text[1]
                             player.save()
-                    if 'payload' in data['object']:
+                            message = 'Ваш ник - ' + player.nickname
+                            vk.messages.send(
+                                access_token=token,
+                                user_id=str(user_id),
+                                message=message,
+                                keyboard=get_keyboard(player=player),
+                                random_id=get_random_id()
+                            )
+                    elif 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
                         command = payload['command']
                         action_time = data['object']['date']
