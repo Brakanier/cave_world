@@ -43,34 +43,35 @@ def index(request):
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
-                    if data['object']['text']:
-                        text = data['object']['text']
-                        text = text.split()
-                        s = text[0]
-                        if s.lower() == 'ник':
-                            player.nickname = text[1]
-                            player.save()
-                            message = 'Ваш ник - ' + player.nickname
-                            vk.messages.send(
-                                access_token=token,
-                                user_id=str(user_id),
-                                message=message,
-                                keyboard=get_keyboard(player=player),
-                                random_id=get_random_id()
-                            )
-                    elif 'payload' in data['object']:
+                    if 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
                         command = payload['command']
                         action_time = data['object']['date']
                         action(vk=vk, command=command, player=player, action_time=action_time)
                     else:
-                        vk.messages.send(
-                            access_token=token,
-                            user_id=str(user_id),
-                            message='Используйте кнопки для управления!',
-                            keyboard=get_keyboard(player=player),
-                            random_id=get_random_id()
-                        )
+                        text = data['object']['text']
+                        text = text.split()
+                        if len(text):
+                            s = text[0]
+                            if s.lower() == 'ник':
+                                player.nickname = text[1]
+                                player.save()
+                                message = 'Ваш ник - ' + player.nickname
+                                vk.messages.send(
+                                    access_token=token,
+                                    user_id=str(user_id),
+                                    message=message,
+                                    keyboard=get_keyboard(player=player),
+                                    random_id=get_random_id()
+                                )
+                            else:
+                                vk.messages.send(
+                                    access_token=token,
+                                    user_id=str(user_id),
+                                    message='Используйте кнопки для управления!',
+                                    keyboard=get_keyboard(player=player),
+                                    random_id=get_random_id()
+                                )
                     return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
@@ -114,10 +115,3 @@ def action(vk, command, player, action_time):
         build_stock(vk=vk, player=player, token=token)
     elif command.lower() == 'dig':
         dig(vk=vk, player=player, action_time=action_time, token=token)
-
-
-
-
-
-
-
