@@ -34,18 +34,29 @@ def index(request):
                 vk = vk_session.get_api()
                 user_id = data['object']['from_id']
                 reg = register(vk=vk, user_id=user_id)
+                player = Player.objects.get(user_id=user_id)
                 if reg == 'new':
                     vk.messages.send(
                         access_token=token,
                         user_id=str(user_id),
                         message='Добро пожаловать в Cave World!',
+                        keyboard=get_keyboard(player=player),
                         random_id=get_random_id()
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
                     payload = json.loads(data['object']['payload'])
                     command = payload['command']
-                    action(vk=vk, command=command, user_id=user_id)
+                    if payload and command:
+                        action(vk=vk, command=command, user_id=user_id)
+                    else:
+                        vk.messages.send(
+                            access_token=token,
+                            user_id=str(user_id),
+                            message='Используйте кнопки для управления!',
+                            keyboard=get_keyboard(player=player),
+                            random_id=get_random_id()
+                        )
                     return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
