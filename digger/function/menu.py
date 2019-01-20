@@ -1,10 +1,12 @@
 from .function import *
 
 
-def profile(vk, player, token):
+def profile(vk, player, action_time, token):
     if not player.place == 'profile':
         player.place = 'profile'
-        player.save()
+
+    player = energy(player=player, action_time=action_time)
+    player.save()
     message = 'Ник: ' + player.nickname + "\n" + \
               'Имя: ' + player.first_name + "\n" + \
               'Фамилия: ' + player.last_name + "\n" + \

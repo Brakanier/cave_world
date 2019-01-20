@@ -98,7 +98,7 @@ def register(vk, user_id):
 
 def action(vk, command, player, action_time):
     if command.lower() == 'profile':
-        profile(vk=vk, player=player, token=token)
+        profile(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'stock':
         stock(vk=vk, player=player, token=token)
     elif command.lower() == 'mine':
