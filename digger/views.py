@@ -45,7 +45,7 @@ def index(request):
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
-                    if data['object']['payload']:
+                    if 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
                         command = payload['command']
                         action(vk=vk, command=command, user_id=user_id)
