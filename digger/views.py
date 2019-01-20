@@ -50,7 +50,7 @@ def index(request):
                         payload = json.loads(data['object']['payload'])
                         command = payload['command']
                         action_time = data['object']['date']
-                        action(vk=vk, command=command, user_id=user_id, action_time=action_time)
+                        action(vk=vk, command=command, player=player, action_time=action_time)
                     else:
                         vk.messages.send(
                             access_token=token,
@@ -83,61 +83,58 @@ def register(vk, user_id):
     return 'old'
 
 
-def action(vk, command, user_id, action_time):
+def action(vk, command, player, action_time):
     if command.lower() == 'profile':
-        profile(vk=vk, user_id=user_id)
+        profile(vk=vk, player=player)
     elif command.lower() == 'stock':
-        stock(vk=vk, user_id=user_id)
+        stock(vk=vk, player=player)
     elif command.lower() == 'mine':
-        mine(vk=vk, user_id=user_id)
+        mine(vk=vk, player=player)
     elif command.lower() == 'cave':
-        cave(vk=vk, user_id=user_id)
+        cave(vk=vk, player=player)
     elif command.lower() == 'cave_build':
-        cave_build(vk=vk, user_id=user_id)
+        cave_build(vk=vk, player=player)
     elif command.lower() == 'build_forge':
-        build_forge(vk=vk, user_id=user_id)
+        build_forge(vk=vk, player=player)
     elif command.lower() == 'build_tavern':
-        build_tavern(vk=vk,user_id=user_id)
+        build_tavern(vk=vk, player=player)
     elif command.lower() == 'dig':
-        dig(vk=vk, user_id=user_id, action_time=action_time)
+        dig(vk=vk, player=player, action_time=action_time)
 
 
-def profile(vk, user_id):
-    player = Player.objects.get(user_id=user_id)
+def profile(vk, player):
     message = 'Имя: ' + player.first_name + "\n" + \
               'Фамилия: ' + player.last_name + "\n" + \
               'ID: ' + str(player.user_id) + "\n" + \
               'Местоположение: ' + player.place
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
 
 
-def stock(vk, user_id):
-    player = Player.objects.get(user_id=user_id)
-    stock = player.stock
-    message = 'Склад - ' + str(stock.lvl) + ' ур.' + '\n' + \
-              'Камень: ' + str(stock.stone) + '/' + str(stock.stone_max) + '\n' + \
-              'Железная руда: ' + str(stock.ore_iron) + '/' + str(stock.ore_iron_max) + '\n' + \
-              'Золотая руда: ' + str(stock.ore_gold) + '/' + str(stock.ore_gold_max) + '\n' + \
-              'Слитки железа: ' + str(stock.ingot_iron) + '/' + str(stock.ingot_iron_max) + '\n' + \
-              'Слитки золота: ' + str(stock.ingot_gold) + '/' + str(stock.ingot_gold_max) + '\n' + \
-              'Черепа: ' + str(stock.skull) + ' 💀'
+def stock(vk, player):
+
+    message = 'Склад - ' + str(player.stock.lvl) + ' ур.' + '\n' + \
+              'Камень: ' + str(player.stock.stone) + '/' + str(player.stock.stone_max) + '\n' + \
+              'Железная руда: ' + str(player.stock.ore_iron) + '/' + str(player.stock.ore_iron_max) + '\n' + \
+              'Золотая руда: ' + str(player.stock.ore_gold) + '/' + str(player.stock.ore_gold_max) + '\n' + \
+              'Слитки железа: ' + str(player.stock.ingot_iron) + '/' + str(player.stock.ingot_iron_max) + '\n' + \
+              'Слитки золота: ' + str(player.stock.ingot_gold) + '/' + str(player.stock.ingot_gold_max) + '\n' + \
+              'Черепа: ' + str(player.stock.skull) + ' 💀'
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
 
 
-def mine(vk, user_id):
-    player = Player.objects.get(user_id=user_id)
+def mine(vk, player):
     if player.place == 'mine':
         message = 'Вы уже в шахте'
     else:
@@ -146,15 +143,14 @@ def mine(vk, user_id):
         message = 'Вы спустили в шахту'
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
 
 
-def cave(vk, user_id):
-    player = Player.objects.get(user_id=user_id)
+def cave(vk, player):
     if player.place == 'cave':
         message = 'Вы уже в подземелье'
     else:
@@ -163,15 +159,14 @@ def cave(vk, user_id):
         message = 'Вы вернулись в подземелье'
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
 
 
-def cave_build(vk, user_id):
-    player = Player.objects.get(user_id=user_id)
+def cave_build(vk, player):
     if player.place == 'cave_build':
         message = 'Выберите постройку'
     else:
@@ -180,15 +175,14 @@ def cave_build(vk, user_id):
         message = 'Выберите здание для строительства или улучшения'
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
 
 
-def build_forge(vk, user_id):
-    player = Player.objects.get(user_id=user_id)
+def build_forge(vk, player):
     if not player.build.forge:
         player.build.forge = True
         player.build.save()
@@ -197,15 +191,14 @@ def build_forge(vk, user_id):
         message = 'У вас уже есть Кузница'
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
 
 
-def build_tavern(vk, user_id):
-    player = Player.objects.get(user_id=user_id)
+def build_tavern(vk, player):
     if not player.build.tavern:
         player.build.tavern = True
         player.build.save()
@@ -214,14 +207,11 @@ def build_tavern(vk, user_id):
         message = 'У вас уже есть Таверна'
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
     )
-
-
-
 
 
 def get_keyboard(player):
@@ -261,11 +251,10 @@ def get_keyboard(player):
     return keyboard.get_keyboard()
 
 
-def dig(vk, user_id, action_time):
+def dig(vk, player, action_time):
     need_energy = 1
-    player = Player.objects.get(user_id=user_id)
     player = energy(player=player, action_time=action_time)
-    if player.energy > need_energy:
+    if player.energy >= need_energy:
         player.energy = player.energy - need_energy
         player.stock.stone = player.stock.stone + 2
         player.stock.save()
@@ -275,7 +264,7 @@ def dig(vk, user_id, action_time):
         message = 'Недостаточно энергии'
     vk.messages.send(
         access_token=token,
-        user_id=str(user_id),
+        user_id=str(player.user_id),
         keyboard=get_keyboard(player=player),
         message=message,
         random_id=get_random_id()
