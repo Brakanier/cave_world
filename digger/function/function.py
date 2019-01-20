@@ -18,8 +18,32 @@ def energy(player, action_time):
     return player
 
 
+def exp(vk, player, token, exp):
+    current_exp = player.exp + exp
+    if current_exp >= player.exp_need:
+        more_exp = player.exp_need - current_exp
+        player.lvl = player.lvl + 1
+        player.exp = more_exp
+        player.exp_need = player.lvl * (9 + player.lvl)
+        message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.'
+        vk.messages.send(
+            access_token=token,
+            user_id=str(player.user_id),
+            keyboard=get_keyboard(player=player),
+            message=message,
+            random_id=get_random_id()
+        )
+    else:
+        player.exp = current_exp
+    return player
+
+
 def get_keyboard(player):
     keyboard = VkKeyboard()
+    if player.place == 'profile':
+        keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
+        keyboard.add_line()
+        keyboard.add_button('Вернуться в подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
     if player.place == 'cave':
         if player.build.lift:
             keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})

@@ -43,6 +43,13 @@ def index(request):
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
+                    if data['object']['text']:
+                        text = data['object']['text']
+                        text = text.split()
+                        s = text[0]
+                        if s.lower() == 'ник':
+                            player.nickname = text[1]
+                            player.save()
                     if 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
                         command = payload['command']

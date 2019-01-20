@@ -2,10 +2,16 @@ from .function import *
 
 
 def profile(vk, player, token):
-    message = 'Имя: ' + player.first_name + "\n" + \
+    if not player.place == 'profile':
+        player.place = 'profile'
+        player.save()
+    message = 'Ник: ' + player.nickname + "\n" + \
+              'Имя: ' + player.first_name + "\n" + \
               'Фамилия: ' + player.last_name + "\n" + \
-              'ID: ' + str(player.user_id) + "\n" + \
-              'Местоположение: ' + player.place
+              'Уровень: ' + str(player.lvl) + "\n" + \
+              'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + "\n" + \
+              'Энергия: ' + str(player.energy) + '/' + str(player.max_energy)
+
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

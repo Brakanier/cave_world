@@ -8,8 +8,9 @@ def dig(vk, player, action_time, token):
         player.energy = player.energy - need_energy
         player.stock.stone = player.stock.stone + 2
         player.stock.save()
-        player.save()
         message = 'Добыто: Камень 2шт.'
+        player = exp(vk=vk, player=player, token=token, exp=1)
+        player.save()
     else:
         message = 'Недостаточно энергии'
     vk.messages.send(
