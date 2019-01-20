@@ -45,9 +45,9 @@ def index(request):
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
-                    payload = json.loads(data['object']['payload'])
-                    command = payload['command']
-                    if payload and command:
+                    if data['object']['payload']:
+                        payload = json.loads(data['object']['payload'])
+                        command = payload['command']
                         action(vk=vk, command=command, user_id=user_id)
                     else:
                         vk.messages.send(
