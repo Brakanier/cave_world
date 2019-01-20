@@ -43,7 +43,7 @@ def get_keyboard(player):
     if player.place == 'profile':
         keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
         keyboard.add_line()
-        keyboard.add_button('Вернуться в подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_button('Меню подземелья', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
     if player.place == 'cave':
         if player.build.lift:
             keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
