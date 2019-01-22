@@ -113,5 +113,11 @@ def action(vk, command, player, action_time):
         build_tavern(vk=vk, player=player, token=token)
     elif command.lower() == 'build_stock':
         build_stock(vk=vk, player=player, token=token)
-    elif command.lower() == 'dig':
-        dig(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'dig_stone':
+        dig_stone(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'dig_ore_iron':
+        dig_ore_iron(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'dig_ore_gold':
+        dig_ore_gold(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'dig_diamond':
+        dig_diamond(vk=vk, player=player, action_time=action_time, token=token)

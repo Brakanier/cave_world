@@ -26,11 +26,12 @@ def profile(vk, player, action_time, token):
 def stock(vk, player, token):
 
     message = 'Склад - ' + str(player.stock.lvl) + ' ур.' + '\n' + \
-              'Камень: ' + str(player.stock.stone) + '/' + str(player.stock.stone_max) + '\n' + \
-              'Железная руда: ' + str(player.stock.ore_iron) + '/' + str(player.stock.ore_iron_max) + '\n' + \
-              'Золотая руда: ' + str(player.stock.ore_gold) + '/' + str(player.stock.ore_gold_max) + '\n' + \
+              'Камень: ' + str(player.stock.stone) + '/' + str(player.stock.stone_max) + ' 🎞\n' + \
+              'Железная руда: ' + str(player.stock.ore_iron) + '/' + str(player.stock.ore_iron_max) + ' ◽\n' + \
+              'Золотая руда: ' + str(player.stock.ore_gold) + '/' + str(player.stock.ore_gold_max) + ' ✨\n' + \
               'Слитки железа: ' + str(player.stock.ingot_iron) + '/' + str(player.stock.ingot_iron_max) + '\n' + \
               'Слитки золота: ' + str(player.stock.ingot_gold) + '/' + str(player.stock.ingot_gold_max) + '\n' + \
+              'Алмазы: ' + str(player.stock.diamond) + '/' + str(player.stock.diamond_max) + ' 💎\n' + \
               'Черепа: ' + str(player.stock.skull) + ' 💀'
     vk.messages.send(
         access_token=token,

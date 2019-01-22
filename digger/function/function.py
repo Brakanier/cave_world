@@ -71,9 +71,13 @@ def get_keyboard(player):
         keyboard.add_button('Меню подземелья', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
     if player.place == 'mine':
         keyboard.add_button('Вернуться в подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
-        keyboard.add_line()
-        keyboard.add_button('⛏ Добыть', color=VkKeyboardColor.POSITIVE, payload={"command": "dig"})
-        keyboard.add_line()
-        keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
+        keyboard.add_line()
+        keyboard.add_button('🎞⛏ Добыть камень', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_stone"})
+        keyboard.add_button('💎⛏ Добыть алмазы', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_diamond"})
+        keyboard.add_line()
+        keyboard.add_button('◽⛏ Добыть железо', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_ore_iron"})
+        keyboard.add_button('✨⛏ Добыть золото', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_ore_gold"})
+
+
     return keyboard.get_keyboard()
