@@ -45,7 +45,7 @@ def cave_build(vk, player, token):
         player.place = 'cave_build'
         player.save()
     message_stock = 'Склад: ' + str(player.stock.lvl * player.stock.need) + ' камня' + '\n'
-    message_forge = 'Кузница: ' + '\n'
+    message_forge = 'Кузница: 10 камня' + '\n'
     message_tavern = 'Таверна: ' + '\n'
     message_lift = 'Лифт: ' + '\n'
     message = 'Стоимость:' + '\n'

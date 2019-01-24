@@ -57,7 +57,7 @@ def get_keyboard(player):
         keyboard.add_line()
         keyboard.add_button('Здания', color=VkKeyboardColor.DEFAULT, payload={"command": "cave_build"})
         if player.build.forge:
-            keyboard.add_button('⚒ Изготовить', color=VkKeyboardColor.DEFAULT)
+            keyboard.add_button('⚒ Изготовить', color=VkKeyboardColor.DEFAULT, payload={"command": "forge"})
         if player.build.tavern:
             keyboard.add_button('Нанять', color=VkKeyboardColor.DEFAULT)
         keyboard.add_line()
