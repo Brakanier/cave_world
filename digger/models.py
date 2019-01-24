@@ -29,29 +29,16 @@ class Stock(models.Model):
         default=100,
     )
     #  Ore
-    ore_iron = models.IntegerField(
+    iron = models.IntegerField(
         default=0,
     )
-    ore_iron_max = models.IntegerField(
+    iron_max = models.IntegerField(
         default=100,
     )
-    ore_gold = models.IntegerField(
+    gold = models.IntegerField(
         default=0,
     )
-    ore_gold_max = models.IntegerField(
-        default=100,
-    )
-    # Ingot
-    ingot_iron = models.IntegerField(
-        default=0
-    )
-    ingot_iron_max = models.IntegerField(
-        default=100,
-    )
-    ingot_gold = models.IntegerField(
-        default=0
-    )
-    ingot_gold_max = models.IntegerField(
+    gold_max = models.IntegerField(
         default=100,
     )
     skull = models.IntegerField(
@@ -79,6 +66,34 @@ class Build(models.Model):
     )
 
 
+class Forge(models.Model):
+    user_id = models.BigIntegerField(
+        db_index=True,
+        unique=True,
+    )
+    kit_warrior = models.IntegerField(
+        default=0,
+    )
+    kit_archer = models.IntegerField(
+        default=0,
+    )
+    kit_wizard = models.IntegerField(
+        default=0,
+    )
+    pickaxe_stone = models.BooleanField(
+        default=False,
+    )
+    pickaxe_iron = models.BooleanField(
+        default=False,
+    )
+    pickaxe_diamond = models.BooleanField(
+        default=False,
+    )
+    pickaxe_skull = models.BooleanField(
+        default=False,
+    )
+
+
 class Player(models.Model):
     user_id = models.BigIntegerField(
         db_index=True,
@@ -98,7 +113,6 @@ class Player(models.Model):
     )
     lvl = models.IntegerField(
         default=1,
-
     )
     exp_need = models.BigIntegerField(
         default=10
@@ -132,8 +146,15 @@ class Player(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+    forge = models.OneToOneField(
+        Forge,
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
-    def create(self, user_id, stock):
+
+    def create(self, user_id, stock, furnace):
+        self.furnace = furnace
         self.stock = stock
         self.user_id = user_id
         return self

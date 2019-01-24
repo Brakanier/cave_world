@@ -33,20 +33,20 @@ def dig_stone(vk, player, action_time, token):
     )
 
 
-def dig_ore_iron(vk, player, action_time, token):
+def dig_iron(vk, player, action_time, token):
     need_energy = 2
     player = energy(player=player, action_time=action_time)
     if player.energy >= need_energy:
         max_chance = 69
         chance = random.randint(10, max_chance)
-        ore_iron = chance//10
-        space_iron = player.stock.ore_iron_max - player.stock.ore_iron
+        iron = chance//10
+        space_iron = player.stock.iron_max - player.stock.iron
         if not space_iron == 0:
             player.energy = player.energy - need_energy
-            ore_iron = min(ore_iron, space_iron)
-            player.stock.ore_iron = player.stock.ore_iron + ore_iron
+            iron = min(iron, space_iron)
+            player.stock.iron = player.stock.iron + iron
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
-            message = 'Добыто железной руды: ' + str(ore_iron) + ' ◽\n' + \
+            message = 'Добыто железной руды: ' + str(iron) + ' ◽\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                       'Опыт: ' + str(player.exp) + '/' + str(player.exp_need)
             player.stock.save()
@@ -64,20 +64,20 @@ def dig_ore_iron(vk, player, action_time, token):
     )
 
 
-def dig_ore_gold(vk, player, action_time, token):
+def dig_gold(vk, player, action_time, token):
     need_energy = 2
     player = energy(player=player, action_time=action_time)
     if player.energy >= need_energy:
         max_chance = 69
         chance = random.randint(10, max_chance)
-        ore_gold = chance//10
-        space_gold = player.stock.ore_gold_max - player.stock.ore_gold
+        gold = chance//10
+        space_gold = player.stock.gold_max - player.stock.gold
         if not space_gold == 0:
             player.energy = player.energy - need_energy
-            ore_gold = min(ore_gold, space_gold)
-            player.stock.ore_gold = player.stock.ore_gold + ore_gold
+            gold = min(gold, space_gold)
+            player.stock.gold = player.stock.gold + gold
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
-            message = 'Добыто золотой руды: ' + str(ore_gold) + ' ✨\n' + \
+            message = 'Добыто золотой руды: ' + str(gold) + ' ✨\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                       'Опыт: ' + str(player.exp) + '/' + str(player.exp_need)
             player.stock.save()
@@ -124,3 +124,4 @@ def dig_diamond(vk, player, action_time, token):
         message=message,
         random_id=get_random_id()
     )
+

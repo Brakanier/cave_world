@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Player, Stock, Build
+from .models import Player, Stock, Build, Forge
 
 # Register your models here.
 # admin.site.register(Player)
@@ -18,5 +18,8 @@ class StockAdmin(admin.ModelAdmin):
 @admin.register(Build)
 class BuildAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'forge', 'tavern', 'lift')
+
+
+admin.site.register(Forge)
 
 

@@ -2,9 +2,12 @@ from .function import *
 
 
 def build_forge(vk, player, token):
-    if not player.build.forge:
+    need_stone = 10
+    if not player.build.forge and player.stock.stone >= need_stone:
+        player.stock.stone = player.stock.stone - need_stone
         player.build.forge = True
         player.build.save()
+        player.stock.save()
         message = 'Кузница построена'
     else:
         message = 'У вас уже есть Кузница'

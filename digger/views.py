@@ -6,7 +6,7 @@ import json
 import vk_api
 
 
-from .models import Player, Stock, Build
+from .models import Player, Stock, Build, Forge
 
 from .function.build import *
 from .function.place import *
@@ -82,9 +82,10 @@ def index(request):
 
 def register(vk, user_id):
     if not Player.objects.filter(user_id=user_id).exists():
+        forge = Forge.objects.create(user_id=user_id)
         stock = Stock.objects.create(user_id=user_id)
         build = Build.objects.create(user_id=user_id)
-        player = Player.objects.create(user_id=user_id, stock=stock, build=build)
+        player = Player.objects.create(user_id=user_id, stock=stock, build=build, forge=forge)
         user = vk.users.get(user_ids=str(user_id))
         user = user[0]
         if user['first_name']:
@@ -97,12 +98,16 @@ def register(vk, user_id):
 
 
 def action(vk, command, player, action_time):
+
+    # Инфо
+
     if command.lower() == 'profile':
         profile(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'stock':
         stock(vk=vk, player=player, token=token)
-    elif command.lower() == 'mine':
-        mine(vk=vk, player=player, token=token)
+
+    # Подземелье
+
     elif command.lower() == 'cave':
         cave(vk=vk, player=player, token=token)
     elif command.lower() == 'cave_build':
@@ -113,11 +118,25 @@ def action(vk, command, player, action_time):
         build_tavern(vk=vk, player=player, token=token)
     elif command.lower() == 'build_stock':
         build_stock(vk=vk, player=player, token=token)
+
+    # Кузница
+
+    elif command.lower() == 'forge':
+        forge(vk=vk, player=player, token=token)
+    elif command.lower() == 'forge_pickaxe':
+        forge_pickaxe(vk=vk, player=player, token=token)
+    elif command.lower() == 'forge_kit':
+        forge_kit(vk=vk, player=player, token=token)
+
+    # Шахта
+
+    elif command.lower() == 'mine':
+        mine(vk=vk, player=player, token=token)
     elif command.lower() == 'dig_stone':
         dig_stone(vk=vk, player=player, action_time=action_time, token=token)
-    elif command.lower() == 'dig_ore_iron':
-        dig_ore_iron(vk=vk, player=player, action_time=action_time, token=token)
-    elif command.lower() == 'dig_ore_gold':
-        dig_ore_gold(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'dig_iron':
+        dig_iron(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'dig_gold':
+        dig_gold(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'dig_diamond':
         dig_diamond(vk=vk, player=player, action_time=action_time, token=token)
