@@ -24,7 +24,6 @@ def profile(vk, player, action_time, token):
 
 
 def stock(vk, player, token):
-
     message = 'Склад - ' + str(player.stock.lvl) + ' ур.' + '\n' + \
               'Камень: ' + str(player.stock.stone) + '/' + str(player.stock.stone_max) + ' 🎞\n' + \
               'Железо: ' + str(player.stock.iron) + '/' + str(player.stock.iron_max) + ' ◽\n' + \
@@ -69,6 +68,10 @@ def forge_pickaxe(vk, player, token):
     if not player.place == 'forge_pickaxe':
         player.place = 'forge_pickaxe'
         player.save()
+    forge_pickaxe_info(vk=vk, player=player, token=token)
+
+
+def forge_pickaxe_info(vk, player, token):
     message = 'Стоимость крафта: \n'
     message_pickaxe_stone = 'Каменная кирка: 50 камня \n'
     message_pickaxe_iron = 'Железная кирка: 50 железа \n'
@@ -108,6 +111,20 @@ def forge_kit(vk, player, token):
     message_kit_archer = 'Набор лучника: 5 железа, 5 дерева \n'
     message_kit_wizard = 'Набор мага: 5 железа, 5 дерева. 5 алмазов \n'
     message = message + message_kit_warrior + message_kit_archer + message_kit_wizard
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def forge_kit_info(vk, player, token):
+    message = 'Экипировка:\n' + \
+              'Набор воина: ' + str(player.forge.kit_warrior) + '\n' + \
+              'Набор лучника: ' + str(player.forge.kit_warrior) + '\n' + \
+              'Набор мага: ' + str(player.forge.kit_warrior) + '\n'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

@@ -25,6 +25,7 @@ def exp(vk, player, token, exp):
         player.lvl = player.lvl + 1
         player.exp = more_exp
         player.exp_need = player.lvl * (9 + player.lvl)
+        player.energy = player.max_energy
         message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.'
         vk.messages.send(
             access_token=token,
@@ -85,10 +86,12 @@ def get_keyboard(player):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
         keyboard.add_button('🎞⛏ Добыть камень', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_stone"})
-        keyboard.add_button('💎⛏ Добыть алмазы', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_diamond"})
-        keyboard.add_line()
-        keyboard.add_button('◽⛏ Добыть железо', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_iron"})
-        keyboard.add_button('✨⛏ Добыть золото', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_gold"})
+        if player.forge.pickaxe_iron or player.forge.pickaxe_diamond or player.forge.pickaxe_skull:
+            keyboard.add_button('💎⛏ Добыть алмазы', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_diamond"})
+        if player.forge.pickaxe_stone:
+            keyboard.add_line()
+            keyboard.add_button('◽⛏ Добыть железо', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_iron"})
+            keyboard.add_button('✨⛏ Добыть золото', color=VkKeyboardColor.POSITIVE, payload={"command": "dig_gold"})
 
     # Кузница
 
@@ -99,11 +102,11 @@ def get_keyboard(player):
         keyboard.add_button('⚒ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_pickaxe"})
         keyboard.add_button('⚒ Экипировка', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit"})
 
-
     # Кузница - крафт наборов
 
     if player.place == 'forge_kit':
         keyboard.add_button('Меню кузницы', color=VkKeyboardColor.PRIMARY, payload={"command": "forge"})
+        keyboard.add_button('Экипировка', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
         keyboard.add_button('⚒ Воин', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_kit_warrior"})
@@ -115,6 +118,7 @@ def get_keyboard(player):
 
     if player.place == 'forge_pickaxe':
         keyboard.add_button('Меню кузницы', color=VkKeyboardColor.PRIMARY, payload={"command": "forge"})
+        keyboard.add_button('Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_pickaxe_info"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         if not player.forge.pickaxe_skull or not player.forge.pickaxe_diamond:
             keyboard.add_line()

@@ -125,8 +125,16 @@ def action(vk, command, player, action_time):
         forge(vk=vk, player=player, token=token)
     elif command.lower() == 'forge_pickaxe':
         forge_pickaxe(vk=vk, player=player, token=token)
+    elif command.lower() == 'forge_pickaxe_info':
+        forge_pickaxe_info(vk=vk, player=player, token=token)
+    elif command.lower() == 'craft_pickaxe_stone':
+        craft_pickaxe_stone(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'craft_pickaxe_iron':
+        craft_pickaxe_iron(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'forge_kit':
         forge_kit(vk=vk, player=player, token=token)
+    elif command.lower() == 'forge_kit_info':
+        forge_kit_info(vk=vk, player=player, token=token)
 
     # Шахта
 
