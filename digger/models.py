@@ -212,6 +212,11 @@ class Player(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+    army = models.OneToOneField(
+        Army,
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
     def create(self, user_id, stock, forge, tavern):
         self.forge = forge

@@ -6,7 +6,7 @@ import json
 import vk_api
 
 
-from .models import Player, Stock, Build, Forge, Tavern
+from .models import Player, Stock, Build, Forge, Tavern, Army
 
 from .function.build import *
 from .function.place import *
@@ -33,7 +33,7 @@ def index(request):
                 user_id = data['object']['from_id']
                 reg = register(vk=vk, user_id=user_id)
                 player = Player.objects.get(user_id=user_id)
-                check_new_buildings(player=player)
+                player = check_models(player=player)
                 if reg == 'new':
                     vk.messages.send(
                         access_token=token,
@@ -83,11 +83,17 @@ def index(request):
 
 def register(vk, user_id):
     if not Player.objects.filter(user_id=user_id).exists():
+        army = Army.object.crate(user_id=user_id)
         tavern = Tavern.objects.create(user_id=user_id)
         forge = Forge.objects.create(user_id=user_id)
         stock = Stock.objects.create(user_id=user_id)
         build = Build.objects.create(user_id=user_id)
-        player = Player.objects.create(user_id=user_id, stock=stock, build=build, forge=forge, tavern=tavern)
+        player = Player.objects.create(user_id=user_id,
+                                       stock=stock,
+                                       build=build,
+                                       forge=forge,
+                                       tavern=tavern,
+                                       army=army)
         user = vk.users.get(user_ids=str(user_id))
         user = user[0]
         if user['first_name']:
@@ -99,7 +105,7 @@ def register(vk, user_id):
     return 'old'
 
 
-def check_new_buildings(player):
+def check_models(player):
     if player.tavern == 'null':
         tavern = Tavern.objects.create(user_id=player.user_id)
         player.tavern = tavern
@@ -112,7 +118,10 @@ def check_new_buildings(player):
     if player.build == 'null':
         build = Build.objects.create(user_id=player.user_id)
         player.build = build
-    player.save()
+    if player.army == 'null':
+        army = Army.objects.create(user_id=player.user_id)
+        player.army = army
+    return player
 
 
 def action(vk, command, player, action_time):
