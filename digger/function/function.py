@@ -109,10 +109,10 @@ def get_keyboard(player):
         keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
-        keyboard.add_button('⚒ 🗡 Меч', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_kit_warrior"})
-        keyboard.add_button('⚒ 🏹 Лук', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_kit_archer"})
+        keyboard.add_button('⚒ 🗡 Меч', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_sword"})
+        keyboard.add_button('⚒ 🏹 Лук', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_bow"})
         keyboard.add_line()
-        keyboard.add_button('⚒ 🔮 Сфера', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_kit_wizard"})
+        keyboard.add_button('⚒ 🔮 Сфера', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_orb"})
 
     # Кузница - крафт кирок
 
@@ -123,15 +123,15 @@ def get_keyboard(player):
         if not player.forge.pickaxe_iron or not player.forge.pickaxe_stone:
             keyboard.add_line()
             if not player.forge.pickaxe_iron:
-                keyboard.add_button('⛏ ◽ Железная', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_pickaxe_iron"})
+                keyboard.add_button('⛏ ◽ Железная', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_pickaxe_iron"})
             if not player.forge.pickaxe_stone:
-                keyboard.add_button('⛏ ◾ Каменная', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_pickaxe_stone"})
+                keyboard.add_button('⛏ ◾ Каменная', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_pickaxe_stone"})
         if not player.forge.pickaxe_skull or not player.forge.pickaxe_diamond:
             keyboard.add_line()
             if not player.forge.pickaxe_skull:
-                keyboard.add_button('⛏ 💀 Костяная', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_pickaxe_skull"})
+                keyboard.add_button('⛏ 💀 Костяная', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_pickaxe_skull"})
             if not player.forge.pickaxe_diamond:
-                keyboard.add_button('⛏ 💎 Алмазная', color=VkKeyboardColor.POSITIVE, payload={"command": "forge_pickaxe_diamond"})
+                keyboard.add_button('⛏ 💎 Алмазная', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_pickaxe_diamond"})
 
     # Таверна
 
@@ -140,9 +140,9 @@ def get_keyboard(player):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
         keyboard.add_line()
-        keyboard.add_button('🍺 🗡 Воин', color=VkKeyboardColor.POSITIVE, payload={"command": ""})
-        keyboard.add_button('🍺 🏹 Лучник', color=VkKeyboardColor.POSITIVE, payload={"command": ""})
+        keyboard.add_button('🍺 🗡 Воин', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_sword"})
+        keyboard.add_button('🍺 🏹 Лучник', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_bow"})
         keyboard.add_line()
-        keyboard.add_button('🍺 🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": ""})
+        keyboard.add_button('🍺 🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": "craft_orb"})
 
     return keyboard.get_keyboard()
