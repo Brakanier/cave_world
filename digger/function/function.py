@@ -98,7 +98,6 @@ def get_keyboard(player):
 
     if player.place == 'forge':
         keyboard.add_button('Вернуться в подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
-        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
         keyboard.add_button('⚒ ⛏ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_pickaxe"})
         keyboard.add_button('⚒ ⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit"})
@@ -141,9 +140,9 @@ def get_keyboard(player):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
         keyboard.add_line()
-        keyboard.add_button('🍺 🗡 Воин', color=VkKeyboardColor.DEFAULT, payload={"command": ""})
-        keyboard.add_button('🍺 🏹 Лучник', color=VkKeyboardColor.DEFAULT, payload={"command": ""})
+        keyboard.add_button('🍺 🗡 Воин', color=VkKeyboardColor.POSITIVE, payload={"command": ""})
+        keyboard.add_button('🍺 🏹 Лучник', color=VkKeyboardColor.POSITIVE, payload={"command": ""})
         keyboard.add_line()
-        keyboard.add_button('🍺 🔮 Маг', color=VkKeyboardColor.DEFAULT, payload={"command": ""})
+        keyboard.add_button('🍺 🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": ""})
 
     return keyboard.get_keyboard()
