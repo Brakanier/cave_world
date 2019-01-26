@@ -83,7 +83,7 @@ def index(request):
 
 def register(vk, user_id):
     if not Player.objects.filter(user_id=user_id).exists():
-        army = Army.object.crate(user_id=user_id)
+        army = Army.objects.create(user_id=user_id)
         tavern = Tavern.objects.create(user_id=user_id)
         forge = Forge.objects.create(user_id=user_id)
         stock = Stock.objects.create(user_id=user_id)
