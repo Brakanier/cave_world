@@ -33,6 +33,7 @@ def index(request):
                 user_id = data['object']['from_id']
                 reg = register(vk=vk, user_id=user_id)
                 player = Player.objects.get(user_id=user_id)
+                check_new_buildings(player=player)
                 if reg == 'new':
                     vk.messages.send(
                         access_token=token,
@@ -96,6 +97,22 @@ def register(vk, user_id):
         player.save()
         return 'new'
     return 'old'
+
+
+def check_new_buildings(player):
+    if player.tavern == 'null':
+        tavern = Tavern.objects.create(user_id=player.user_id)
+        player.tavern = tavern
+    if player.forge == 'null':
+        forge = Forge.objects.create(user_id=player.user_id)
+        player.forge = forge
+    if player.stock == 'null':
+        stock = Stock.objects.create(user_id=player.user_id)
+        player.stock = stock
+    if player.build == 'null':
+        build = Build.objects.create(user_id=player.user_id)
+        player.build = build
+    player.save()
 
 
 def action(vk, command, player, action_time):
