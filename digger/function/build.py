@@ -12,7 +12,7 @@ def build_forge(vk, player, token):
         else:
             message = 'Недостаточно ресурсов! \n' + \
                       'Нужно:\n' + \
-                      'Камня: ' + str(player.forge.need) + ' 🎞'
+                      'Камня: ' + str(player.forge.need) + ' ◾'
     else:
         message = 'У вас уже есть Кузница'
     vk.messages.send(
@@ -33,7 +33,7 @@ def build_tavern(vk, player, token):
         else:
             message = 'Недостаточно ресурсов! \n' + \
                       'Нужно:\n' + \
-                      'Камня: ' + str(player.tavern.need_stone) + ' 🎞\n' + \
+                      'Камня: ' + str(player.tavern.need_stone) + ' ◾\n' + \
                       'Железо: ' + str(player.tavern.need_iron) + ' ◽'
     else:
         message = 'У вас уже есть Таверна'
@@ -60,7 +60,9 @@ def build_stock(vk, player, token):
         player.stock.save()
         message = 'Склад улучшен! (' + str(player.stock.lvl) + ' ур.)'
     else:
-        message = 'Вам не хватает ресурсов!'
+        message = 'Недостаточно ресурсов! \n' + \
+                  'Нужно:\n' + \
+                  'Камня: ' + str(player.stock.need) + ' ◾\n'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

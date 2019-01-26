@@ -153,6 +153,12 @@ def action(vk, command, player, action_time):
         forge_kit(vk=vk, player=player, token=token)
     elif command.lower() == 'forge_kit_info':
         forge_kit_info(vk=vk, player=player, token=token)
+    elif command.lower() == 'craft_sword':
+        craft_sword(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'craft_bow':
+        craft_bow(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'craft_orb':
+        craft_orb(vk=vk, player=player, action_time=action_time, token=token)
 
     # Шахта
 
@@ -166,3 +172,8 @@ def action(vk, command, player, action_time):
         dig_gold(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'dig_diamond':
         dig_diamond(vk=vk, player=player, action_time=action_time, token=token)
+
+    # Таверна
+
+    elif command.lower() == 'tavern':
+        tavern(vk=vk, player=player, token=token)

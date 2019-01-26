@@ -16,6 +16,12 @@ class Stock(models.Model):
         default=50,
     )
     # Materials
+    wood = models.IntegerField(
+        default=0,
+    )
+    wood_max = models.IntegerField(
+        default=100,
+    )
     stone = models.IntegerField(
         default=0,
     )
@@ -66,6 +72,40 @@ class Build(models.Model):
     )
 
 
+class Army(models.Model):
+    user_id = models.BigIntegerField(
+        db_index=True,
+        unique=True,
+    )
+    warrior = models.IntegerField(
+        default=0,
+    )
+    warrior_hp = models.IntegerField(
+        default=10,
+    )
+    warrior_attack = models.IntegerField(
+        default=5,
+    )
+    archer = models.IntegerField(
+        default=0,
+    )
+    archer_hp = models.IntegerField(
+        default=10,
+    )
+    archer_attack = models.IntegerField(
+        default=15,
+    )
+    wizard = models.IntegerField(
+        default=0,
+    )
+    wizard_hp = models.IntegerField(
+        default=10,
+    )
+    wizard_attack = models.IntegerField(
+        default=30,
+    )
+
+
 class Forge(models.Model):
     user_id = models.BigIntegerField(
         db_index=True,
@@ -74,13 +114,13 @@ class Forge(models.Model):
     need = models.IntegerField(
         default=30,
     )
-    kit_warrior = models.IntegerField(
+    sword = models.IntegerField(
         default=0,
     )
-    kit_archer = models.IntegerField(
+    bow = models.IntegerField(
         default=0,
     )
-    kit_wizard = models.IntegerField(
+    orb = models.IntegerField(
         default=0,
     )
     pickaxe_stone = models.BooleanField(
@@ -172,7 +212,6 @@ class Player(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
-
 
     def create(self, user_id, stock, forge, tavern):
         self.forge = forge

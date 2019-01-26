@@ -47,3 +47,24 @@ def forge(vk, player, token):
         message=message,
         random_id=get_random_id()
     )
+
+
+def tavern(vk, player, token):
+    if player.place == 'tavern':
+        message = 'Вы уже в Таверне'
+    else:
+        player.place = 'tavern'
+        player.save()
+        message = 'Вы зашли в Таверну!\n' + \
+                  'Здесь вы можете нанять добровольцев.\n' + \
+                  'Стоимость:\n' + \
+                  '🗡 Воин: 20 ✨ + 1 🗡\n' + \
+                  '🏹 Лучник: 20 ✨ + 1 🏹\n' + \
+                  '🔮 Воин: 20 ✨ + 1 🔮\n'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
