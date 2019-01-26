@@ -122,7 +122,7 @@ def forge_kit(vk, player, token):
 
 
 def forge_kit_info(vk, player, token):
-    message = 'Экипировка:\n' + \
+    message = 'Арсенал:\n' + \
               'Мечи 🗡: ' + str(player.forge.sword) + '\n' + \
               'Луки 🏹: ' + str(player.forge.bow) + '\n' + \
               'Сферы 🔮: ' + str(player.forge.orb) + '\n'
