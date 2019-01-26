@@ -6,7 +6,7 @@ import json
 import vk_api
 
 
-from .models import Player, Stock, Build, Forge
+from .models import Player, Stock, Build, Forge, Tavern
 
 from .function.build import *
 from .function.place import *
@@ -82,10 +82,11 @@ def index(request):
 
 def register(vk, user_id):
     if not Player.objects.filter(user_id=user_id).exists():
+        tavern = Tavern.objects.create(user_id=user_id)
         forge = Forge.objects.create(user_id=user_id)
         stock = Stock.objects.create(user_id=user_id)
         build = Build.objects.create(user_id=user_id)
-        player = Player.objects.create(user_id=user_id, stock=stock, build=build, forge=forge)
+        player = Player.objects.create(user_id=user_id, stock=stock, build=build, forge=forge, tavern=tavern)
         user = vk.users.get(user_ids=str(user_id))
         user = user[0]
         if user['first_name']:

@@ -43,9 +43,9 @@ def cave_build(vk, player, token):
     if not player.place == 'cave_build':
         player.place = 'cave_build'
         player.save()
-    message_stock = 'Склад: ' + str(player.stock.lvl * player.stock.need) + ' камня' + '\n'
-    message_forge = 'Кузница: 10 камня' + '\n'
-    message_tavern = 'Таверна: ' + '\n'
+    message_stock = 'Склад: ' + str(player.stock.lvl * player.stock.need) + ' 🎞' + '\n'
+    message_forge = 'Кузница: ' + str(player.forge.need) + ' 🎞\n'
+    message_tavern = 'Таверна: ' + str(player.tavern.need_stone) + ' 🎞, ' + str(player.tavern.need_iron) + ' ◽\n'
     message_lift = 'Лифт: ' + '\n'
     message = 'Стоимость:' + '\n'
     message = message + message_stock
@@ -73,8 +73,8 @@ def forge_pickaxe(vk, player, token):
 
 def forge_pickaxe_info(vk, player, token):
     message = 'Стоимость крафта: \n'
-    message_pickaxe_stone = 'Каменная кирка: 50 камня \n'
-    message_pickaxe_iron = 'Железная кирка: 50 железа \n'
+    message_pickaxe_stone = 'Каменная кирка: 50 камня, 1 энергия\n'
+    message_pickaxe_iron = 'Железная кирка: 50 железа, 5 энергии \n'
     message_pickaxe_diamond = 'Алмазная кирка: 50 алмазов \n'
     message_pickaxe_skull = 'Костяная кирка: 50 черепов \n'
     if not player.forge.pickaxe_stone:

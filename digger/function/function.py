@@ -25,6 +25,7 @@ def exp(vk, player, token, exp):
         player.lvl = player.lvl + 1
         player.exp = more_exp
         player.exp_need = player.lvl * (9 + player.lvl)
+        player.max_energy = 10 + (player.lvl * 2)
         player.energy = player.max_energy
         message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.'
         vk.messages.send(

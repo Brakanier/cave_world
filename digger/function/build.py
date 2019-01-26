@@ -2,13 +2,17 @@ from .function import *
 
 
 def build_forge(vk, player, token):
-    need_stone = 10
-    if not player.build.forge and player.stock.stone >= need_stone:
-        player.stock.stone = player.stock.stone - need_stone
-        player.build.forge = True
-        player.build.save()
-        player.stock.save()
-        message = 'Кузница построена'
+    if not player.build.forge:
+        if player.stock.stone >= player.forge.need:
+            player.stock.stone = player.stock.stone - player.forge.need
+            player.build.forge = True
+            player.build.save()
+            player.stock.save()
+            message = 'Кузница построена'
+        else:
+            message = 'Недостаточно ресурсов! \n' + \
+                      'Нужно:\n' + \
+                      'Камня: ' + str(player.forge.need) + ' 🎞'
     else:
         message = 'У вас уже есть Кузница'
     vk.messages.send(
@@ -22,9 +26,15 @@ def build_forge(vk, player, token):
 
 def build_tavern(vk, player, token):
     if not player.build.tavern:
-        player.build.tavern = True
-        player.build.save()
-        message = 'Таверна построена'
+        if player.stock.stone >= player.tavern.need_stone and player.stock.iron >= player.tavern.need_iron:
+            player.build.tavern = True
+            player.build.save()
+            message = 'Таверна построена'
+        else:
+            message = 'Недостаточно ресурсов! \n' + \
+                      'Нужно:\n' + \
+                      'Камня: ' + str(player.tavern.need_stone) + ' 🎞\n' + \
+                      'Железо: ' + str(player.tavern.need_iron) + ' ◽'
     else:
         message = 'У вас уже есть Таверна'
     vk.messages.send(

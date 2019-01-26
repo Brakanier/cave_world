@@ -71,6 +71,9 @@ class Forge(models.Model):
         db_index=True,
         unique=True,
     )
+    need = models.IntegerField(
+        default=30,
+    )
     kit_warrior = models.IntegerField(
         default=0,
     )
@@ -91,6 +94,19 @@ class Forge(models.Model):
     )
     pickaxe_skull = models.BooleanField(
         default=False,
+    )
+
+
+class Tavern(models.Model):
+    user_id = models.BigIntegerField(
+        db_index=True,
+        unique=True,
+    )
+    need_stone = models.IntegerField(
+        default=30,
+    )
+    need_iron = models.IntegerField(
+        default=30,
     )
 
 
@@ -151,10 +167,16 @@ class Player(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
+    tavern = models.OneToOneField(
+        Tavern,
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
 
-    def create(self, user_id, stock, furnace):
-        self.furnace = furnace
+    def create(self, user_id, stock, forge, tavern):
+        self.forge = forge
+        self.tavern = tavern
         self.stock = stock
         self.user_id = user_id
         return self
