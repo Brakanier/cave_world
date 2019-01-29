@@ -132,6 +132,8 @@ def action(vk, command, player, action_time):
         profile(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'stock':
         stock(vk=vk, player=player, token=token)
+    elif command.lower() == 'army':
+        army(vk=vk, player=player, token=token)
 
     # Подземелье
 
@@ -190,3 +192,9 @@ def action(vk, command, player, action_time):
 
     elif command.lower() == 'tavern':
         tavern(vk=vk, player=player, token=token)
+    elif command.lower() == 'buy_warrior':
+        buy_warrior(vk=vk, player=player, token=token)
+    elif command.lower() == 'buy_archer':
+        buy_archer(vk=vk, player=player, token=token)
+    elif command.lower() == 'buy_wizard':
+        buy_wizard(vk=vk, player=player, token=token)

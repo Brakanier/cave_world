@@ -272,7 +272,7 @@ def craft_bow(vk, player, action_time, token):
             player.stock.iron = player.stock.iron - need_iron
             player.stock.wood = player.stock.wood - need_wood
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
-            player.forge.sword = player.forge.bow + 1
+            player.forge.bow = player.forge.bow + 1
             player.stock.save()
             player.forge.save()
             message = 'Вы скрафтили Лук 🏹\n' \
@@ -307,7 +307,7 @@ def craft_orb(vk, player, action_time, token):
             player.stock.wood = player.stock.wood - need_wood
             player.stock.diamond = player.stock.diamond - need_diamond
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
-            player.forge.sword = player.forge.bow + 1
+            player.forge.orb = player.forge.orb + 1
             player.stock.save()
             player.forge.save()
             message = 'Вы скрафтили Сферу 🔮\n' \
@@ -320,6 +320,84 @@ def craft_orb(vk, player, action_time, token):
                       'Алмазы: ' + str(need_diamond) + ' 💎'
     else:
         message = 'Недостаточно энергии'
+    player.save()
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def buy_warrior(vk, player, token):
+    need_sword = 1
+    need_gold = 20
+    if player.forge.sword >= need_sword and player.stock.gold >= need_gold:
+        player.stock.gold = player.stock.gold - need_gold
+        player.forge.sword = player.forge.sword - need_sword
+        player.army.warrior = player.army.warrior + 1
+        player.stock.save()
+        player.forge.save()
+        player.army.save()
+        message = 'Вы наняли Воина!'
+    else:
+        message = 'Недостаточно ресурсов!\n' + \
+                  'Нужно:\n' + \
+                  'Золото: ' + str(need_gold) + ' ✨\n' + \
+                  'Мечи: ' + str(need_sword) + ' 🗡\n'
+    player.save()
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def buy_archer(vk, player, token):
+    need_bow = 1
+    need_gold = 20
+    if player.forge.bow >= need_bow and player.stock.gold >= need_gold:
+        player.stock.gold = player.stock.gold - need_gold
+        player.forge.bow = player.forge.bow - need_bow
+        player.army.archer = player.army.archer + 1
+        player.stock.save()
+        player.forge.save()
+        player.army.save()
+        message = 'Вы наняли Лучника!'
+    else:
+        message = 'Недостаточно ресурсов!\n' + \
+                  'Нужно:\n' + \
+                  'Золото: ' + str(need_gold) + ' ✨\n' + \
+                  'Луки: ' + str(need_bow) + ' 🏹\n'
+    player.save()
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def buy_wizard(vk, player, token):
+    need_orb = 1
+    need_gold = 20
+    if player.forge.orb >= need_orb and player.stock.gold >= need_gold:
+        player.stock.gold = player.stock.gold - need_gold
+        player.forge.orb = player.forge.orb - need_orb
+        player.army.wizard = player.army.wizard + 1
+        player.stock.save()
+        player.forge.save()
+        player.army.save()
+        message = 'Вы наняли Мага!'
+    else:
+        message = 'Недостаточно ресурсов!\n' + \
+                  'Нужно:\n' + \
+                  'Золото: ' + str(need_gold) + ' ✨\n' + \
+                  'Сферы: ' + str(need_orb) + ' 🔮\n'
     player.save()
     vk.messages.send(
         access_token=token,

@@ -133,3 +133,18 @@ def forge_kit_info(vk, player, token):
         message=message,
         random_id=get_random_id()
     )
+
+
+def army(vk, player, token):
+    message = 'Армия:\n' + \
+              'Воины: ' + str(player.army.warrior) + ' 🗡\n' + \
+              'Лучники: ' + str(player.army.archer) + ' 🏹\n' + \
+              'Маги: ' + str(player.army.wizard) + ' 🔮\n' + \
+              'Всего: ' + str(player.army.warrior + player.army.archer + player.army.wizard) + ' ⚔'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
