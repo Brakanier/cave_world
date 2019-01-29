@@ -7,6 +7,8 @@ def dig_stone(vk, player, action_time, token):
     player = energy(player=player, action_time=action_time)
     if player.energy >= need_energy:
         max_chance = 109
+        if player.forge.pickaxe_diamond:
+            max_chance = 209
         chance = random.randint(10, max_chance)
         stone = chance//10
         space = player.stock.stone_max - player.stock.stone
@@ -38,6 +40,8 @@ def dig_iron(vk, player, action_time, token):
     player = energy(player=player, action_time=action_time)
     if player.energy >= need_energy:
         max_chance = 69
+        if player.forge.pickaxe_diamond:
+            max_chance = 129
         chance = random.randint(10, max_chance)
         iron = chance//10
         space_iron = player.stock.iron_max - player.stock.iron
@@ -69,6 +73,8 @@ def dig_gold(vk, player, action_time, token):
     player = energy(player=player, action_time=action_time)
     if player.energy >= need_energy:
         max_chance = 69
+        if player.forge.pickaxe_diamond:
+            max_chance = 129
         chance = random.randint(10, max_chance)
         gold = chance//10
         space_gold = player.stock.gold_max - player.stock.gold
@@ -100,6 +106,8 @@ def dig_diamond(vk, player, action_time, token):
     player = energy(player=player, action_time=action_time)
     if player.energy >= need_energy:
         max_chance = 39
+        if player.forge.pickaxe_diamond:
+            max_chance = 69
         chance = random.randint(10, max_chance)
         diamond = chance//10
         space_diamond = player.stock.diamond_max - player.stock.diamond
@@ -177,12 +185,45 @@ def craft_pickaxe_iron(vk, player, action_time, token):
                           'Теперь вы можете добывать алмазы в шахте.\n' + \
                           'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
             else:
-                message = 'Недостаточно камня'
+                message = 'Недостаточно железа'
         else:
             message = 'Недостаточно энергии'
         player.save()
     else:
-        message = 'У вас уже есть каменная кирка'
+        message = 'У вас уже есть железная кирка'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def craft_pickaxe_diamond(vk, player, action_time, token):
+    need_energy = 10
+    need_diamond = 50
+    if not player.forge.pickaxe_diamond:
+        player = energy(player=player, action_time=action_time)
+        if player.energy >= need_energy:
+            if player.stock.diamond >= need_diamond:
+                player.energy = player.energy - need_energy
+                player.stock.diamond = player.stock.diamond - need_diamond
+                player.forge.pickaxe_diamond = True
+                player = exp(vk=vk, player=player, token=token, exp=need_energy)
+                player.stock.save()
+                player.forge.save()
+                message = 'Поздравляю!\n' \
+                          'Вы скрафтили Алмазную кирку.\n' \
+                          'Количество добываемых ресурсов увеличено.\n' + \
+                          'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+            else:
+                message = 'Недостаточно алмазов'
+        else:
+            message = 'Недостаточно энергии'
+        player.save()
+    else:
+        message = 'У вас уже есть алмазная кирка'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
