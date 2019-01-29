@@ -67,7 +67,7 @@ class Build(models.Model):
     tavern = models.BooleanField(
         default=False,
     )
-    lift = models.BooleanField(
+    gate = models.BooleanField(
         default=False,
     )
 

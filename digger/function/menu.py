@@ -46,16 +46,16 @@ def cave_build(vk, player, token):
         player.save()
     message_stock = 'Склад: ' + str(player.stock.lvl * player.stock.need) + ' ◾' + '\n'
     message_forge = 'Кузница: ' + str(player.forge.need) + ' ◾\n'
-    message_tavern = 'Таверна: ' + str(player.tavern.need_stone) + ' ◾, ' + str(player.tavern.need_iron) + ' ◽\n'
-    message_lift = 'Лифт: ' + '\n'
+    message_tavern = 'Таверна: ' + str(player.tavern.need_stone) + ' ◾ + ' + str(player.tavern.need_iron) + ' ◽\n'
+    message_gate = 'Врата: 300 ◾ + 200 ◽ + 100 💎'
     message = 'Стоимость:' + '\n'
     message = message + message_stock
     if not player.build.forge:
         message = message + message_forge
     if not player.build.tavern:
         message = message + message_tavern
-    if not player.build.lift:
-        message = message + message_lift
+    if not player.build.gate:
+        message = message + message_gate
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
@@ -123,9 +123,9 @@ def forge_kit(vk, player, token):
 
 def forge_kit_info(vk, player, token):
     message = 'Арсенал:\n' + \
-              'Мечи 🗡: ' + str(player.forge.sword) + '\n' + \
-              'Луки 🏹: ' + str(player.forge.bow) + '\n' + \
-              'Сферы 🔮: ' + str(player.forge.orb) + '\n'
+              'Мечи: ' + str(player.forge.sword) + ' 🗡\n' + \
+              'Луки: ' + str(player.forge.bow) + ' 🏹\n' + \
+              'Сферы: ' + str(player.forge.orb) + ' 🔮\n'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

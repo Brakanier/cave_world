@@ -73,8 +73,8 @@ def get_keyboard(player):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
         keyboard.add_button('🔨 🏤 Склад', color=VkKeyboardColor.POSITIVE, payload={"command": "build_stock"})
-        if not player.build.lift:
-            keyboard.add_button('🔨 Лифт', color=VkKeyboardColor.POSITIVE, payload={"command": "build_lift"})
+        if not player.build.gate:
+            keyboard.add_button('🔨 Врата', color=VkKeyboardColor.POSITIVE, payload={"command": "build_gate"})
         if not player.build.forge or not player.build.tavern:
             keyboard.add_line()
         if not player.build.forge:

@@ -17,7 +17,7 @@ class StockAdmin(admin.ModelAdmin):
 
 @admin.register(Build)
 class BuildAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'forge', 'tavern', 'lift')
+    list_display = ('user_id', 'forge', 'tavern', 'gate')
 
 
 admin.site.register(Forge)
