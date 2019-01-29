@@ -69,16 +69,19 @@ def get_keyboard(player):
     # Подземелье - меню строительства
 
     if player.place == 'cave_build':
-        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.POSITIVE, payload={"command": "build_stock"})
+        keyboard.add_button('Меню подземелья', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.POSITIVE, payload={"command": "build_stock"})
+        if not player.build.lift:
+            keyboard.add_button('🔨 Лифт', color=VkKeyboardColor.POSITIVE, payload={"command": "build_lift"})
+        if not player.build.forge or not player.build.tavern:
+            keyboard.add_line()
         if not player.build.forge:
             keyboard.add_button('🔨 ⚒ Кузница', color=VkKeyboardColor.POSITIVE, payload={"command": "build_forge"})
         if not player.build.tavern:
             keyboard.add_button('🔨 🍺 Таверна', color=VkKeyboardColor.POSITIVE, payload={"command": "build_tavern"})
-        if not player.build.lift:
-            keyboard.add_button('🔨 Лифт', color=VkKeyboardColor.POSITIVE, payload={"command": "build_lift"})
-        keyboard.add_line()
-        keyboard.add_button('Меню подземелья', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+
 
     # Шахта
 
