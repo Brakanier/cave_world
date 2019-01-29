@@ -54,7 +54,7 @@ def get_keyboard(player):
     # Подземелье
 
     if player.place == 'cave':
-        if player.build.lift:
+        if player.build.gate:
             keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
         keyboard.add_line()
