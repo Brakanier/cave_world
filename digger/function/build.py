@@ -27,6 +27,8 @@ def build_forge(vk, player, token):
 def build_tavern(vk, player, token):
     if not player.build.tavern:
         if player.stock.stone >= player.tavern.need_stone and player.stock.iron >= player.tavern.need_iron:
+            player.stock.stone = player.stock.stone - player.tavern.need_stone
+            player.stock.iron = player.stock.iron - player.tavern.need_iron
             player.build.tavern = True
             player.build.save()
             message = 'Таверна построена'
