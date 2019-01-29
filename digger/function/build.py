@@ -51,7 +51,7 @@ def build_tavern(vk, player, token):
 
 def build_stock(vk, player, token):
     stone_need = player.stock.need * player.stock.lvl
-    if not player.stock.stone < stone_need:
+    if player.stock.stone >= stone_need:
         player.stock.stone = player.stock.stone - stone_need
         player.stock.lvl = player.stock.lvl + 1
         player.stock.wood_max = 100 * player.stock.lvl
@@ -97,6 +97,56 @@ def build_gate(vk, player, token):
                       'Алмазы: ' + str(need_diamond) + ' 💎'
     else:
         message = 'У вас уже есть Врата'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def build_tower(vk, player, token):
+    stone_need = player.build.tower_need_stone * player.build.tower_lvl
+    wood_need = player.build.tower_need_wood * player.build.tower_lvl
+    if player.build.tower_lvl == 0:
+        stone_need = player.build.tower_need_stone
+        wood_need = player.build.tower_need_wood
+    if player.stock.stone >= stone_need and player.stock.wood >= wood_need:
+        player.stock.stone = player.stock.stone - stone_need
+        player.stock.wood = player.stock.wood - wood_need
+        player.build.tower_lvl = player.build.tower_lvl + 1
+        player.stock.save()
+        player.build.save()
+        message = 'Башня улучшена! (' + str(player.build.tower_lvl) + ' ур.)'
+    else:
+        message = 'Недостаточно ресурсов! \n' + \
+                  'Нужно:\n' + \
+                  'Камня: ' + str(stone_need) + ' ◾\n' + \
+                  'Дерева: ' + str(wood_need) + ' 🌲'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def build_wall(vk, player, token):
+    stone_need = player.build.wall_need_stone * player.build.wall_lvl
+    if player.build.wall_lvl == 0:
+        stone_need = player.build.wall_need_stone
+    if player.stock.stone >= stone_need:
+        player.stock.stone = player.stock.stone - stone_need
+        player.build.wall_lvl = player.build.wall_lvl + 1
+        player.stock.save()
+        player.build.save()
+        message = 'Стена улучшена! (' + str(player.build.tower_lvl) + ' ур.)'
+    else:
+        message = 'Недостаточно ресурсов! \n' + \
+                  'Нужно:\n' + \
+                  'Камня: ' + str(stone_need) + ' ◾'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

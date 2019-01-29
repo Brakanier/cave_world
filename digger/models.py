@@ -70,6 +70,21 @@ class Build(models.Model):
     gate = models.BooleanField(
         default=False,
     )
+    tower_lvl = models.IntegerField(
+        default=0,
+    )
+    tower_need_stone = models.IntegerField(
+        default=75,
+    )
+    tower_need_wood = models.IntegerField(
+        default=75,
+    )
+    wall_lvl = models.IntegerField(
+        default=0,
+    )
+    wall_need_stone = models.IntegerField(
+        default=100,
+    )
 
 
 class Army(models.Model):

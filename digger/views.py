@@ -198,3 +198,16 @@ def action(vk, command, player, action_time):
         buy_archer(vk=vk, player=player, token=token)
     elif command.lower() == 'buy_wizard':
         buy_wizard(vk=vk, player=player, token=token)
+
+    # Земли
+
+    elif command.lower() == 'land':
+        land(vk=vk, player=player, token=token)
+    elif command.lower() == 'cut_wood':
+        cut_wood(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'land_build':
+        land_build(vk=vk, player=player, token=token)
+    elif command.lower() == 'build_tower':
+        build_tower(vk=vk, player=player, token=token)
+    elif command.lower() == 'build_wall':
+        build_wall(vk=vk, player=player, token=token)

@@ -2,6 +2,39 @@ from .function import *
 import random
 
 
+def cut_wood(vk, player, action_time, token):
+    need_energy = 1
+    player = energy(player=player, action_time=action_time)
+    if player.energy >= need_energy:
+        max_chance = 109
+        if player.forge.pickaxe_diamond:
+            max_chance = 209
+        chance = random.randint(10, max_chance)
+        wood = chance//10
+        space = player.stock.wood_max - player.stock.wood
+        if space > 0:
+            player.energy = player.energy - need_energy
+            stone = min(wood, space)
+            player.stock.wood = player.stock.wood + wood
+            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+            message = 'Добыто  дерева: ' + str(stone) + ' 🌲\n' + \
+                      'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
+            player.stock.save()
+        else:
+            message = 'Склад заполнен'
+    else:
+        message = 'Недостаточно энергии'
+    player.save()
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
 def dig_stone(vk, player, action_time, token):
     need_energy = 1
     player = energy(player=player, action_time=action_time)
@@ -12,14 +45,14 @@ def dig_stone(vk, player, action_time, token):
         chance = random.randint(10, max_chance)
         stone = chance//10
         space = player.stock.stone_max - player.stock.stone
-        if not space == 0:
+        if space > 0:
             player.energy = player.energy - need_energy
             stone = min(stone, space)
             player.stock.stone = player.stock.stone + stone
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
             message = 'Добыто  камня: ' + str(stone) + ' ◾\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             player.stock.save()
         else:
             message = 'Склад заполнен'
@@ -45,14 +78,14 @@ def dig_iron(vk, player, action_time, token):
         chance = random.randint(10, max_chance)
         iron = chance//10
         space_iron = player.stock.iron_max - player.stock.iron
-        if not space_iron == 0:
+        if space_iron > 0:
             player.energy = player.energy - need_energy
             iron = min(iron, space_iron)
             player.stock.iron = player.stock.iron + iron
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
             message = 'Добыто железной руды: ' + str(iron) + ' ◽\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             player.stock.save()
         else:
             message = 'Склад заполнен'
@@ -78,14 +111,14 @@ def dig_gold(vk, player, action_time, token):
         chance = random.randint(10, max_chance)
         gold = chance//10
         space_gold = player.stock.gold_max - player.stock.gold
-        if not space_gold == 0:
+        if space_gold > 0:
             player.energy = player.energy - need_energy
             gold = min(gold, space_gold)
             player.stock.gold = player.stock.gold + gold
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
             message = 'Добыто золотой руды: ' + str(gold) + ' ✨\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             player.stock.save()
         else:
             message = 'Склад заполнен'
@@ -111,14 +144,14 @@ def dig_diamond(vk, player, action_time, token):
         chance = random.randint(10, max_chance)
         diamond = chance//10
         space_diamond = player.stock.diamond_max - player.stock.diamond
-        if not space_diamond == 0:
+        if space_diamond > 0:
             player.energy = player.energy - need_energy
             diamond = min(diamond, space_diamond)
             player.stock.diamond = player.stock.diamond + diamond
             player = exp(vk=vk, player=player, token=token, exp=need_energy)
             message = 'Добыто алмазов: ' + str(diamond) + ' 💎\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             player.stock.save()
         else:
             message = 'Склад заполнен'
@@ -150,7 +183,8 @@ def craft_pickaxe_stone(vk, player, action_time, token):
                 message = 'Поздравляю!\n' \
                           'Вы скрафтили Каменную кирку.\n' \
                           'Теперь вы можете добывать железо и золото в шахте.\n' + \
-                          'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+                          'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+                          'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             else:
                 message = 'Недостаточно камня'
         else:
@@ -183,7 +217,8 @@ def craft_pickaxe_iron(vk, player, action_time, token):
                 message = 'Поздравляю!\n' \
                           'Вы скрафтили Железную кирку.\n' \
                           'Теперь вы можете добывать алмазы в шахте.\n' + \
-                          'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+                          'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+                          'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             else:
                 message = 'Недостаточно железа'
         else:
@@ -216,7 +251,8 @@ def craft_pickaxe_diamond(vk, player, action_time, token):
                 message = 'Поздравляю!\n' \
                           'Вы скрафтили Алмазную кирку.\n' \
                           'Количество добываемых ресурсов увеличено.\n' + \
-                          'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+                          'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+                          'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             else:
                 message = 'Недостаточно алмазов'
         else:
@@ -245,8 +281,9 @@ def craft_sword(vk, player, action_time, token):
             player.forge.sword = player.forge.sword + 1
             player.stock.save()
             player.forge.save()
-            message = 'Вы скрафтили Меч 🗡\n' \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+            message = 'Вы скрафтили Меч 🗡\n' + \
+                      'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
         else:
             message = 'Недостаточно железа'
     else:
@@ -275,8 +312,9 @@ def craft_bow(vk, player, action_time, token):
             player.forge.bow = player.forge.bow + 1
             player.stock.save()
             player.forge.save()
-            message = 'Вы скрафтили Лук 🏹\n' \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+            message = 'Вы скрафтили Лук 🏹\n' + \
+                      'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
         else:
             message = 'Недостаточно ресурсов!\n' + \
                       'Нужно:\n' + \
@@ -310,8 +348,9 @@ def craft_orb(vk, player, action_time, token):
             player.forge.orb = player.forge.orb + 1
             player.stock.save()
             player.forge.save()
-            message = 'Вы скрафтили Сферу 🔮\n' \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 🌟'
+            message = 'Вы скрафтили Сферу 🔮\n' + \
+                      'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
         else:
             message = 'Недостаточно ресурсов!\n' + \
                       'Нужно:\n' + \

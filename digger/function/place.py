@@ -33,6 +33,22 @@ def cave(vk, player, token):
     )
 
 
+def land(vk, player, token):
+    if player.place == 'land':
+        message = 'Вы уже в Землях'
+    else:
+        player.place = 'land'
+        player.save()
+        message = 'Вы вышли в Земли'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
 def forge(vk, player, token):
     if player.place == 'forge':
         message = 'Вы уже в Кузнице'

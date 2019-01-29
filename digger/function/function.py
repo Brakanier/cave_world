@@ -11,7 +11,7 @@ def energy(player, action_time):
     delta = action_time - player.last_energy_action
     delta = delta//60
     if delta >= 10:
-        energy_new = (delta//10)*player.energy_regen
+        energy_new = (delta//10) * player.energy_regen
         energy_max = energy_new + player.energy
         player.energy = min(energy_max, player.max_energy)
         player.last_energy_action = player.last_energy_action + (energy_new*600)
@@ -46,10 +46,35 @@ def get_keyboard(player):
     # Профиль
 
     if player.place == 'profile':
+        if player.build.gate:
+            keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+
+    # Земли
+
+    if player.place == 'land':
+        keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack"})
+        keyboard.add_button('🎯 Поход', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_line()
+        keyboard.add_button('🔨 Здания', color=VkKeyboardColor.DEFAULT, payload={"command": "land_build"})
+        keyboard.add_button('🌲 ⛏ Рубить', color=VkKeyboardColor.POSITIVE, payload={"command": "cut_wood"})
+        keyboard.add_line()
+        keyboard.add_button('Персонаж', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
+        keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
+
+    # Земли - Строительство
+
+    if player.place == 'land_build':
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
+        keyboard.add_line()
+        keyboard.add_button('🔨 Башня', color=VkKeyboardColor.POSITIVE, payload={"command": "build_tower"})
+        keyboard.add_button('🔨 Стена', color=VkKeyboardColor.POSITIVE, payload={"command": "build_wall"})
 
     # Подземелье
 
@@ -67,7 +92,7 @@ def get_keyboard(player):
         keyboard.add_button('Персонаж', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
 
-    # Подземелье - меню строительства
+    # Подземелье - Строительство
 
     if player.place == 'cave_build':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})

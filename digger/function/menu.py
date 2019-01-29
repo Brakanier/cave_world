@@ -11,7 +11,7 @@ def profile(vk, player, action_time, token):
               'Имя: ' + player.first_name + "\n" + \
               'Фамилия: ' + player.last_name + "\n" + \
               'Уровень: ' + str(player.lvl) + " 👑\n" + \
-              'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + " 🌟\n" + \
+              'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + "  📚\n" + \
               'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡'
 
     vk.messages.send(
@@ -56,6 +56,37 @@ def cave_build(vk, player, token):
         message = message + message_tavern
     if not player.build.gate:
         message = message + message_gate
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def land_build(vk, player, token):
+    if not player.place == 'land_build':
+        player.place = 'land_build'
+        player.save()
+    # башня
+    message_tower = 'Башня: ' + \
+                    str(player.build.tower_lvl * player.build.tower_need_stone) + \
+                    ' ◾ + ' + \
+                    str(player.build.tower_lvl * player.build.tower_need_wood) + \
+                    ' 🌲\n'
+    if player.build.tower_lvl == 0:
+        message_tower = 'Башня: ' + \
+                        str(player.build.tower_need_stone) + \
+                        ' ◾ + ' + \
+                        str(player.build.tower_need_wood) + \
+                        ' 🌲\n'
+    # стена
+    message_wall = 'Стена: ' + str(player.build.wall_lvl * player.build.wall_need_stone) + ' ◾\n'
+    if player.build.wall_lvl == 0:
+        message_wall = 'Стена: ' + str(player.build.wall_need_stone) + ' ◾'
+    message = 'Стоимость:' + '\n'
+    message = message + message_tower + message_wall
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
