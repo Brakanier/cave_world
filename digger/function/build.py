@@ -53,6 +53,7 @@ def build_stock(vk, player, token):
     if not player.stock.stone < stone_need:
         player.stock.stone = player.stock.stone - stone_need
         player.stock.lvl = player.stock.lvl + 1
+        player.stock.wood_max = 100 * player.stock.lvl
         player.stock.stone_max = 100 * player.stock.lvl
         player.stock.iron_max = 100 * player.stock.lvl
         player.stock.gold_max = 100 * player.stock.lvl
