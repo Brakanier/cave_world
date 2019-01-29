@@ -21,7 +21,7 @@ def energy(player, action_time):
 def exp(vk, player, token, exp):
     current_exp = player.exp + exp
     if current_exp >= player.exp_need:
-        more_exp = player.exp_need - current_exp
+        more_exp =  current_exp - player.exp_need
         player.lvl = player.lvl + 1
         player.exp = more_exp
         player.exp_need = player.lvl * (9 + player.lvl)
