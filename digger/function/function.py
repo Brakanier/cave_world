@@ -10,11 +10,11 @@ def get_random_id():
 def energy(player, action_time):
     delta = action_time - player.last_energy_action
     delta = delta//60
-    if delta >= 10:
-        energy_new = (delta//10) * player.energy_regen
+    if delta >= 5:
+        energy_new = (delta//5) * player.energy_regen
         energy_max = energy_new + player.energy
         player.energy = min(energy_max, player.max_energy)
-        player.last_energy_action = player.last_energy_action + (energy_new*600)
+        player.last_energy_action = player.last_energy_action + (energy_new*300)
     return player
 
 
