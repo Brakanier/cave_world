@@ -142,7 +142,7 @@ def build_wall(vk, player, token):
         player.build.wall_lvl = player.build.wall_lvl + 1
         player.stock.save()
         player.build.save()
-        message = 'Стена улучшена! (' + str(player.build.tower_lvl) + ' ур.)'
+        message = 'Стена улучшена! (' + str(player.build.wall_lvl) + ' ур.)'
     else:
         message = 'Недостаточно ресурсов! \n' + \
                   'Нужно:\n' + \

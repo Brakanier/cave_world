@@ -7,7 +7,7 @@ from .models import Player, Stock, Build, Forge, Tavern, Army
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'nickname', 'first_name', 'last_name')
+    list_display = ('user_id', 'nickname', 'lvl', 'first_name', 'last_name')
 
 
 @admin.register(Stock)

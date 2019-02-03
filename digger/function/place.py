@@ -76,7 +76,7 @@ def tavern(vk, player, token):
                   'Стоимость:\n' + \
                   '🗡 Воин: 20 ✨ + 1 🗡\n' + \
                   '🏹 Лучник: 20 ✨ + 1 🏹\n' + \
-                  '🔮 Воин: 20 ✨ + 1 🔮\n'
+                  '🔮 Маг: 20 ✨ + 1 🔮\n'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

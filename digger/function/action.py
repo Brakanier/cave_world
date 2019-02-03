@@ -102,7 +102,7 @@ def dig_iron(vk, player, action_time, token):
 
 
 def dig_gold(vk, player, action_time, token):
-    need_energy = 2
+    need_energy = 1
     player = energy(player=player, action_time=action_time)
     if player.energy >= need_energy:
         max_chance = 69
