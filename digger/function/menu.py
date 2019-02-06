@@ -1,4 +1,5 @@
 from .function import *
+from .CONSTANT import *
 
 
 def profile(vk, player, action_time, token):

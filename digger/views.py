@@ -35,16 +35,31 @@ def index(request):
                 player = Player.objects.get(user_id=user_id)
                 player = check_models(player=player)
                 if reg == 'new':
+                    player.place = 'reg'
+                    player.save()
                     vk.messages.send(
                         access_token=token,
                         user_id=str(user_id),
-                        message='Добро пожаловать в Cave World!',
+                        message='Добро пожаловать в Cave World!\nВведите свой ник:',
                         keyboard=get_keyboard(player=player),
                         random_id=get_random_id()
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 elif reg == 'old':
-                    if 'payload' in data['object']:
+                    if player.place == 'reg':
+                        nick = data['object']['text']
+                        player.nickname = nick
+                        player.place = 'cave'
+                        player.save()
+                        message = 'Ваш ник - ' + player.nickname
+                        vk.messages.send(
+                            access_token=token,
+                            user_id=str(user_id),
+                            message=message,
+                            keyboard=get_keyboard(player=player),
+                            random_id=get_random_id()
+                        )
+                    elif 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
                         command = payload['command']
                         action_time = data['object']['date']

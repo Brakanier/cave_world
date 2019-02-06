@@ -1,23 +1,24 @@
 from .function import *
+from .CONSTANT import *
 import random
 
 
 def cut_wood(vk, player, action_time, token):
-    need_energy = 1
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        max_chance = 109
+    if player.energy >= DIG_ENERGY:
+        wood_max = WOOD_MAX
+        wood_min = WOOD_MIN
         if player.forge.pickaxe_diamond:
-            max_chance = 209
-        chance = random.randint(10, max_chance)
-        wood = chance//10
+            wood_max = WOOD_MAX * 2
+            wood_min = WOOD_MIN * 2
+        wood = random.randint(wood_min, wood_max)
         space = player.stock.wood_max - player.stock.wood
         if space > 0:
-            player.energy = player.energy - need_energy
-            stone = min(wood, space)
+            player.energy = player.energy - DIG_ENERGY
+            wood = min(wood, space)
             player.stock.wood = player.stock.wood + wood
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
-            message = 'Добыто  дерева: ' + str(stone) + ' 🌲\n' + \
+            player = exp(vk=vk, player=player, token=token, exp=DIG_ENERGY)
+            message = 'Добыто  дерева: ' + str(wood) + ' 🌲\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                       'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             player.stock.save()
@@ -36,20 +37,20 @@ def cut_wood(vk, player, action_time, token):
 
 
 def dig_stone(vk, player, action_time, token):
-    need_energy = 1
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        max_chance = 109
+    if player.energy >= DIG_ENERGY:
+        stone_max = STONE_MAX
+        stone_min = STONE_MIN
         if player.forge.pickaxe_diamond:
-            max_chance = 209
-        chance = random.randint(10, max_chance)
-        stone = chance//10
+            stone_max = STONE_MAX * 2
+            stone_min = STONE_MIN * 2
+        stone = random.randint(stone_min, stone_max)
         space = player.stock.stone_max - player.stock.stone
         if space > 0:
-            player.energy = player.energy - need_energy
+            player.energy = player.energy - DIG_ENERGY
             stone = min(stone, space)
             player.stock.stone = player.stock.stone + stone
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+            player = exp(vk=vk, player=player, token=token, exp=DIG_ENERGY)
             message = 'Добыто  камня: ' + str(stone) + ' ◾\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                       'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
@@ -69,20 +70,20 @@ def dig_stone(vk, player, action_time, token):
 
 
 def dig_iron(vk, player, action_time, token):
-    need_energy = 2
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        max_chance = 69
+    if player.energy >= DIG_ENERGY:
+        iron_max = IRON_MAX
+        iron_min = IRON_MIN
         if player.forge.pickaxe_diamond:
-            max_chance = 129
-        chance = random.randint(10, max_chance)
-        iron = chance//10
-        space_iron = player.stock.iron_max - player.stock.iron
-        if space_iron > 0:
-            player.energy = player.energy - need_energy
-            iron = min(iron, space_iron)
+            iron_max = IRON_MAX * 2
+            iron_min = IRON_MIN * 2
+        iron = random.randint(iron_min, iron_max)
+        space = player.stock.iron_max - player.stock.iron
+        if space > 0:
+            player.energy = player.energy - DIG_ENERGY
+            iron = min(iron, space)
             player.stock.iron = player.stock.iron + iron
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+            player = exp(vk=vk, player=player, token=token, exp=DIG_ENERGY)
             message = 'Добыто железной руды: ' + str(iron) + ' ◽\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                       'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
@@ -102,20 +103,20 @@ def dig_iron(vk, player, action_time, token):
 
 
 def dig_gold(vk, player, action_time, token):
-    need_energy = 1
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        max_chance = 69
+    if player.energy >= DIG_ENERGY:
+        gold_max = GOLD_MAX
+        gold_min = GOLD_MIN
         if player.forge.pickaxe_diamond:
-            max_chance = 129
-        chance = random.randint(10, max_chance)
-        gold = chance//10
-        space_gold = player.stock.gold_max - player.stock.gold
-        if space_gold > 0:
-            player.energy = player.energy - need_energy
-            gold = min(gold, space_gold)
+            gold_max = GOLD_MAX * 2
+            gold_min = GOLD_MIN * 2
+        gold = random.randint(gold_min, gold_max)
+        space = player.stock.gold_max - player.stock.gold
+        if space > 0:
+            player.energy = player.energy - DIG_ENERGY
+            gold = min(gold, space)
             player.stock.gold = player.stock.gold + gold
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+            player = exp(vk=vk, player=player, token=token, exp=DIG_ENERGY)
             message = 'Добыто золотой руды: ' + str(gold) + ' ✨\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                       'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
@@ -135,20 +136,20 @@ def dig_gold(vk, player, action_time, token):
 
 
 def dig_diamond(vk, player, action_time, token):
-    need_energy = 3
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        max_chance = 39
+    if player.energy >= DIG_ENERGY:
+        diamond_max = DIAMOND_MAX
+        diamond_min = DIAMOND_MIN
         if player.forge.pickaxe_diamond:
-            max_chance = 69
-        chance = random.randint(10, max_chance)
-        diamond = chance//10
-        space_diamond = player.stock.diamond_max - player.stock.diamond
-        if space_diamond > 0:
-            player.energy = player.energy - need_energy
-            diamond = min(diamond, space_diamond)
+            diamond_max = DIAMOND_MAX * 2
+            diamond_min = DIAMOND_MIN * 2
+        diamond = random.randint(diamond_min, diamond_max)
+        space = player.stock.diamond_max - player.stock.diamond
+        if space > 0:
+            player.energy = player.energy - DIG_ENERGY
+            diamond = min(diamond, space)
             player.stock.diamond = player.stock.diamond + diamond
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+            player = exp(vk=vk, player=player, token=token, exp=DIG_ENERGY)
             message = 'Добыто алмазов: ' + str(diamond) + ' 💎\n' + \
                       'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                       'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
@@ -168,16 +169,14 @@ def dig_diamond(vk, player, action_time, token):
 
 
 def craft_pickaxe_stone(vk, player, action_time, token):
-    need_energy = 1
-    need_stone = 50
     if not player.forge.pickaxe_stone:
         player = energy(player=player, action_time=action_time)
-        if player.energy >= need_energy:
-            if player.stock.stone >= need_stone:
-                player.energy = player.energy - need_energy
-                player.stock.stone = player.stock.stone - need_stone
+        if player.energy >= CRAFT_ENEGRY:
+            if player.stock.stone >= STONE_PICKAXE:
+                player.energy = player.energy - CRAFT_ENEGRY
+                player.stock.stone = player.stock.stone - STONE_PICKAXE
                 player.forge.pickaxe_stone = True
-                player = exp(vk=vk, player=player, token=token, exp=need_energy)
+                player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
                 player.stock.save()
                 player.forge.save()
                 message = 'Поздравляю!\n' \
@@ -202,16 +201,14 @@ def craft_pickaxe_stone(vk, player, action_time, token):
 
 
 def craft_pickaxe_iron(vk, player, action_time, token):
-    need_energy = 5
-    need_iron = 50
     if not player.forge.pickaxe_iron:
         player = energy(player=player, action_time=action_time)
-        if player.energy >= need_energy:
-            if player.stock.iron >= need_iron:
-                player.energy = player.energy - need_energy
-                player.stock.iron = player.stock.iron - need_iron
+        if player.energy >= CRAFT_ENEGRY:
+            if player.stock.iron >= IRON_PICKAXE:
+                player.energy = player.energy - CRAFT_ENEGRY
+                player.stock.iron = player.stock.iron - IRON_PICKAXE
                 player.forge.pickaxe_iron = True
-                player = exp(vk=vk, player=player, token=token, exp=need_energy)
+                player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
                 player.stock.save()
                 player.forge.save()
                 message = 'Поздравляю!\n' \
@@ -236,21 +233,19 @@ def craft_pickaxe_iron(vk, player, action_time, token):
 
 
 def craft_pickaxe_diamond(vk, player, action_time, token):
-    need_energy = 10
-    need_diamond = 50
     if not player.forge.pickaxe_diamond:
         player = energy(player=player, action_time=action_time)
-        if player.energy >= need_energy:
-            if player.stock.diamond >= need_diamond:
-                player.energy = player.energy - need_energy
-                player.stock.diamond = player.stock.diamond - need_diamond
+        if player.energy >= CRAFT_ENEGRY:
+            if player.stock.diamond >= DIAMOND_PICKAXE:
+                player.energy = player.energy - CRAFT_ENEGRY
+                player.stock.diamond = player.stock.diamond - DIAMOND_PICKAXE
                 player.forge.pickaxe_diamond = True
-                player = exp(vk=vk, player=player, token=token, exp=need_energy)
+                player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
                 player.stock.save()
                 player.forge.save()
                 message = 'Поздравляю!\n' \
                           'Вы скрафтили Алмазную кирку.\n' \
-                          'Количество добываемых ресурсов увеличено.\n' + \
+                          'Количество добываемых ресурсов увеличено (x2).\n' + \
                           'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                           'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
             else:
@@ -270,14 +265,12 @@ def craft_pickaxe_diamond(vk, player, action_time, token):
 
 
 def craft_sword(vk, player, action_time, token):
-    need_energy = 1
-    need_iron = 5
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        if player.stock.iron >= need_iron:
-            player.energy = player.energy - need_energy
-            player.stock.iron = player.stock.iron - need_iron
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+    if player.energy >= CRAFT_ENEGRY:
+        if player.stock.iron >= SWORD_IRON:
+            player.energy = player.energy - CRAFT_ENEGRY
+            player.stock.iron = player.stock.iron - SWORD_IRON
+            player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
             player.forge.sword = player.forge.sword + 1
             player.stock.save()
             player.forge.save()
@@ -299,16 +292,13 @@ def craft_sword(vk, player, action_time, token):
 
 
 def craft_bow(vk, player, action_time, token):
-    need_energy = 2
-    need_iron = 5
-    need_wood = 5
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        if player.stock.iron >= need_iron and player.stock.wood >= need_wood:
-            player.energy = player.energy - need_energy
-            player.stock.iron = player.stock.iron - need_iron
-            player.stock.wood = player.stock.wood - need_wood
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+    if player.energy >= CRAFT_ENEGRY:
+        if player.stock.iron >= BOW_IRON and player.stock.wood >= BOW_WOOD:
+            player.energy = player.energy - CRAFT_ENEGRY
+            player.stock.iron = player.stock.iron - BOW_IRON
+            player.stock.wood = player.stock.wood - BOW_WOOD
+            player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
             player.forge.bow = player.forge.bow + 1
             player.stock.save()
             player.forge.save()
@@ -318,8 +308,8 @@ def craft_bow(vk, player, action_time, token):
         else:
             message = 'Недостаточно ресурсов!\n' + \
                       'Нужно:\n' + \
-                      'Железо: ' + str(need_iron) + ' ◽\n' + \
-                      'Дерево: ' + str(need_wood) + ' 🌲'
+                      'Железо: ' + str(BOW_IRON) + ' ◽\n' + \
+                      'Дерево: ' + str(BOW_WOOD) + ' 🌲'
     else:
         message = 'Недостаточно энергии'
     player.save()
@@ -333,18 +323,14 @@ def craft_bow(vk, player, action_time, token):
 
 
 def craft_orb(vk, player, action_time, token):
-    need_energy = 3
-    need_iron = 5
-    need_wood = 5
-    need_diamond = 5
     player = energy(player=player, action_time=action_time)
-    if player.energy >= need_energy:
-        if player.stock.iron >= need_iron and player.stock.wood >= need_wood and player.stock.diamond >= need_diamond:
-            player.energy = player.energy - need_energy
-            player.stock.iron = player.stock.iron - need_iron
-            player.stock.wood = player.stock.wood - need_wood
-            player.stock.diamond = player.stock.diamond - need_diamond
-            player = exp(vk=vk, player=player, token=token, exp=need_energy)
+    if player.energy >= CRAFT_ENEGRY:
+        if player.stock.iron >= ORB_IRON and player.stock.wood >= ORB_WOOD and player.stock.diamond >= ORB_DIAMOND:
+            player.energy = player.energy - CRAFT_ENEGRY
+            player.stock.iron = player.stock.iron - ORB_IRON
+            player.stock.wood = player.stock.wood - ORB_WOOD
+            player.stock.diamond = player.stock.diamond - ORB_DIAMOND
+            player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
             player.forge.orb = player.forge.orb + 1
             player.stock.save()
             player.forge.save()
@@ -354,9 +340,9 @@ def craft_orb(vk, player, action_time, token):
         else:
             message = 'Недостаточно ресурсов!\n' + \
                       'Нужно:\n' + \
-                      'Железо: ' + str(need_iron) + ' ◽\n' + \
-                      'Дерево: ' + str(need_wood) + ' 🌲\n' + \
-                      'Алмазы: ' + str(need_diamond) + ' 💎'
+                      'Железо: ' + str(ORB_IRON) + ' ◽\n' + \
+                      'Дерево: ' + str(ORB_WOOD) + ' 🌲\n' + \
+                      'Алмазы: ' + str(ORB_DIAMOND) + ' 💎'
     else:
         message = 'Недостаточно энергии'
     player.save()
@@ -370,11 +356,9 @@ def craft_orb(vk, player, action_time, token):
 
 
 def buy_warrior(vk, player, token):
-    need_sword = 1
-    need_gold = 20
-    if player.forge.sword >= need_sword and player.stock.gold >= need_gold:
-        player.stock.gold = player.stock.gold - need_gold
-        player.forge.sword = player.forge.sword - need_sword
+    if player.forge.sword >= WEAPON and player.stock.gold >= PRICE_GOLD:
+        player.stock.gold = player.stock.gold - PRICE_GOLD
+        player.forge.sword = player.forge.sword - WEAPON
         player.army.warrior = player.army.warrior + 1
         player.stock.save()
         player.forge.save()
@@ -383,8 +367,8 @@ def buy_warrior(vk, player, token):
     else:
         message = 'Недостаточно ресурсов!\n' + \
                   'Нужно:\n' + \
-                  'Золото: ' + str(need_gold) + ' ✨\n' + \
-                  'Мечи: ' + str(need_sword) + ' 🗡\n'
+                  'Золото: ' + str(PRICE_GOLD) + ' ✨\n' + \
+                  'Мечи: ' + str(WEAPON) + ' 🗡\n'
     player.save()
     vk.messages.send(
         access_token=token,
@@ -396,11 +380,9 @@ def buy_warrior(vk, player, token):
 
 
 def buy_archer(vk, player, token):
-    need_bow = 1
-    need_gold = 20
-    if player.forge.bow >= need_bow and player.stock.gold >= need_gold:
-        player.stock.gold = player.stock.gold - need_gold
-        player.forge.bow = player.forge.bow - need_bow
+    if player.forge.bow >= WEAPON and player.stock.gold >= PRICE_GOLD:
+        player.stock.gold = player.stock.gold - PRICE_GOLD
+        player.forge.bow = player.forge.bow - WEAPON
         player.army.archer = player.army.archer + 1
         player.stock.save()
         player.forge.save()
@@ -409,8 +391,8 @@ def buy_archer(vk, player, token):
     else:
         message = 'Недостаточно ресурсов!\n' + \
                   'Нужно:\n' + \
-                  'Золото: ' + str(need_gold) + ' ✨\n' + \
-                  'Луки: ' + str(need_bow) + ' 🏹\n'
+                  'Золото: ' + str(PRICE_GOLD) + ' ✨\n' + \
+                  'Луки: ' + str(WEAPON) + ' 🏹\n'
     player.save()
     vk.messages.send(
         access_token=token,
@@ -422,11 +404,9 @@ def buy_archer(vk, player, token):
 
 
 def buy_wizard(vk, player, token):
-    need_orb = 1
-    need_gold = 20
-    if player.forge.orb >= need_orb and player.stock.gold >= need_gold:
-        player.stock.gold = player.stock.gold - need_gold
-        player.forge.orb = player.forge.orb - need_orb
+    if player.forge.orb >= WEAPON and player.stock.gold >= PRICE_GOLD:
+        player.stock.gold = player.stock.gold - PRICE_GOLD
+        player.forge.orb = player.forge.orb - WEAPON
         player.army.wizard = player.army.wizard + 1
         player.stock.save()
         player.forge.save()
@@ -435,8 +415,8 @@ def buy_wizard(vk, player, token):
     else:
         message = 'Недостаточно ресурсов!\n' + \
                   'Нужно:\n' + \
-                  'Золото: ' + str(need_gold) + ' ✨\n' + \
-                  'Сферы: ' + str(need_orb) + ' 🔮\n'
+                  'Золото: ' + str(PRICE_GOLD) + ' ✨\n' + \
+                  'Сферы: ' + str(WEAPON) + ' 🔮\n'
     player.save()
     vk.messages.send(
         access_token=token,

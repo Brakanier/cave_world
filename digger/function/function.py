@@ -43,6 +43,9 @@ def exp(vk, player, token, exp):
 def get_keyboard(player):
     keyboard = VkKeyboard()
 
+    if player.place == 'reg':
+        return keyboard.get_empty_keyboard()
+
     # Профиль
 
     if player.place == 'profile':
@@ -55,7 +58,7 @@ def get_keyboard(player):
 
     # Земли
 
-    if player.place == 'land':
+    elif player.place == 'land':
         keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack"})
         keyboard.add_button('🎯 Поход', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
@@ -69,7 +72,7 @@ def get_keyboard(player):
 
     # Земли - Строительство
 
-    if player.place == 'land_build':
+    elif player.place == 'land_build':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
@@ -78,7 +81,7 @@ def get_keyboard(player):
 
     # Подземелье
 
-    if player.place == 'cave':
+    elif player.place == 'cave':
         if player.build.gate:
             keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
@@ -94,7 +97,7 @@ def get_keyboard(player):
 
     # Подземелье - Строительство
 
-    if player.place == 'cave_build':
+    elif player.place == 'cave_build':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
@@ -110,7 +113,7 @@ def get_keyboard(player):
 
     # Шахта
 
-    if player.place == 'mine':
+    elif player.place == 'mine':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
@@ -124,7 +127,7 @@ def get_keyboard(player):
 
     # Кузница
 
-    if player.place == 'forge':
+    elif player.place == 'forge':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('⚒ ⛏ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_pickaxe"})
@@ -132,7 +135,7 @@ def get_keyboard(player):
 
     # Кузница - крафт наборов
 
-    if player.place == 'forge_kit':
+    elif player.place == 'forge_kit':
         keyboard.add_button('Кузница', color=VkKeyboardColor.PRIMARY, payload={"command": "forge"})
         keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
@@ -144,7 +147,7 @@ def get_keyboard(player):
 
     # Кузница - крафт кирок
 
-    if player.place == 'forge_pickaxe':
+    elif player.place == 'forge_pickaxe':
         keyboard.add_button('Кузница', color=VkKeyboardColor.PRIMARY, payload={"command": "forge"})
         keyboard.add_button('⛏ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_pickaxe_info"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
@@ -163,7 +166,7 @@ def get_keyboard(player):
 
     # Таверна
 
-    if player.place == 'tavern':
+    elif player.place == 'tavern':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
