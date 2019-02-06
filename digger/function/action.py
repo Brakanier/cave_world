@@ -12,7 +12,7 @@ def cut_wood(vk, player, action_time, token):
             wood_max = WOOD_MAX * 2
             wood_min = WOOD_MIN * 2
         wood = random.randint(wood_min, wood_max)
-        space = player.stock.wood_max - player.stock.wood
+        space = player.stock.max - player.stock.wood
         if space > 0:
             player.energy = player.energy - DIG_ENERGY
             wood = min(wood, space)
@@ -45,7 +45,7 @@ def dig_stone(vk, player, action_time, token):
             stone_max = STONE_MAX * 2
             stone_min = STONE_MIN * 2
         stone = random.randint(stone_min, stone_max)
-        space = player.stock.stone_max - player.stock.stone
+        space = player.stock.max - player.stock.stone
         if space > 0:
             player.energy = player.energy - DIG_ENERGY
             stone = min(stone, space)
@@ -78,7 +78,7 @@ def dig_iron(vk, player, action_time, token):
             iron_max = IRON_MAX * 2
             iron_min = IRON_MIN * 2
         iron = random.randint(iron_min, iron_max)
-        space = player.stock.iron_max - player.stock.iron
+        space = player.stock.max - player.stock.iron
         if space > 0:
             player.energy = player.energy - DIG_ENERGY
             iron = min(iron, space)
@@ -111,7 +111,7 @@ def dig_gold(vk, player, action_time, token):
             gold_max = GOLD_MAX * 2
             gold_min = GOLD_MIN * 2
         gold = random.randint(gold_min, gold_max)
-        space = player.stock.gold_max - player.stock.gold
+        space = player.stock.max - player.stock.gold
         if space > 0:
             player.energy = player.energy - DIG_ENERGY
             gold = min(gold, space)
@@ -144,7 +144,7 @@ def dig_diamond(vk, player, action_time, token):
             diamond_max = DIAMOND_MAX * 2
             diamond_min = DIAMOND_MIN * 2
         diamond = random.randint(diamond_min, diamond_max)
-        space = player.stock.diamond_max - player.stock.diamond
+        space = player.stock.max - player.stock.diamond
         if space > 0:
             player.energy = player.energy - DIG_ENERGY
             diamond = min(diamond, space)

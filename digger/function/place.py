@@ -74,9 +74,9 @@ def tavern(vk, player, token):
         message = 'Вы зашли в Таверну!\n' + \
                   'Здесь вы можете нанять воиска.\n' + \
                   'Стоимость:\n' + \
-                  '🗡 Воин: 20 ✨ + 1 🗡\n' + \
-                  '🏹 Лучник: 20 ✨ + 1 🏹\n' + \
-                  '🔮 Маг: 20 ✨ + 1 🔮\n'
+                  '🗡 Воин: ' + str(PRICE_GOLD) + ' ✨ + ' + str(WEAPON) + ' 🗡\n' + \
+                  '🏹 Лучник: ' + str(PRICE_GOLD) + ' ✨ + ' + str(WEAPON) + ' 🏹\n' + \
+                  '🔮 Маг: ' + str(PRICE_GOLD) + ' ✨ + ' + str(WEAPON) + ' 🔮\n'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

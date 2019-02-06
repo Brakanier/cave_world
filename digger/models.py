@@ -13,39 +13,26 @@ class Stock(models.Model):
         default=1,
     )
     need = models.IntegerField(
-        default=50,
+        default=0,
+    )
+    max = models.IntegerField(
+        default=100,
     )
     # Materials
     wood = models.IntegerField(
         default=0,
     )
-    wood_max = models.IntegerField(
-        default=100,
-    )
     stone = models.IntegerField(
         default=0,
-    )
-    stone_max = models.IntegerField(
-        default=100,
     )
     diamond = models.IntegerField(
         default=0
     )
-    diamond_max = models.IntegerField(
-        default=100,
-    )
-    #  Ore
     iron = models.IntegerField(
         default=0,
     )
-    iron_max = models.IntegerField(
-        default=100,
-    )
     gold = models.IntegerField(
         default=0,
-    )
-    gold_max = models.IntegerField(
-        default=100,
     )
     skull = models.IntegerField(
         default=0,
@@ -73,17 +60,15 @@ class Build(models.Model):
     tower_lvl = models.IntegerField(
         default=0,
     )
-    tower_need_stone = models.IntegerField(
+    tower_need = models.IntegerField(
         default=75,
     )
-    tower_need_wood = models.IntegerField(
-        default=75,
-    )
+
     wall_lvl = models.IntegerField(
         default=0,
     )
-    wall_need_stone = models.IntegerField(
-        default=100,
+    wall_need = models.IntegerField(
+        default=150,
     )
 
 
@@ -152,19 +137,6 @@ class Forge(models.Model):
     )
 
 
-class Tavern(models.Model):
-    user_id = models.BigIntegerField(
-        db_index=True,
-        unique=True,
-    )
-    need_stone = models.IntegerField(
-        default=30,
-    )
-    need_iron = models.IntegerField(
-        default=30,
-    )
-
-
 class Player(models.Model):
     user_id = models.BigIntegerField(
         db_index=True,
@@ -186,7 +158,7 @@ class Player(models.Model):
         default=1,
     )
     exp_need = models.BigIntegerField(
-        default=10
+        default=3,
     )
     exp = models.BigIntegerField(
         default=0,
@@ -222,20 +194,16 @@ class Player(models.Model):
         on_delete=models.CASCADE,
         null=True,
     )
-    tavern = models.OneToOneField(
-        Tavern,
-        on_delete=models.CASCADE,
-        null=True,
-    )
     army = models.OneToOneField(
         Army,
         on_delete=models.CASCADE,
         null=True,
     )
 
-    def create(self, user_id, stock, forge, tavern):
+    def create(self, user_id, stock, forge, build, army):
         self.forge = forge
-        self.tavern = tavern
         self.stock = stock
+        self.build = build
+        self.army = army
         self.user_id = user_id
         return self

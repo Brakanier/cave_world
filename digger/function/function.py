@@ -1,5 +1,6 @@
 import random
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
+from .CONSTANT import *
 
 
 def get_random_id():
@@ -24,7 +25,7 @@ def exp(vk, player, token, exp):
         more_exp = current_exp - player.exp_need
         player.lvl = player.lvl + 1
         player.exp = more_exp
-        player.exp_need = player.lvl * (9 + player.lvl)
+        player.exp_need = ((player.lvl ^ LVL_Z)*LVL_X) - player.exp_need
         player.max_energy = 10 + (player.lvl * 2)
         player.energy = player.max_energy
         message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.'
@@ -73,11 +74,13 @@ def get_keyboard(player):
     # Земли - Строительство
 
     elif player.place == 'land_build':
+        tower_lvl_up = '🔨 Башня ' + str(player.build.tower_lvl + 1) + ' ур.'
+        wall_lvl_up = '🔨 Стена ' + str(player.build.wall_lvl + 1) + ' ур.'
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
-        keyboard.add_button('🔨 Башня', color=VkKeyboardColor.POSITIVE, payload={"command": "build_tower"})
-        keyboard.add_button('🔨 Стена', color=VkKeyboardColor.POSITIVE, payload={"command": "build_wall"})
+        keyboard.add_button(tower_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "build_tower"})
+        keyboard.add_button(wall_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "build_wall"})
 
     # Подземелье
 
@@ -98,10 +101,11 @@ def get_keyboard(player):
     # Подземелье - Строительство
 
     elif player.place == 'cave_build':
+        stock_lvl_up = '🔨 🏤 Склад ' + str(player.stock.lvl + 1) + ' ур.'
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
-        keyboard.add_button('🔨 🏤 Склад', color=VkKeyboardColor.POSITIVE, payload={"command": "build_stock"})
+        keyboard.add_button(stock_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "build_stock"})
         if not player.build.gate:
             keyboard.add_button('🔨 Врата', color=VkKeyboardColor.POSITIVE, payload={"command": "build_gate"})
         if not player.build.forge or not player.build.tavern:

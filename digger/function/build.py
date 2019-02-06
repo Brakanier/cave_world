@@ -3,8 +3,8 @@ from .function import *
 
 def build_forge(vk, player, token):
     if not player.build.forge:
-        if player.stock.stone >= player.forge.need:
-            player.stock.stone = player.stock.stone - player.forge.need
+        if player.stock.stone >= FORGE_STONE:
+            player.stock.stone = player.stock.stone - FORGE_STONE
             player.build.forge = True
             player.build.save()
             player.stock.save()
@@ -12,7 +12,7 @@ def build_forge(vk, player, token):
         else:
             message = 'Недостаточно ресурсов! \n' + \
                       'Нужно:\n' + \
-                      'Камня: ' + str(player.forge.need) + ' ◾'
+                      'Камня: ' + str(FORGE_STONE) + ' ◾'
     else:
         message = 'У вас уже есть Кузница'
     vk.messages.send(
@@ -26,9 +26,9 @@ def build_forge(vk, player, token):
 
 def build_tavern(vk, player, token):
     if not player.build.tavern:
-        if player.stock.stone >= player.tavern.need_stone and player.stock.iron >= player.tavern.need_iron:
-            player.stock.stone = player.stock.stone - player.tavern.need_stone
-            player.stock.iron = player.stock.iron - player.tavern.need_iron
+        if player.stock.stone >= TAVERN_STONE and player.stock.iron >= TAVERN_IRON:
+            player.stock.stone = player.stock.stone - TAVERN_STONE
+            player.stock.iron = player.stock.iron - TAVERN_IRON
             player.build.tavern = True
             player.build.save()
             player.stock.save()
@@ -36,8 +36,8 @@ def build_tavern(vk, player, token):
         else:
             message = 'Недостаточно ресурсов! \n' + \
                       'Нужно:\n' + \
-                      'Камня: ' + str(player.tavern.need_stone) + ' ◾\n' + \
-                      'Железо: ' + str(player.tavern.need_iron) + ' ◽'
+                      'Камня: ' + str(TAVERN_STONE) + ' ◾\n' + \
+                      'Железо: ' + str(TAVERN_IRON) + ' ◽'
     else:
         message = 'У вас уже есть Таверна'
     vk.messages.send(
@@ -50,21 +50,18 @@ def build_tavern(vk, player, token):
 
 
 def build_stock(vk, player, token):
-    stone_need = player.stock.need * player.stock.lvl
+    stone_need = (player.stock.lvl * STOCK_X) + player.stock.need
     if player.stock.stone >= stone_need:
         player.stock.stone = player.stock.stone - stone_need
         player.stock.lvl = player.stock.lvl + 1
-        player.stock.wood_max = 100 * player.stock.lvl
-        player.stock.stone_max = 100 * player.stock.lvl
-        player.stock.iron_max = 100 * player.stock.lvl
-        player.stock.gold_max = 100 * player.stock.lvl
-        player.stock.diamond_max = 100 * player.stock.lvl
+        player.stock.need = (player.stock.lvl * STOCK_X) + player.stock.need
+        player.stock.max = (player.stock.lvl * STOCK_MAX_X) + player.stock.max
         player.stock.save()
         message = 'Склад улучшен! (' + str(player.stock.lvl) + ' ур.)'
     else:
         message = 'Недостаточно ресурсов! \n' + \
                   'Нужно:\n' + \
-                  'Камня: ' + str(player.stock.need) + ' ◾\n'
+                  'Камня: ' + str(stone_need) + ' ◾\n'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
@@ -75,14 +72,11 @@ def build_stock(vk, player, token):
 
 
 def build_gate(vk, player, token):
-    need_stone = 300
-    need_iron = 200
-    need_diamond = 100
     if not player.build.gate:
-        if player.stock.stone >= need_stone and player.stock.iron >= need_iron and player.stock.diamond >= need_diamond:
-            player.stock.stone = player.stock.stone - need_stone
-            player.stock.iron = player.stock.iron - need_iron
-            player.stock.diamond = player.stock.diamond - need_diamond
+        if player.stock.stone >= GATE_STONE and player.stock.iron >= GATE_IRON and player.stock.diamond >= GATE_DIAMOND:
+            player.stock.stone = player.stock.stone - GATE_STONE
+            player.stock.iron = player.stock.iron - GATE_IRON
+            player.stock.diamond = player.stock.diamond - GATE_DIAMOND
             player.build.gate = True
             player.build.save()
             player.stock.save()
@@ -92,9 +86,9 @@ def build_gate(vk, player, token):
         else:
             message = 'Недостаточно ресурсов! \n' + \
                       'Нужно:\n' + \
-                      'Камня: ' + str(need_stone) + ' ◾\n' + \
-                      'Железо: ' + str(need_iron) + ' ◽\n' + \
-                      'Алмазы: ' + str(need_diamond) + ' 💎'
+                      'Камня: ' + str(GATE_STONE) + ' ◾\n' + \
+                      'Железо: ' + str(GATE_IRON) + ' ◽\n' + \
+                      'Алмазы: ' + str(GATE_DIAMOND) + ' 💎'
     else:
         message = 'У вас уже есть Врата'
     vk.messages.send(
@@ -107,15 +101,16 @@ def build_gate(vk, player, token):
 
 
 def build_tower(vk, player, token):
-    stone_need = player.build.tower_need_stone * player.build.tower_lvl
-    wood_need = player.build.tower_need_wood * player.build.tower_lvl
+    stone_need = (player.build.tower_lvl * TOWER_X) + player.build.tower_need
+    wood_need = (player.build.tower_lvl * TOWER_X) + player.build.tower_need
     if player.build.tower_lvl == 0:
-        stone_need = player.build.tower_need_stone
-        wood_need = player.build.tower_need_wood
+        stone_need = player.build.tower_need
+        wood_need = player.build.tower_need
     if player.stock.stone >= stone_need and player.stock.wood >= wood_need:
         player.stock.stone = player.stock.stone - stone_need
         player.stock.wood = player.stock.wood - wood_need
         player.build.tower_lvl = player.build.tower_lvl + 1
+        player.build.tower_need = (player.build.tower_lvl * TOWER_X) + player.build.tower_need
         player.stock.save()
         player.build.save()
         message = 'Башня улучшена! (' + str(player.build.tower_lvl) + ' ур.)'
@@ -134,12 +129,13 @@ def build_tower(vk, player, token):
 
 
 def build_wall(vk, player, token):
-    stone_need = player.build.wall_need_stone * player.build.wall_lvl
+    stone_need = (player.build.wall_lvl * WALL_X) + player.build.wall_need
     if player.build.wall_lvl == 0:
-        stone_need = player.build.wall_need_stone
+        stone_need = player.build.wall_need
     if player.stock.stone >= stone_need:
         player.stock.stone = player.stock.stone - stone_need
         player.build.wall_lvl = player.build.wall_lvl + 1
+        player.build.wall_need = (player.build.wall_lvl * WALL_X) + player.build.wall_need
         player.stock.save()
         player.build.save()
         message = 'Стена улучшена! (' + str(player.build.wall_lvl) + ' ур.)'

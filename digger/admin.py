@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Player, Stock, Build, Forge, Tavern, Army
+from .models import Player, Stock, Build, Forge, Army
 
 # Register your models here.
 # admin.site.register(Player)
@@ -12,7 +12,7 @@ class PlayerAdmin(admin.ModelAdmin):
 
 @admin.register(Stock)
 class StockAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'lvl')
+    list_display = ('user_id', 'lvl', 'max')
 
 
 @admin.register(Build)
@@ -20,8 +20,12 @@ class BuildAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'forge', 'tavern', 'gate')
 
 
+@admin.register(Army)
+class ArmyAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'warrior', 'archer', 'wizard')
+
+
 admin.site.register(Forge)
-admin.site.register(Tavern)
-admin.site.register(Army)
+
 
 

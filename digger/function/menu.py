@@ -26,11 +26,11 @@ def profile(vk, player, action_time, token):
 
 def stock(vk, player, token):
     message = 'Склад - ' + str(player.stock.lvl) + ' ур.' + '\n' + \
-              'Дерево: ' + str(player.stock.wood) + '/' + str(player.stock.wood_max) + ' 🌲\n' + \
-              'Камень: ' + str(player.stock.stone) + '/' + str(player.stock.stone_max) + ' ◾\n' + \
-              'Железо: ' + str(player.stock.iron) + '/' + str(player.stock.iron_max) + ' ◽\n' + \
-              'Золото: ' + str(player.stock.gold) + '/' + str(player.stock.gold_max) + ' ✨\n' + \
-              'Алмазы: ' + str(player.stock.diamond) + '/' + str(player.stock.diamond_max) + ' 💎\n' + \
+              'Дерево: ' + str(player.stock.wood) + '/' + str(player.stock.max) + ' 🌲\n' + \
+              'Камень: ' + str(player.stock.stone) + '/' + str(player.stock.max) + ' ◾\n' + \
+              'Железо: ' + str(player.stock.iron) + '/' + str(player.stock.max) + ' ◽\n' + \
+              'Золото: ' + str(player.stock.gold) + '/' + str(player.stock.max) + ' ✨\n' + \
+              'Алмазы: ' + str(player.stock.diamond) + '/' + str(player.stock.max) + ' 💎\n' + \
               'Черепа: ' + str(player.stock.skull) + ' 💀'
     vk.messages.send(
         access_token=token,
@@ -45,10 +45,13 @@ def cave_build(vk, player, token):
     if not player.place == 'cave_build':
         player.place = 'cave_build'
         player.save()
-    message_stock = 'Склад: ' + str(player.stock.lvl * player.stock.need) + ' ◾' + '\n'
-    message_forge = 'Кузница: ' + str(player.forge.need) + ' ◾\n'
-    message_tavern = 'Таверна: ' + str(player.tavern.need_stone) + ' ◾ + ' + str(player.tavern.need_iron) + ' ◽\n'
-    message_gate = 'Врата: 300 ◾ + 200 ◽ + 100 💎'
+    message_stock = 'Склад: ' + str((player.stock.lvl * STOCK_X) + player.stock.need) + ' ◾' + '\n'
+    message_forge = 'Кузница: ' + str(FORGE_STONE) + ' ◾\n'
+    message_tavern = 'Таверна: ' + str(TAVERN_STONE) + ' ◾ + ' + str(TAVERN_IRON) + ' ◽\n'
+    message_gate = 'Врата: '\
+                   + str(GATE_STONE) + ' ◾ + '\
+                   + str(GATE_IRON) + ' ◽ + '\
+                   + str(GATE_DIAMOND) + ' 💎'
     message = 'Стоимость:' + '\n'
     message = message + message_stock
     if not player.build.forge:
@@ -72,20 +75,20 @@ def land_build(vk, player, token):
         player.save()
     # башня
     message_tower = 'Башня: ' + \
-                    str(player.build.tower_lvl * player.build.tower_need_stone) + \
+                    str((player.build.tower_lvl * TOWER_X) + player.build.tower_need) + \
                     ' ◾ + ' + \
-                    str(player.build.tower_lvl * player.build.tower_need_wood) + \
+                    str((player.build.tower_lvl * TOWER_X) + player.build.tower_need) + \
                     ' 🌲\n'
     if player.build.tower_lvl == 0:
         message_tower = 'Башня: ' + \
-                        str(player.build.tower_need_stone) + \
+                        str(player.build.tower_need) + \
                         ' ◾ + ' + \
-                        str(player.build.tower_need_wood) + \
+                        str(player.build.tower_need) + \
                         ' 🌲\n'
     # стена
-    message_wall = 'Стена: ' + str(player.build.wall_lvl * player.build.wall_need_stone) + ' ◾\n'
+    message_wall = 'Стена: ' + str((player.build.wall_lvl * WALL_X) + player.build.wall_need) + ' ◾\n'
     if player.build.wall_lvl == 0:
-        message_wall = 'Стена: ' + str(player.build.wall_need_stone) + ' ◾'
+        message_wall = 'Стена: ' + str(player.build.wall_need) + ' ◾'
     message = 'Стоимость:' + '\n'
     message = message + message_tower + message_wall
     vk.messages.send(
@@ -106,10 +109,10 @@ def forge_pickaxe(vk, player, token):
 
 def forge_pickaxe_info(vk, player, token):
     message = 'Стоимость крафта: \n'
-    message_pickaxe_stone = 'Каменная кирка: 50 ◾ + 1 ⚡\n'
-    message_pickaxe_iron = 'Железная кирка: 50 ◽ + 5 ⚡\n'
-    message_pickaxe_diamond = 'Алмазная кирка: 50 💎 + 10 ⚡\n'
-    message_pickaxe_skull = 'Костяная кирка: 50 💀 + 20 ⚡\n'
+    message_pickaxe_stone = 'Каменная кирка: ' + str(STONE_PICKAXE) + ' ◾ + ' + str(CRAFT_ENEGRY) + ' ⚡\n'
+    message_pickaxe_iron = 'Железная кирка: ' + str(IRON_PICKAXE) + ' ◽ + ' + str(CRAFT_ENEGRY) + ' ⚡\n'
+    message_pickaxe_diamond = 'Алмазная кирка: ' + str(DIAMOND_PICKAXE) + ' 💎 + ' + str(CRAFT_ENEGRY) + ' ⚡\n'
+    message_pickaxe_skull = 'Костяная кирка: ' + str(SKULL_PICKAXE) + ' 💀 + ' + str(CRAFT_ENEGRY) + ' ⚡\n'
     if not player.forge.pickaxe_stone:
         message = message + message_pickaxe_stone
     else:
@@ -140,9 +143,18 @@ def forge_kit(vk, player, token):
         player.place = 'forge_kit'
         player.save()
     message = 'Стоимость крафта: \n'
-    message_sword = 'Меч 🗡: 5 ◽ + 1 ⚡\n'
-    message_bow = 'Лук 🏹: 5 ◽ + 5 🌲 + 2 ⚡\n'
-    message_orb = 'Сфера 🔮: 5 ◽ + 5 🌲 + 5 💎 + 3 ⚡\n'
+    message_sword = 'Меч 🗡: ' + \
+                    str(SWORD_IRON) + ' ◽ + ' + \
+                    str(CRAFT_ENEGRY) + ' ⚡\n'
+    message_bow = 'Лук 🏹: ' + \
+                  str(BOW_IRON) + ' ◽ + ' + \
+                  str(BOW_WOOD) + ' 🌲 + ' + \
+                  str(CRAFT_ENEGRY) + ' ⚡\n'
+    message_orb = 'Сфера 🔮: ' + \
+                  str(ORB_IRON) + ' ◽ + ' + \
+                  str(ORB_WOOD) + ' 🌲 + ' + \
+                  str(ORB_DIAMOND) + ' 💎 + ' + \
+                  str(CRAFT_ENEGRY) + ' ⚡\n'
     message = message + message_sword + message_bow + message_orb
     vk.messages.send(
         access_token=token,

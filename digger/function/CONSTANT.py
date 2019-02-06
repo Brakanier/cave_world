@@ -59,6 +59,7 @@ WEAPON = 1
 # Здания
 
 STOCK_X = 30
+STOCK_MAX_X = 100
 
 WALL_X = 25
 WALL_BUFF = 0.01
