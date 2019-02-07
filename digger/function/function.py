@@ -60,7 +60,7 @@ def get_keyboard(player):
     # Земли
 
     elif player.place == 'land':
-        keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack"})
+        keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "war"})
         keyboard.add_button('🎯 Поход', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
@@ -180,5 +180,14 @@ def get_keyboard(player):
         keyboard.add_button('🍺 🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": "buy_wizard"})
         keyboard.add_line()
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+
+    # Война
+
+    elif player.place == 'war':
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('Поиск', color=VkKeyboardColor.POSITIVE, payload={"command": "find_enemy"})
+        keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack_enemy"})
 
     return keyboard.get_keyboard()

@@ -6,12 +6,13 @@ import json
 import vk_api
 
 
-from .models import Player, Stock, Build, Forge, Army
+from .models import Player, Stock, Build, Forge, Army, War
 
 from .function.build import *
 from .function.place import *
 from .function.action import *
 from .function.menu import *
+from .function.war import *
 
 # Create your views here.
 
@@ -99,6 +100,7 @@ def index(request):
 def register(vk, user_id):
     if not Player.objects.filter(user_id=user_id).exists():
         army = Army.objects.create(user_id=user_id)
+        war = War.objects.create(user_id=user_id)
         forge = Forge.objects.create(user_id=user_id)
         stock = Stock.objects.create(user_id=user_id)
         build = Build.objects.create(user_id=user_id)
@@ -106,7 +108,9 @@ def register(vk, user_id):
                                        stock=stock,
                                        build=build,
                                        forge=forge,
-                                       army=army)
+                                       army=army,
+                                       war=war,
+                                       )
         user = vk.users.get(user_ids=str(user_id))
         user = user[0]
         if user['first_name']:
@@ -119,18 +123,26 @@ def register(vk, user_id):
 
 
 def check_models(player):
-    if player.forge == 'null':
+    if not player.forge:
         forge = Forge.objects.create(user_id=player.user_id)
         player.forge = forge
-    if player.stock == 'null':
+        player.forge.save()
+    if not player.stock:
         stock = Stock.objects.create(user_id=player.user_id)
         player.stock = stock
-    if player.build == 'null':
+        player.stock.save()
+    if not player.build:
         build = Build.objects.create(user_id=player.user_id)
         player.build = build
-    if player.army == 'null':
+        player.build.save()
+    if not player.army:
         army = Army.objects.create(user_id=player.user_id)
         player.army = army
+        player.army.save()
+    if not player.war:
+        war = War.objects.create(user_id=player.user_id)
+        player.war = war
+        player.war.save()
     return player
 
 
@@ -221,3 +233,9 @@ def action(vk, command, player, action_time):
         build_tower(vk=vk, player=player, token=token)
     elif command.lower() == 'build_wall':
         build_wall(vk=vk, player=player, token=token)
+
+    # Война
+    elif command.lower() == 'war':
+        war(vk=vk, player=player, token=token)
+    elif command.lower() == 'find_enemy':
+        find_enemy(vk=vk, player=player, action_time=action_time, token=token)

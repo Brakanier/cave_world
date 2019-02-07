@@ -106,6 +106,29 @@ class Army(models.Model):
     )
 
 
+class War(models.Model):
+    user_id = models.BigIntegerField(
+        db_index=True,
+        unique=True,
+    )
+    enemy_id = models.BigIntegerField(
+        null=True,
+        blank=True,
+    )
+    shield = models.IntegerField(
+        default=0,
+    )
+    find_last_time = models.BigIntegerField(
+        default=0,
+    )
+    war_last_time = models.BigIntegerField(
+        default=0,
+    )
+    pve_last_time = models.BigIntegerField(
+        default=0,
+    )
+
+
 class Forge(models.Model):
     user_id = models.BigIntegerField(
         db_index=True,
@@ -181,29 +204,35 @@ class Player(models.Model):
     )
     stock = models.OneToOneField(
         Stock,
-        on_delete=models.CASCADE,
+        on_delete=models.SET(None),
         null=True,
     )
     build = models.OneToOneField(
         Build,
-        on_delete=models.CASCADE,
+        on_delete=models.SET(None),
         null=True,
     )
     forge = models.OneToOneField(
         Forge,
-        on_delete=models.CASCADE,
+        on_delete=models.SET(None),
         null=True,
     )
     army = models.OneToOneField(
         Army,
-        on_delete=models.CASCADE,
+        on_delete=models.SET(None),
+        null=True,
+    )
+    war = models.OneToOneField(
+        War,
+        on_delete=models.SET(None),
         null=True,
     )
 
-    def create(self, user_id, stock, forge, build, army):
+    def create(self, user_id, stock, forge, build, army, war):
         self.forge = forge
         self.stock = stock
         self.build = build
         self.army = army
+        self.war = war
         self.user_id = user_id
         return self

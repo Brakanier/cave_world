@@ -84,3 +84,19 @@ def tavern(vk, player, token):
         message=message,
         random_id=get_random_id()
     )
+
+
+def war(vk, player, token):
+    if player.place == 'war':
+        message = 'Вы уже в меню Войны'
+    else:
+        player.place = 'war'
+        player.save()
+        message = '⚔ Меню войны ⚔\n' + 'Найдите противника и разгромите его!'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
