@@ -101,14 +101,12 @@ def build_gate(vk, player, token):
 
 
 def build_tower(vk, player, token):
-    stone_need = (player.build.tower_lvl * TOWER_X) + player.build.tower_need
-    wood_need = (player.build.tower_lvl * TOWER_X) + player.build.tower_need
+    need = (player.build.tower_lvl * TOWER_X) + player.build.tower_need
     if player.build.tower_lvl == 0:
-        stone_need = player.build.tower_need
-        wood_need = player.build.tower_need
-    if player.stock.stone >= stone_need and player.stock.wood >= wood_need:
-        player.stock.stone = player.stock.stone - stone_need
-        player.stock.wood = player.stock.wood - wood_need
+        need = player.build.tower_need
+    if player.stock.stone >= need and player.stock.wood >= need:
+        player.stock.stone = player.stock.stone - need
+        player.stock.wood = player.stock.wood - need
         player.build.tower_lvl = player.build.tower_lvl + 1
         player.build.tower_need = (player.build.tower_lvl * TOWER_X) + player.build.tower_need
         player.stock.save()
@@ -117,8 +115,8 @@ def build_tower(vk, player, token):
     else:
         message = 'Недостаточно ресурсов! \n' + \
                   'Нужно:\n' + \
-                  'Камня: ' + str(stone_need) + ' ◾\n' + \
-                  'Дерева: ' + str(wood_need) + ' 🌲'
+                  'Камня: ' + str(need) + ' ◾\n' + \
+                  'Дерева: ' + str(need) + ' 🌲'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
@@ -129,11 +127,11 @@ def build_tower(vk, player, token):
 
 
 def build_wall(vk, player, token):
-    stone_need = (player.build.wall_lvl * WALL_X) + player.build.wall_need
+    need = (player.build.wall_lvl * WALL_X) + player.build.wall_need
     if player.build.wall_lvl == 0:
-        stone_need = player.build.wall_need
-    if player.stock.stone >= stone_need:
-        player.stock.stone = player.stock.stone - stone_need
+        need = player.build.wall_need
+    if player.stock.stone >= need:
+        player.stock.stone = player.stock.stone - need
         player.build.wall_lvl = player.build.wall_lvl + 1
         player.build.wall_need = (player.build.wall_lvl * WALL_X) + player.build.wall_need
         player.stock.save()
@@ -142,7 +140,7 @@ def build_wall(vk, player, token):
     else:
         message = 'Недостаточно ресурсов! \n' + \
                   'Нужно:\n' + \
-                  'Камня: ' + str(stone_need) + ' ◾'
+                  'Камня: ' + str(need) + ' ◾'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
