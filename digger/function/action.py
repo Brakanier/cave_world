@@ -425,3 +425,29 @@ def buy_wizard(vk, player, token):
         message=message,
         random_id=get_random_id()
     )
+
+
+def bonus(vk, player, action_time, token):
+    time = action_time - player.bonus_time
+    if time > 86400:
+        player.bonus_time = action_time
+        player.stock.stone = player.stock.stone + BONUS_STONE
+        player.stock.iron = player.stock.iron + BONUS_IRON
+        player.stock.gold = player.stock.gold + BONUS_GOLD
+        player.stock.save()
+        player.save()
+        message = 'Вы получили ежедневный бонус!\n+ ' + \
+                  str(BONUS_STONE) + ' ◾\n + ' + \
+                  str(BONUS_IRON) + ' ◽\n + ' + \
+                  str(BONUS_GOLD) + ' ✨'
+    else:
+        min = time//60
+        sec = time - (min * 60)
+        message = 'До бонуса: ' + str(min) + ' м. ' + str(sec) + ' сек.'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )

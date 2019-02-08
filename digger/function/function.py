@@ -56,6 +56,8 @@ def get_keyboard(player):
         keyboard.add_line()
         keyboard.add_button('Профиль', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('🎁 Бонус', color=VkKeyboardColor.POSITIVE, payload={"command": "bonus"})
 
     # Земли
 

@@ -152,6 +152,8 @@ def action(vk, command, player, action_time):
 
     if command.lower() == 'profile':
         profile(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'bonus':
+        bonus(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'stock':
         stock(vk=vk, player=player, token=token)
     elif command.lower() == 'army':

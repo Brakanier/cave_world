@@ -198,6 +198,9 @@ class Player(models.Model):
     energy_regen = models.IntegerField(
         default=1,
     )
+    bonus_time = models.BigIntegerField(
+        default=0,
+    )
     place = models.CharField(
         max_length=50,
         default='cave',
