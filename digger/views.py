@@ -243,3 +243,5 @@ def action(vk, command, player, action_time):
         find_enemy(vk=vk, player=player, action_time=action_time, token=token)
     elif command.lower() == 'attack':
         attack(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'shield_info':
+        shield_info(vk=vk, player=player, action_time=action_time, token=token)

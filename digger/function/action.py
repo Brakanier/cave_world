@@ -441,9 +441,10 @@ def bonus(vk, player, action_time, token):
                   str(BONUS_IRON) + ' ◽\n + ' + \
                   str(BONUS_GOLD) + ' ✨'
     else:
-        minutes = (BONUS_TIME - time) // 60
-        sec = (BONUS_TIME - time) - (minutes * 60)
-        message = 'До бонуса: ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
+        hour = (BONUS_TIME - time) // 3600
+        minutes = ((BONUS_TIME - time) - (hour * 3600)) // 60
+        sec = (BONUS_TIME - time) - (minutes * 60) - (hour * 3600)
+        message = 'До бонуса: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

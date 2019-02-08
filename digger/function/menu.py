@@ -13,7 +13,9 @@ def profile(vk, player, action_time, token):
               'Фамилия: ' + player.last_name + "\n" + \
               'Уровень: ' + str(player.lvl) + " 👑\n" + \
               'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + "  📚\n" + \
-              'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡'
+              'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
+              'Успешных нападений: ' + str(player.win) + ' ⚔\n' + \
+              'Успешных оборон: ' + str(player.defend) + ' 🛡\n'
 
     vk.messages.send(
         access_token=token,
@@ -185,6 +187,25 @@ def army(vk, player, token):
               'Лучники: ' + str(player.army.archer) + ' 🏹\n' + \
               'Маги: ' + str(player.army.wizard) + ' 🔮\n' + \
               'Всего: ' + str(player.army.warrior + player.army.archer + player.army.wizard) + ' ⚔'
+    vk.messages.send(
+        access_token=token,
+        user_id=str(player.user_id),
+        keyboard=get_keyboard(player=player),
+        message=message,
+        random_id=get_random_id()
+    )
+
+
+def shield_info(vk, player, action_time, token):
+    shield = player.war.shield * SHIELD_X
+    time = action_time - player.war.defend_last_time
+    if time < shield:
+        hour = (shield - time) // 3600
+        minutes = ((shield - time) - (hour * 3600)) // 60
+        sec = (shield - time) - (minutes * 60) - (hour * 3600)
+        message = 'Щит действует еще: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
+    else:
+        message = 'У вас нет щита!'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),

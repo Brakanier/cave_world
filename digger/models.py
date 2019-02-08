@@ -106,6 +106,9 @@ class War(models.Model):
     war_last_time = models.BigIntegerField(
         default=0,
     )
+    defend_last_time = models.BigIntegerField(
+        default=0,
+    )
     pve_last_time = models.BigIntegerField(
         default=0,
     )
@@ -158,6 +161,12 @@ class Player(models.Model):
     nickname = models.CharField(
         max_length=30,
         blank=True,
+    )
+    win = models.IntegerField(
+        default=0,
+    )
+    defend = models.IntegerField(
+        default=0,
     )
     lvl = models.IntegerField(
         default=1,

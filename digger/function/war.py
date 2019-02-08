@@ -16,7 +16,7 @@ def find_enemy(vk, player, action_time, token):
 
         def is_shield():
             shield = defender.war.shield * SHIELD_X
-            shield = shield + defender.war.war_last_time
+            shield = shield + defender.war.defend_last_time
             if shield >= action_time:
                 if len(enemy) > 1:
                     index = enemy.index(defender)
@@ -72,7 +72,7 @@ def attack(vk, player, action_time, token):
 
             def is_shield():
                 shield = defender.war.shield * SHIELD_X
-                shield = shield + defender.war.war_last_time
+                shield = shield + defender.war.defend_last_time
                 if shield >= action_time:
                     return True
                 else:
@@ -152,13 +152,15 @@ def attack(vk, player, action_time, token):
                     reward_exp = round(defender_lost_army / REWARD_EXP_Y)
                     player = exp(vk=vk, player=player, token=token, exp=reward_exp)
 
-                    # Забираем у проигравшего
+                    # Проигравший
 
                     defender.stock.stone = defender.stock.stone - reward_stone
                     defender.stock.wood = defender.stock.wood - reward_wood
                     defender.stock.iron = defender.stock.iron - reward_iron
                     defender.stock.gold = defender.stock.gold - reward_gold
                     defender.stock.diamond = defender.stock.diamond - reward_diamond
+
+                    defender.war.shield = 8
 
                     # Выдаём победителю
 
@@ -168,6 +170,7 @@ def attack(vk, player, action_time, token):
                     player.stock.gold = player.stock.gold + min(reward_gold, (player.stock.max - player.stock.gold))
                     player.stock.diamond = player.stock.diamond + min(reward_diamond, (player.stock.max - player.stock.diamond))
                     player.stock.skull = player.stock.skull + reward_skull
+                    player.win = player.win + 1
 
                     message = 'Вы напали на ' + defender.nickname + '\n' + \
                               '⚔ Победа ⚔\n' + \
@@ -211,6 +214,9 @@ def attack(vk, player, action_time, token):
 
                     # Поражение нападавшего
 
+                    defender.defend = defender.defend + 1
+                    defender.war.shield = 4
+
                     message = 'Вы напали на ' + defender.nickname + '\n' + \
                               '⚔ Поражение ⚔\n' + \
                               '[Ваши потери]\n' + \
@@ -250,8 +256,7 @@ def attack(vk, player, action_time, token):
                 defender.army.warrior = defender_after_warrior // 1
                 defender.army.archer = defender_after_archer // 1
                 defender.army.wizard = defender_after_wizard // 1
-                defender.war.shield = 8
-                defender.war.war_last_time = action_time
+                defender.war.defend_last_time = action_time
                 defender.stock.save()
                 defender.army.save()
                 defender.war.save()

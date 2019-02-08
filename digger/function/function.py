@@ -191,5 +191,7 @@ def get_keyboard(player):
         keyboard.add_line()
         keyboard.add_button('Поиск', color=VkKeyboardColor.POSITIVE, payload={"command": "find_enemy"})
         keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack_enemy"})
+        keyboard.add_line()
+        keyboard.add_button('🛡 Щит', color=VkKeyboardColor.DEFAULT, payload={"command": "shield_info"})
 
     return keyboard.get_keyboard()
