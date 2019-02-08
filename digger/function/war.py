@@ -87,52 +87,52 @@ def attack(vk, player, action_time, token):
                 # Сражение
 
                 # Атакующи
-                attack_warrior_attack = player.army.warrior * player.army.warrior_attack
-                attack_warrior_hp = player.army.warrior * player.army.warrior_hp
-                attack_archer_attack = player.army.archer * player.army.archer_attack
-                attack_archer_hp = player.army.archer * player.army.archer_hp
-                attack_wizard_attack = player.army.wizard * player.army.wizard_attack
-                attack_wizard_hp = player.army.wizard * player.army.wizard_hp
+                attack_warrior_attack = player.army.warrior * WARRIOR_ATTACK
+                attack_warrior_hp = player.army.warrior * WARRIOR_HP
+                attack_archer_attack = player.army.archer * ARCHER_ATTACK
+                attack_archer_hp = player.army.archer * ARCHER_HP
+                attack_wizard_attack = player.army.wizard * WIZARD_ATTACK
+                attack_wizard_hp = player.army.wizard * WIZARD_HP
                 attack_attack = attack_warrior_attack + attack_archer_attack + attack_wizard_attack
                 attack_hp = attack_warrior_hp + attack_archer_hp + attack_wizard_hp
                 attack_power = attack_attack + attack_hp
 
                 # Защитник
-                defender_warrior_attack = defender.army.warrior * defender.army.warrior_attack
-                defender_warrior_hp = defender.army.warrior * defender.army.warrior_hp
-                defender_archer_attack = defender.army.archer * defender.army.archer_attack
-                defender_archer_hp = defender.army.archer * defender.army.archer_hp
-                defender_wizard_attack = defender.army.wizard * defender.army.wizard_attack
-                defender_wizard_hp = defender.army.wizard * defender.army.wizard_hp
+                defender_warrior_attack = defender.army.warrior * WARRIOR_ATTACK
+                defender_warrior_hp = defender.army.warrior * WARRIOR_HP
+                defender_archer_attack = defender.army.archer * ARCHER_ATTACK
+                defender_archer_hp = defender.army.archer * ARCHER_HP
+                defender_wizard_attack = defender.army.wizard * WIZARD_ATTACK
+                defender_wizard_hp = defender.army.wizard * WIZARD_HP
                 defender_attack = defender_warrior_attack + defender_archer_attack + defender_wizard_attack
                 defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
 
                 # Остатки армий
 
                 attack_after_hp = attack_hp - defender_attack
-                defender_after_hp = defender_hp - attack_hp
+                defender_after_hp = defender_hp - attack_attack
 
                 attack_after_warrior = 0
                 attack_after_archer = 0
                 attack_after_wizard = 0
-                if attack_hp > 0:
-                    attack_after_warrior = (player.army.warrior / attack_hp) * max(attack_after_hp, 0)
-                    attack_after_archer = (player.army.archer / attack_hp) * max(attack_after_hp, 0)
-                    attack_after_wizard = (player.army.wizard / attack_hp) * max(attack_after_hp, 0)
-                attack_lost_warrior = player.army.warrior - attack_after_warrior
-                attack_lost_archer = player.army.archer - attack_after_archer
-                attack_lost_wizard = player.army.wizard - attack_after_wizard
+                if attack_hp > 0 and attack_after_hp > 0:
+                    attack_after_warrior = ((attack_warrior_hp / attack_hp) * attack_after_hp) // WARRIOR_HP
+                    attack_after_archer = ((attack_archer_hp / attack_hp) * attack_after_hp) // ARCHER_HP
+                    attack_after_wizard = ((attack_wizard_hp / attack_hp) * attack_after_hp) // WIZARD_HP
+                attack_lost_warrior = round(player.army.warrior - attack_after_warrior)
+                attack_lost_archer = round(player.army.archer - attack_after_archer)
+                attack_lost_wizard = round(player.army.wizard - attack_after_wizard)
 
                 defender_after_warrior = 0
                 defender_after_archer = 0
                 defender_after_wizard = 0
-                if defender_hp > 0:
-                    defender_after_warrior = (defender.army.warrior / defender_hp) * max(defender_after_hp, 0)
-                    defender_after_archer = (defender.army.archer / defender_hp) * max(defender_after_hp, 0)
-                    defender_after_wizard = (defender.army.wizard / defender_hp) * max(defender_after_hp, 0)
-                defender_lost_warrior = defender.army.warrior - defender_after_warrior
-                defender_lost_archer = defender.army.archer - defender_after_archer
-                defender_lost_wizard = defender.army.wizard - defender_after_wizard
+                if defender_hp > 0 and defender_after_hp > 0:
+                    defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // WARRIOR_HP
+                    defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // ARCHER_HP
+                    defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // WIZARD_HP
+                defender_lost_warrior = round(defender.army.warrior - defender_after_warrior)
+                defender_lost_archer = round(defender.army.archer - defender_after_archer)
+                defender_lost_wizard = round(defender.army.wizard - defender_after_wizard)
                 defender_lost_army = defender_lost_warrior + defender_lost_archer + defender_lost_wizard
 
                 if attack_attack >= defender_attack:
@@ -143,13 +143,13 @@ def attack(vk, player, action_time, token):
 
                     reward = (attack_power // REWARD_Y)
                     reward_part = (reward // REWARD_PART)
-                    reward_stone = min(defender.stock.wood, (reward_part * WOOD_PART))
+                    reward_stone = min(defender.stock.wood, (reward_part * STONE_PART))
                     reward_wood = min(defender.stock.wood, (reward_part * WOOD_PART))
                     reward_iron = min(defender.stock.iron, (reward_part * IRON_PART))
                     reward_gold = min(defender.stock.gold, (reward_part * GOLD_PART))
                     reward_diamond = min(defender.stock.diamond, (reward_part * DIAMOND_PART))
                     reward_skull = 1
-                    reward_exp = defender_lost_army // REWARD_EXP_Y
+                    reward_exp = round(defender_lost_army / REWARD_EXP_Y)
                     player = exp(vk=vk, player=player, token=token, exp=reward_exp)
 
                     # Забираем у проигравшего
@@ -162,24 +162,24 @@ def attack(vk, player, action_time, token):
 
                     # Выдаём победителю
 
-                    player.stock.stone = player.stock.stone + reward_stone
-                    player.stock.wood = player.stock.wood + reward_wood
-                    player.stock.iron = player.stock.iron + reward_iron
-                    player.stock.gold = player.stock.gold + reward_gold
-                    player.stock.diamond = player.stock.diamond + reward_diamond
+                    player.stock.stone = player.stock.stone + min(reward_stone, (player.stock.max - player.stock.stone))
+                    player.stock.wood = player.stock.wood + min(reward_wood, (player.stock.max - player.stock.wood))
+                    player.stock.iron = player.stock.iron + min(reward_iron, (player.stock.max - player.stock.iron))
+                    player.stock.gold = player.stock.gold + min(reward_gold, (player.stock.max - player.stock.gold))
+                    player.stock.diamond = player.stock.diamond + min(reward_diamond, (player.stock.max - player.stock.diamond))
                     player.stock.skull = player.stock.skull + reward_skull
 
-                    message = 'Вы напали на ' + defender.nickname + ' !' + \
+                    message = 'Вы напали на ' + defender.nickname + '\n' + \
                               '⚔ Победа ⚔\n' + \
-                              '<Ваши потери>\n' + \
-                              'Воины: ' + str(attack_lost_warrior) + '/' + str(player.army.warrior) + ' 🗡\n' + \
-                              'Лучники: ' + str(attack_lost_archer) + '/' + str(player.army.archer) + ' 🏹\n' + \
-                              'Маги:' + str(attack_lost_wizard) + '/' + str(player.army.wizard) + ' 🔮\n' + \
-                              '<Потери врага>' + \
-                              'Воины: ' + str(defender_lost_warrior) + '/' + str(defender.army.warrior) + ' 🗡\n' + \
-                              'Лучники: ' + str(defender_lost_archer) + '/' + str(defender.army.archer) + ' 🏹\n' + \
-                              'Маги:' + str(defender_lost_wizard) + '/' + str(defender.army.wizard) + ' 🔮\n' + \
-                              '<Награда>\n' + \
+                              '[Ваши потери]\n' + \
+                              'Воины: ' + str(attack_lost_warrior) + ' / ' + str(player.army.warrior) + ' 🗡\n' + \
+                              'Лучники: ' + str(attack_lost_archer) + ' / ' + str(player.army.archer) + ' 🏹\n' + \
+                              'Маги: ' + str(attack_lost_wizard) + ' / ' + str(player.army.wizard) + ' 🔮\n' + \
+                              '[Потери врага]\n' + \
+                              'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.army.warrior) + ' 🗡\n' + \
+                              'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
+                              'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮\n' + \
+                              '[Награда]\n' + \
                               'Дерево: ' + str(reward_wood) + ' 🌲\n' +\
                               'Камень: ' + str(reward_stone) + ' ◾\n' +\
                               'Железо: ' + str(reward_iron) + ' ◽\n' +\
@@ -188,50 +188,52 @@ def attack(vk, player, action_time, token):
                               'Черепа: ' + str(reward_skull) + ' 💀\n' +\
                               'Опыт: ' + str(reward_exp) + ' 📚'
 
-                    message_def = 'На вас напал ' + player.nickname + ' !' + \
+                    message_def = 'На вас напал ' + player.nickname + '\n' + \
                                   '⚔ Вы проиграли ⚔\n' + \
-                                  '<Потери врага>' + \
-                                  'Воины: ' + str(attack_lost_warrior) + '/' + str(player.army.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(attack_lost_archer) + '/' + str(player.army.archer) + ' 🏹\n' + \
-                                  'Маги:' + str(attack_lost_wizard) + '/' + str(player.army.wizard) + ' 🔮\n' + \
-                                  '<Ваши потери>\n' + \
-                                  'Воины: ' + str(defender_lost_warrior) + '/' + str(defender.army.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(defender_lost_archer) + '/' + str(defender.army.archer) + ' 🏹\n' + \
-                                  'Маги:' + str(defender_lost_wizard) + '/' + str(defender.army.wizard) + ' 🔮\n' + \
-                                  '<Ресурсов украдено>\n' + \
+                                  '[Потери врага]\n' + \
+                                  'Воины: ' + str(attack_lost_warrior) + ' / ' + str(player.army.warrior) + ' 🗡\n' + \
+                                  'Лучники: ' + str(attack_lost_archer) + ' / ' + str(player.army.archer) + ' 🏹\n' + \
+                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(player.army.wizard) + ' 🔮\n' + \
+                                  '[Ваши потери]\n' + \
+                                  'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.army.warrior) + ' 🗡\n' + \
+                                  'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
+                                  'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮\n' + \
+                                  '[Ресурсов потеряно]\n' + \
                                   'Дерево: ' + str(reward_wood) + ' 🌲\n' + \
                                   'Камень: ' + str(reward_stone) + ' ◾\n' + \
                                   'Железо: ' + str(reward_iron) + ' ◽\n' + \
                                   'Золото: ' + str(reward_gold) + ' ✨\n' + \
                                   'Алмазы: ' + str(reward_diamond) + ' 💎\n' + \
-                                  'Черепа: ' + str(reward_skull) + ' 💀\n' + \
-                                  'Опыт: ' + str(reward_exp) + ' 📚'
+                                  '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
+                                  'Если вы нападёте, щит пропадёт!'
 
                 else:
 
                     # Поражение нападавшего
 
-                    message = 'Вы напали на ' + defender.nickname + ' !' + \
+                    message = 'Вы напали на ' + defender.nickname + '\n' + \
                               '⚔ Поражение ⚔\n' + \
-                              '<Ваши потери>\n' + \
-                              'Воины: ' + str(attack_lost_warrior) + '/' + str(player.army.warrior) + ' 🗡\n' + \
-                              'Лучники: ' + str(attack_lost_archer) + '/' + str(player.army.archer) + ' 🏹\n' + \
-                              'Маги:' + str(attack_lost_wizard) + '/' + str(player.army.wizard) + ' 🔮\n' + \
-                              '<Потери врага>' + \
-                              'Воины: ' + str(defender_lost_warrior) + '/' + str(defender.army.warrior) + ' 🗡\n' + \
-                              'Лучники: ' + str(defender_lost_archer) + '/' + str(defender.army.archer) + ' 🏹\n' + \
-                              'Маги:' + str(defender_lost_wizard) + '/' + str(defender.army.wizard) + ' 🔮'
+                              '[Ваши потери]\n' + \
+                              'Воины: ' + str(attack_lost_warrior) + ' / ' + str(player.army.warrior) + ' 🗡\n' + \
+                              'Лучники: ' + str(attack_lost_archer) + ' / ' + str(player.army.archer) + ' 🏹\n' + \
+                              'Маги: ' + str(attack_lost_wizard) + ' / ' + str(player.army.wizard) + ' 🔮\n' + \
+                              '[Потери врага]\n' + \
+                              'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.army.warrior) + ' 🗡\n' + \
+                              'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
+                              'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮'
 
-                    message_def = 'На вас напал ' + player.nickname + ' !' + \
+                    message_def = 'На вас напал ' + player.nickname + '\n' + \
                                   '⚔ Вы победили ⚔\n' + \
-                                  '<Потери врага>' + \
-                                  'Воины: ' + str(attack_lost_warrior) + '/' + str(player.army.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(attack_lost_archer) + '/' + str(player.army.archer) + ' 🏹\n' + \
-                                  'Маги:' + str(attack_lost_wizard) + '/' + str(player.army.wizard) + ' 🔮\n' + \
-                                  '<Ваши потери>\n' + \
-                                  'Воины: ' + str(defender_lost_warrior) + '/' + str(defender.army.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(defender_lost_archer) + '/' + str(defender.army.archer) + ' 🏹\n' + \
-                                  'Маги:' + str(defender_lost_wizard) + '/' + str(defender.army.wizard) + ' 🔮'
+                                  '[Потери врага]\n' + \
+                                  'Воины: ' + str(attack_lost_warrior) + ' / ' + str(player.army.warrior) + ' 🗡\n' + \
+                                  'Лучники: ' + str(attack_lost_archer) + ' / ' + str(player.army.archer) + ' 🏹\n' + \
+                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(player.army.wizard) + ' 🔮\n' + \
+                                  '[Ваши потери]\n' + \
+                                  'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.army.warrior) + ' 🗡\n' + \
+                                  'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
+                                  'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮\n' + \
+                                  '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
+                                  'Если вы нападёте, щит пропадёт!'
 
                 # Сохранение
 

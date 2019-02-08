@@ -80,29 +80,11 @@ class Army(models.Model):
     warrior = models.IntegerField(
         default=0,
     )
-    warrior_hp = models.IntegerField(
-        default=10,
-    )
-    warrior_attack = models.IntegerField(
-        default=5,
-    )
     archer = models.IntegerField(
         default=0,
     )
-    archer_hp = models.IntegerField(
-        default=10,
-    )
-    archer_attack = models.IntegerField(
-        default=15,
-    )
     wizard = models.IntegerField(
         default=0,
-    )
-    wizard_hp = models.IntegerField(
-        default=10,
-    )
-    wizard_attack = models.IntegerField(
-        default=30,
     )
 
 
