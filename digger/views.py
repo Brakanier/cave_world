@@ -241,3 +241,5 @@ def action(vk, command, player, action_time):
         war(vk=vk, player=player, token=token)
     elif command.lower() == 'find_enemy':
         find_enemy(vk=vk, player=player, action_time=action_time, token=token)
+    elif command.lower() == 'attack':
+        attack(vk=vk, player=player, action_time=action_time, token=token)
