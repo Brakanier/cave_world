@@ -448,7 +448,7 @@ def bonus(vk, player, action_time, token):
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
+        keyboard=get_keyboard(player=player, action_time=action_time),
         message=message,
         random_id=get_random_id()
     )

@@ -53,8 +53,8 @@ def build_stock(vk, player, token):
     stone_need = (player.stock.lvl * STOCK_X) + player.stock.need
     if player.stock.stone >= stone_need:
         player.stock.stone = player.stock.stone - stone_need
-        player.stock.lvl = player.stock.lvl + 1
         player.stock.need = (player.stock.lvl * STOCK_X) + player.stock.need
+        player.stock.lvl = player.stock.lvl + 1
         player.stock.max = (player.stock.lvl * STOCK_MAX_X) + player.stock.max
         player.stock.save()
         message = 'Склад улучшен! (' + str(player.stock.lvl) + ' ур.)'

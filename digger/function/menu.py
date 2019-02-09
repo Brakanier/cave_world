@@ -20,7 +20,7 @@ def profile(vk, player, action_time, token):
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
+        keyboard=get_keyboard(player=player, action_time=action_time),
         message=message,
         random_id=get_random_id()
     )
@@ -181,16 +181,18 @@ def forge_kit_info(vk, player, token):
     )
 
 
-def army(vk, player, token):
+def army(vk, player, token, action_time):
     message = 'Армия:\n' + \
               'Воины: ' + str(player.army.warrior) + ' 🗡\n' + \
               'Лучники: ' + str(player.army.archer) + ' 🏹\n' + \
               'Маги: ' + str(player.army.wizard) + ' 🔮\n' + \
-              'Всего: ' + str(player.army.warrior + player.army.archer + player.army.wizard) + ' ⚔'
+              'Всего: ' + str(player.army.warrior + player.army.archer + player.army.wizard) + ' ⚔\n' + \
+              'Башня: ' + str(player.build.tower_lvl) + ' ур.\n' + \
+              'Стена: ' + str(player.build.wall_lvl) + ' ур.\n'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
+        keyboard=get_keyboard(player=player, action_time=action_time),
         message=message,
         random_id=get_random_id()
     )
@@ -203,7 +205,7 @@ def shield_info(vk, player, action_time, token):
         hour = (shield - time) // 3600
         minutes = ((shield - time) - (hour * 3600)) // 60
         sec = (shield - time) - (minutes * 60) - (hour * 3600)
-        message = 'Щит действует еще: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
+        message = 'Щит действует еще: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
     else:
         message = 'У вас нет щита!'
     vk.messages.send(

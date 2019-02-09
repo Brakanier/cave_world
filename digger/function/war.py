@@ -51,7 +51,7 @@ def find_enemy(vk, player, action_time, token):
         minutes = (FIND_TIME - find_time) // 60
         sec = (FIND_TIME - find_time) - (minutes * 60)
         message = 'Искать противника можно раз в 10 минут\n' + \
-                  'До следующего поиска: ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
+                  'До следующего поиска: ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
@@ -86,7 +86,7 @@ def attack(vk, player, action_time, token):
             else:
                 # Сражение
 
-                # Атакующи
+                # Атакующий
                 attack_warrior_attack = player.army.warrior * WARRIOR_ATTACK
                 attack_warrior_hp = player.army.warrior * WARRIOR_HP
                 attack_archer_attack = player.army.archer * ARCHER_ATTACK
@@ -96,6 +96,8 @@ def attack(vk, player, action_time, token):
                 attack_attack = attack_warrior_attack + attack_archer_attack + attack_wizard_attack
                 attack_hp = attack_warrior_hp + attack_archer_hp + attack_wizard_hp
                 attack_power = attack_attack + attack_hp
+                attack_tower_x = player.build.tower_lvl * TOWER_BUFF
+                attack_attack = attack_attack * attack_tower_x
 
                 # Защитник
                 defender_warrior_attack = defender.army.warrior * WARRIOR_ATTACK
@@ -106,6 +108,8 @@ def attack(vk, player, action_time, token):
                 defender_wizard_hp = defender.army.wizard * WIZARD_HP
                 defender_attack = defender_warrior_attack + defender_archer_attack + defender_wizard_attack
                 defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
+                defender_wall = defender.build.wall_lvl * WALL_BUFF
+                defender_hp = defender_hp * defender_wall
 
                 # Остатки армий
 
@@ -274,7 +278,7 @@ def attack(vk, player, action_time, token):
     else:
         minutes = (WAR_TIME - war_time) // 60
         sec = (WAR_TIME - war_time) - (minutes * 60)
-        message = 'До нападения: ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
+        message = 'До нападения: ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
