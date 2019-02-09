@@ -97,7 +97,7 @@ def attack(vk, player, action_time, token):
                 attack_hp = attack_warrior_hp + attack_archer_hp + attack_wizard_hp
                 attack_power = attack_attack + attack_hp
                 attack_tower_x = player.build.tower_lvl * TOWER_BUFF
-                attack_attack = attack_attack * attack_tower_x
+                attack_attack = attack_attack * (1 + attack_tower_x)
 
                 # Защитник
                 defender_warrior_attack = defender.army.warrior * WARRIOR_ATTACK
@@ -109,7 +109,7 @@ def attack(vk, player, action_time, token):
                 defender_attack = defender_warrior_attack + defender_archer_attack + defender_wizard_attack
                 defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
                 defender_wall = defender.build.wall_lvl * WALL_BUFF
-                defender_hp = defender_hp * defender_wall
+                defender_hp = defender_hp * (1 + defender_wall)
 
                 # Остатки армий
 
