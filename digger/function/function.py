@@ -193,7 +193,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
         keyboard.add_line()
         keyboard.add_button('🔎 Поиск', color=VkKeyboardColor.POSITIVE, payload={"command": "find_enemy"})
-        keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack_enemy"})
+        keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack"})
         keyboard.add_line()
         keyboard.add_button('🛡 Щит ⏳', color=VkKeyboardColor.DEFAULT, payload={"command": "shield_info"})
 
