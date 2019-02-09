@@ -154,6 +154,7 @@ def attack(vk, player, action_time, token):
                     reward_diamond = min(defender.stock.diamond, (reward_part * DIAMOND_PART))
                     reward_skull = 1
                     reward_exp = round(defender_lost_army / REWARD_EXP_Y)
+                    reward_exp = max(reward_exp, 1)
                     player = exp(vk=vk, player=player, token=token, exp=reward_exp)
 
                     # Проигравший
