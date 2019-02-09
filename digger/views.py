@@ -42,6 +42,7 @@ def index(request):
                         access_token=token,
                         user_id=str(user_id),
                         message='Добро пожаловать в Cave World!\nВведите свой ник:',
+                        keyboard=get_keyboard(player=player),
                         random_id=get_random_id()
                     )
                     return HttpResponse('ok', content_type="text/plain", status=200)

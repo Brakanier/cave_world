@@ -46,7 +46,8 @@ def get_keyboard(player, action_time=0):
     keyboard = VkKeyboard()
 
     if player.place == 'reg':
-        keyboard.add_button(player.first_name, color=VkKeyboardColor.DEFAULT)
+        name = player.last_name + ' ' + player.first_name
+        keyboard.add_button(name, color=VkKeyboardColor.DEFAULT)
 
     # Профиль
 
