@@ -183,6 +183,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('🍺 🗡 Воин', color=VkKeyboardColor.POSITIVE, payload={"command": "buy_warrior"})
         keyboard.add_button('🍺 🏹 Лучник', color=VkKeyboardColor.POSITIVE, payload={"command": "buy_archer"})
+        keyboard.add_line()
         keyboard.add_button('🍺 🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": "buy_wizard"})
         keyboard.add_line()
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
