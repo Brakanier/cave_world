@@ -157,7 +157,7 @@ def action(vk, command, player, action_time):
     elif command.lower() == 'stock':
         stock(vk=vk, player=player, token=token)
     elif command.lower() == 'army':
-        army(vk=vk, player=player, token=token)
+        army(vk=vk, player=player, token=token, action_time=action_time)
 
     # Подземелье
 
