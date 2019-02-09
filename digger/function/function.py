@@ -99,7 +99,7 @@ def get_keyboard(player, action_time=0):
         if player.build.forge:
             keyboard.add_button('⚒ Кузница', color=VkKeyboardColor.DEFAULT, payload={"command": "forge"})
         if player.build.tavern:
-            keyboard.add_button('⚔ Таверна', color=VkKeyboardColor.DEFAULT, payload={"command": "tavern"})
+            keyboard.add_button('🍺 Таверна', color=VkKeyboardColor.DEFAULT, payload={"command": "tavern"})
         keyboard.add_line()
         keyboard.add_button('🤴 Персонаж', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
