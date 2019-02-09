@@ -10,34 +10,20 @@ from .function import *
 def find_enemy(vk, player, action_time, token):
     find_time = action_time - player.war.find_last_time
     if find_time >= FIND_TIME:
-        enemy = Player.objects.filter(build__gate=True).exclude(user_id=player.user_id)
 
-        defender = None
+        defender = Player.objects.filter(build__gate=True).exclude(user_id=player.user_id).order_by('war__defend_last_time').first()
 
         def is_shield():
             shield = defender.war.shield * SHIELD_X
             shield = shield + defender.war.defend_last_time
             if shield >= action_time:
-                if len(enemy) > 1:
-                    index = enemy.index(defender)
-                    print(index)
-                    enemy.pop(index)
-                    return False
-                return 'end'
+                return None
             else:
-                return True
+                return defender
 
-        ready = False
-        find = True
-        while not ready:
-            defender = random.choice(enemy)
-            ready = is_shield()
-            # Условие выхода из цикла, если в enemy остался 1 элемент
-            if ready == 'end':
-                ready = True
-                find = False
+        defender = is_shield()
 
-        if find:
+        if defender:
             player.war.enemy_id = defender.user_id
             player.war.find_last_time = action_time
             player.war.save()

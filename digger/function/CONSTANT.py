@@ -60,7 +60,7 @@ WIZARD_HP = 25
 
 # Война
 
-FIND_TIME = 600
+FIND_TIME = 300
 
 WAR_TIME = 3600
 
