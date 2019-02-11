@@ -193,11 +193,11 @@ def action(vk, command, player, action_time):
     elif command.lower() == 'forge_kit_info':
         forge_kit_info(vk=vk, player=player, token=token)
     elif command.lower() == 'craft_sword':
-        craft_sword(vk=vk, player=player, action_time=action_time, token=token)
+        craft_sword(vk=vk, player=player, token=token)
     elif command.lower() == 'craft_bow':
-        craft_bow(vk=vk, player=player, action_time=action_time, token=token)
+        craft_bow(vk=vk, player=player, token=token)
     elif command.lower() == 'craft_orb':
-        craft_orb(vk=vk, player=player, action_time=action_time, token=token)
+        craft_orb(vk=vk, player=player, token=token)
 
     # Шахта
 

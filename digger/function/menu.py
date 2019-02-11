@@ -146,17 +146,14 @@ def forge_kit(vk, player, token):
         player.save()
     message = 'Стоимость крафта: \n'
     message_sword = 'Меч 🗡: ' + \
-                    str(SWORD_IRON) + ' ◽ + ' + \
-                    str(CRAFT_ENEGRY) + ' ⚡\n'
+                    str(SWORD_IRON) + ' ◽\n'
     message_bow = 'Лук 🏹: ' + \
                   str(BOW_IRON) + ' ◽ + ' + \
-                  str(BOW_WOOD) + ' 🌲 + ' + \
-                  str(CRAFT_ENEGRY) + ' ⚡\n'
+                  str(BOW_WOOD) + ' 🌲\n'
     message_orb = 'Сфера 🔮: ' + \
                   str(ORB_IRON) + ' ◽ + ' + \
                   str(ORB_WOOD) + ' 🌲 + ' + \
-                  str(ORB_DIAMOND) + ' 💎 + ' + \
-                  str(CRAFT_ENEGRY) + ' ⚡\n'
+                  str(ORB_DIAMOND) + ' 💎\n'
     message = message + message_sword + message_bow + message_orb
     vk.messages.send(
         access_token=token,

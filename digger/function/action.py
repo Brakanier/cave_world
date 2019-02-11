@@ -264,24 +264,15 @@ def craft_pickaxe_diamond(vk, player, action_time, token):
     )
 
 
-def craft_sword(vk, player, action_time, token):
-    player = energy(player=player, action_time=action_time)
-    if player.energy >= CRAFT_ENEGRY:
-        if player.stock.iron >= SWORD_IRON:
-            player.energy = player.energy - CRAFT_ENEGRY
-            player.stock.iron = player.stock.iron - SWORD_IRON
-            player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
-            player.forge.sword = player.forge.sword + 1
-            player.stock.save()
-            player.forge.save()
-            message = 'Вы скрафтили Меч 🗡\n' + \
-                      'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
-        else:
-            message = 'Недостаточно железа'
+def craft_sword(vk, player, token):
+    if player.stock.iron >= SWORD_IRON:
+        player.stock.iron = player.stock.iron - SWORD_IRON
+        player.forge.sword = player.forge.sword + 1
+        player.stock.save()
+        player.forge.save()
+        message = 'Вы скрафтили Меч 🗡\n'
     else:
-        message = 'Недостаточно энергии'
-    player.save()
+        message = 'Недостаточно железа'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
@@ -291,28 +282,19 @@ def craft_sword(vk, player, action_time, token):
     )
 
 
-def craft_bow(vk, player, action_time, token):
-    player = energy(player=player, action_time=action_time)
-    if player.energy >= CRAFT_ENEGRY:
-        if player.stock.iron >= BOW_IRON and player.stock.wood >= BOW_WOOD:
-            player.energy = player.energy - CRAFT_ENEGRY
-            player.stock.iron = player.stock.iron - BOW_IRON
-            player.stock.wood = player.stock.wood - BOW_WOOD
-            player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
-            player.forge.bow = player.forge.bow + 1
-            player.stock.save()
-            player.forge.save()
-            message = 'Вы скрафтили Лук 🏹\n' + \
-                      'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
-        else:
-            message = 'Недостаточно ресурсов!\n' + \
-                      'Нужно:\n' + \
-                      'Железо: ' + str(BOW_IRON) + ' ◽\n' + \
-                      'Дерево: ' + str(BOW_WOOD) + ' 🌲'
+def craft_bow(vk, player, token):
+    if player.stock.iron >= BOW_IRON and player.stock.wood >= BOW_WOOD:
+        player.stock.iron = player.stock.iron - BOW_IRON
+        player.stock.wood = player.stock.wood - BOW_WOOD
+        player.forge.bow = player.forge.bow + 1
+        player.stock.save()
+        player.forge.save()
+        message = 'Вы скрафтили Лук 🏹\n'
     else:
-        message = 'Недостаточно энергии'
-    player.save()
+        message = 'Недостаточно ресурсов!\n' + \
+                  'Нужно:\n' + \
+                  'Железо: ' + str(BOW_IRON) + ' ◽\n' + \
+                  'Дерево: ' + str(BOW_WOOD) + ' 🌲'
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
@@ -322,29 +304,21 @@ def craft_bow(vk, player, action_time, token):
     )
 
 
-def craft_orb(vk, player, action_time, token):
-    player = energy(player=player, action_time=action_time)
-    if player.energy >= CRAFT_ENEGRY:
-        if player.stock.iron >= ORB_IRON and player.stock.wood >= ORB_WOOD and player.stock.diamond >= ORB_DIAMOND:
-            player.energy = player.energy - CRAFT_ENEGRY
-            player.stock.iron = player.stock.iron - ORB_IRON
-            player.stock.wood = player.stock.wood - ORB_WOOD
-            player.stock.diamond = player.stock.diamond - ORB_DIAMOND
-            player = exp(vk=vk, player=player, token=token, exp=CRAFT_ENEGRY)
-            player.forge.orb = player.forge.orb + 1
-            player.stock.save()
-            player.forge.save()
-            message = 'Вы скрафтили Сферу 🔮\n' + \
-                      'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
-                      'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
-        else:
-            message = 'Недостаточно ресурсов!\n' + \
-                      'Нужно:\n' + \
-                      'Железо: ' + str(ORB_IRON) + ' ◽\n' + \
-                      'Дерево: ' + str(ORB_WOOD) + ' 🌲\n' + \
-                      'Алмазы: ' + str(ORB_DIAMOND) + ' 💎'
+def craft_orb(vk, player, token):
+    if player.stock.iron >= ORB_IRON and player.stock.wood >= ORB_WOOD and player.stock.diamond >= ORB_DIAMOND:
+        player.stock.iron = player.stock.iron - ORB_IRON
+        player.stock.wood = player.stock.wood - ORB_WOOD
+        player.stock.diamond = player.stock.diamond - ORB_DIAMOND
+        player.forge.orb = player.forge.orb + 1
+        player.stock.save()
+        player.forge.save()
+        message = 'Вы скрафтили Сферу 🔮\n'
     else:
-        message = 'Недостаточно энергии'
+        message = 'Недостаточно ресурсов!\n' + \
+                  'Нужно:\n' + \
+                  'Железо: ' + str(ORB_IRON) + ' ◽\n' + \
+                  'Дерево: ' + str(ORB_WOOD) + ' 🌲\n' + \
+                  'Алмазы: ' + str(ORB_DIAMOND) + ' 💎'
     player.save()
     vk.messages.send(
         access_token=token,

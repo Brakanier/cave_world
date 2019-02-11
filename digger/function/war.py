@@ -134,10 +134,7 @@ def attack(vk, player, action_time, token):
                     reward = (attack_power // REWARD_Y)
                     reward_part = (reward // REWARD_PART)
                     reward_stone = min(defender.stock.wood, (reward_part * STONE_PART))
-                    #reward_wood = min(defender.stock.wood, (reward_part * WOOD_PART))
-                    #reward_iron = min(defender.stock.iron, (reward_part * IRON_PART))
                     reward_gold = min(defender.stock.gold, (reward_part * GOLD_PART))
-                    #reward_diamond = min(defender.stock.diamond, (reward_part * DIAMOND_PART))
                     reward_skull = 1
                     reward_exp = round(defender_lost_army / REWARD_EXP_Y)
                     reward_exp = max(reward_exp, 1)
@@ -146,20 +143,14 @@ def attack(vk, player, action_time, token):
                     # Проигравший
 
                     defender.stock.stone = defender.stock.stone - reward_stone
-                    #defender.stock.wood = defender.stock.wood - reward_wood
-                    #defender.stock.iron = defender.stock.iron - reward_iron
                     defender.stock.gold = defender.stock.gold - reward_gold
-                    #defender.stock.diamond = defender.stock.diamond - reward_diamond
 
                     defender.war.shield = 8
 
                     # Выдаём победителю
 
                     player.stock.stone = player.stock.stone + min(reward_stone, (player.stock.max - player.stock.stone))
-                    #player.stock.wood = player.stock.wood + min(reward_wood, (player.stock.max - player.stock.wood))
-                    #player.stock.iron = player.stock.iron + min(reward_iron, (player.stock.max - player.stock.iron))
                     player.stock.gold = player.stock.gold + min(reward_gold, (player.stock.max - player.stock.gold))
-                    #player.stock.diamond = player.stock.diamond + min(reward_diamond, (player.stock.max - player.stock.diamond))
                     player.stock.skull = player.stock.skull + reward_skull
                     player.win = player.win + 1
 
