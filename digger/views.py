@@ -171,8 +171,8 @@ def action(vk, command, player, action_time):
         build_tavern(vk=vk, player=player, token=token)
     elif command.lower() == 'build_stock':
         build_stock(vk=vk, player=player, token=token)
-    elif command.lower() == 'build_gate':
-        build_gate(vk=vk, player=player, token=token)
+    elif command.lower() == 'build_citadel':
+        build_citadel(vk=vk, player=player, token=token)
 
     # Кузница
 

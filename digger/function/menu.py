@@ -47,21 +47,20 @@ def cave_build(vk, player, token):
     if not player.place == 'cave_build':
         player.place = 'cave_build'
         player.save()
-    message_stock = 'Склад: ' + str((player.stock.lvl * STOCK_X) + player.stock.need) + ' ◾' + '\n'
+    message_stock = 'Склад: ' + str(player.stock.lvl * STOCK_X) + ' ◾' + '\n'
     message_forge = 'Кузница: ' + str(FORGE_STONE) + ' ◾\n'
     message_tavern = 'Таверна: ' + str(TAVERN_STONE) + ' ◾ + ' + str(TAVERN_IRON) + ' ◽\n'
-    message_gate = 'Врата: '\
-                   + str(GATE_STONE) + ' ◾ + '\
-                   + str(GATE_IRON) + ' ◽ + '\
-                   + str(GATE_DIAMOND) + ' 💎'
+    message_citadel = 'Врата: ' + \
+                      str(CITADEL_STONE) + ' ◾ + ' + \
+                      str(CITADEL_IRON) + ' ◽ + '
     message = 'Стоимость:' + '\n'
     message = message + message_stock
     if not player.build.forge:
         message = message + message_forge
     if not player.build.tavern:
         message = message + message_tavern
-    if not player.build.gate:
-        message = message + message_gate
+    if not player.build.citadel:
+        message = message + message_citadel
     vk.messages.send(
         access_token=token,
         user_id=str(player.user_id),
@@ -77,21 +76,13 @@ def land_build(vk, player, token):
         player.save()
     # башня
     message_tower = 'Башня: ' + \
-                    str((player.build.tower_lvl * TOWER_X) + player.build.tower_need) + \
-                    ' ◾ + ' + \
-                    str((player.build.tower_lvl * TOWER_X) + player.build.tower_need) + \
-                    ' 🌲\n'
-    if player.build.tower_lvl == 0:
-        message_tower = 'Башня: ' + \
-                        str(player.build.tower_need) + \
-                        ' ◾ + ' + \
-                        str(player.build.tower_need) + \
-                        ' 🌲\n'
+                    str(player.build.tower_lvl * TOWER_STONE) + ' ◾ + ' + \
+                    str(player.build.tower_lvl * TOWER_WOOD) + ' 🌲\n'
     # стена
-    message_wall = 'Стена: ' + str((player.build.wall_lvl * WALL_X) + player.build.wall_need) + ' ◾\n'
-    if player.build.wall_lvl == 0:
-        message_wall = 'Стена: ' + str(player.build.wall_need) + ' ◾'
-    message = 'Стоимость:' + '\n'
+    message_wall = 'Стена: ' + \
+                   str(player.build.tower_lvl * WALL_STONE) + ' ◾ + ' + \
+                   str(player.build.tower_lvl * WALL_IRON) + ' ◽\n'
+    message = 'Стоимость:\n'
     message = message + message_tower + message_wall
     vk.messages.send(
         access_token=token,

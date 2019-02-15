@@ -12,11 +12,8 @@ class Stock(models.Model):
     lvl = models.IntegerField(
         default=1,
     )
-    need = models.IntegerField(
-        default=0,
-    )
     max = models.IntegerField(
-        default=100,
+        default=60,
     )
     # Materials
     wood = models.IntegerField(
@@ -54,21 +51,14 @@ class Build(models.Model):
     tavern = models.BooleanField(
         default=False,
     )
-    gate = models.BooleanField(
+    citadel = models.BooleanField(
         default=False,
     )
     tower_lvl = models.IntegerField(
-        default=0,
+        default=1,
     )
-    tower_need = models.IntegerField(
-        default=75,
-    )
-
     wall_lvl = models.IntegerField(
-        default=0,
-    )
-    wall_need = models.IntegerField(
-        default=150,
+        default=1,
     )
 
 
@@ -178,10 +168,10 @@ class Player(models.Model):
         default=0,
     )
     energy = models.IntegerField(
-        default=10,
+        default=30,
     )
     max_energy = models.IntegerField(
-        default=10,
+        default=30,
     )
     last_energy_action = models.BigIntegerField(
         default=0,

@@ -26,8 +26,6 @@ def exp(vk, player, token, exp):
         player.lvl = player.lvl + 1
         player.exp = more_exp
         player.exp_need = ((player.lvl ** LVL_Z)*LVL_X) - player.exp_need
-        player.max_energy = 10 + (player.lvl * 2)
-        player.energy = player.max_energy
         message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.\n' + \
                   'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n'
         vk.messages.send(
@@ -52,7 +50,7 @@ def get_keyboard(player, action_time=0):
     # Профиль
 
     if player.place == 'profile':
-        if player.build.gate:
+        if player.build.citadel:
             keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
@@ -91,7 +89,7 @@ def get_keyboard(player, action_time=0):
     # Подземелье
 
     elif player.place == 'cave':
-        if player.build.gate:
+        if player.build.citadel:
             keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
         keyboard.add_line()
@@ -112,8 +110,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_line()
         keyboard.add_button(stock_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "build_stock"})
-        if not player.build.gate:
-            keyboard.add_button('🔨 Врата', color=VkKeyboardColor.POSITIVE, payload={"command": "build_gate"})
+        if not player.build.citadel:
+            keyboard.add_button('🔨 Цитадель', color=VkKeyboardColor.POSITIVE, payload={"command": "build_citadel"})
         if not player.build.forge or not player.build.tavern:
             keyboard.add_line()
         if not player.build.forge:

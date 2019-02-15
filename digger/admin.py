@@ -12,12 +12,12 @@ class PlayerAdmin(admin.ModelAdmin):
 
 @admin.register(Stock)
 class StockAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'lvl', 'max')
+    list_display = ('user_id', 'lvl', 'skull', 'max')
 
 
 @admin.register(Build)
 class BuildAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'forge', 'tavern', 'gate')
+    list_display = ('user_id', 'forge', 'tavern', 'citadel')
 
 
 @admin.register(Army)
