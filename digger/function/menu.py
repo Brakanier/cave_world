@@ -50,9 +50,9 @@ def cave_build(vk, player, token):
     message_stock = 'Склад: ' + str(player.stock.lvl * STOCK_X) + ' ◾' + '\n'
     message_forge = 'Кузница: ' + str(FORGE_STONE) + ' ◾\n'
     message_tavern = 'Таверна: ' + str(TAVERN_STONE) + ' ◾ + ' + str(TAVERN_IRON) + ' ◽\n'
-    message_citadel = 'Врата: ' + \
+    message_citadel = 'Цитадель: ' + \
                       str(CITADEL_STONE) + ' ◾ + ' + \
-                      str(CITADEL_IRON) + ' ◽ + '
+                      str(CITADEL_IRON) + ' ◽\n'
     message = 'Стоимость:' + '\n'
     message = message + message_stock
     if not player.build.forge:
