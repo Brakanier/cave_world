@@ -80,8 +80,8 @@ def land_build(vk, player, token):
                     str(player.build.tower_lvl * TOWER_WOOD) + ' 🌲\n'
     # стена
     message_wall = 'Стена: ' + \
-                   str(player.build.tower_lvl * WALL_STONE) + ' ◾ + ' + \
-                   str(player.build.tower_lvl * WALL_IRON) + ' ◽\n'
+                   str(player.build.wall_lvl * WALL_STONE) + ' ◾ + ' + \
+                   str(player.build.wall_lvl * WALL_IRON) + ' ◽\n'
     message = 'Стоимость:\n'
     message = message + message_tower + message_wall
     vk.messages.send(
