@@ -18,8 +18,11 @@ from .function.war import *
 
 secret_token = config('SECRET_TOKEN')
 confirmation_token = config('CONFIRMATION_TOKEN')
-token = config('TOKEN')
-
+token_list = ['dca8e5d9e3fb7d614429e8594fddb92ac1c123c6d925db0d81fa495743812e2cf9654801170376388a999',
+         'cc7ba24c70f316a4b5f8d3611a56c544ba7d54f3229c53e8a2f4111a044cc50934888361356e08c66482c',
+         '8f85b07e455f06cd4e0389b3fbd0cc11d1a96a284facef48d763709670312da698002ca678b5771dd77e4',
+         ]
+token = random.choice(token_list)
 
 @csrf_exempt
 def index(request):
