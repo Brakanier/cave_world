@@ -23,6 +23,7 @@ token_list = ['dca8e5d9e3fb7d614429e8594fddb92ac1c123c6d925db0d81fa495743812e2cf
          '8f85b07e455f06cd4e0389b3fbd0cc11d1a96a284facef48d763709670312da698002ca678b5771dd77e4',
          ]
 
+token = random.choice(token_list)
 
 @csrf_exempt
 def index(request):
