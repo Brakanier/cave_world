@@ -34,7 +34,7 @@ def index(request):
                 if player.place == 'new':
                     player.place = 'reg'
                     player.save()
-                    message = 'Добро пожаловать в Cave World!/n Введите свой ник:'
+                    message = 'Добро пожаловать в Cave World!\n Введите свой ник:'
                     send(player=player, message=message)
                     return HttpResponse('ok', content_type="text/plain", status=200)
                 else:
