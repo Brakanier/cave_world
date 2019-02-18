@@ -15,12 +15,15 @@ def find_enemy(player, action_time):
         print(defender.user_id)
 
         def is_shield():
-            shield = defender.war.shield * SHIELD_X
-            shield = shield + defender.war.defend_last_time
-            if shield >= action_time:
-                return False
+            if defender:
+                shield = defender.war.shield * SHIELD_X
+                shield = shield + defender.war.defend_last_time
+                if shield >= action_time:
+                    return False
+                else:
+                    return defender
             else:
-                return defender
+                return False
 
         defender = is_shield()
 
