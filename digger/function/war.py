@@ -28,14 +28,16 @@ def find_enemy(player, action_time):
 
         if defender:
             player.war.enemy_id = defender.user_id
-            player.war.find_last_time = action_time
-            player.war.save()
             message = 'Найден противник!\n' + \
                       'Ник: ' + defender.nickname + '\n' + \
                       'Уровень: ' + str(defender.lvl) + ' 👑\n' + \
                       'Успейте напасть, пока вас не опередили!'
         else:
             message = 'Противник не найден'
+
+        player.war.find_last_time = action_time
+        player.war.save()
+
     else:
         minutes = (FIND_TIME - find_time) // 60
         sec = (FIND_TIME - find_time) - (minutes * 60)
@@ -60,6 +62,7 @@ def attack(player, action_time):
                     return True
                 else:
                     return False
+
             if is_shield():
                 message = 'Вы опоздали!\n' + \
                           'На ' + defender.nickname + ' уже напали!\n' + \
