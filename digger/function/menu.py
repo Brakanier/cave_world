@@ -106,12 +106,12 @@ def forge_kit(player):
         player.place = 'forge_kit'
         player.save()
     message = 'Стоимость крафта: \n'
-    message_sword = 'Меч 🗡: ' + \
+    message_sword = '🗡 Меч: ' + \
                     str(SWORD_IRON) + ' ◽\n'
-    message_bow = 'Лук 🏹: ' + \
+    message_bow = '🏹 Лук: ' + \
                   str(BOW_IRON) + ' ◽ + ' + \
                   str(BOW_WOOD) + ' 🌲\n'
-    message_orb = 'Сфера 🔮: ' + \
+    message_orb = '🔮 Сфера: ' + \
                   str(ORB_IRON) + ' ◽ + ' + \
                   str(ORB_WOOD) + ' 🌲 + ' + \
                   str(ORB_DIAMOND) + ' 💎\n'
