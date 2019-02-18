@@ -168,6 +168,8 @@ def action(command, player, action_time):
         craft_pickaxe_iron(player=player, action_time=action_time)
     elif command.lower() == 'craft_pickaxe_diamond':
         craft_pickaxe_diamond(player=player, action_time=action_time)
+    elif command.lower() == 'craft_pickaxe_skull':
+        craft_pickaxe_skull(player=player, action_time=action_time)
     elif command.lower() == 'forge_kit':
         forge_kit(player=player)
     elif command.lower() == 'forge_kit_info':
