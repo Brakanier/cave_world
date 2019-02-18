@@ -12,7 +12,6 @@ def find_enemy(player, action_time):
     if find_time >= FIND_TIME:
         lvl = player.lvl - 2
         defender = Player.objects.filter(build__citadel=True, lvl__gte=lvl).exclude(user_id=player.user_id).order_by('war__defend_last_time').first()
-        print(defender.user_id)
 
         def is_shield():
             if defender:
