@@ -31,7 +31,7 @@ def index(request):
                 peer_id = data['object']['peer_id']
                 player = register(user_id=user_id)
                 player = check_models(player=player)
-                if player.nickname == '':
+                if player.place == 'new':
                     player.place = 'reg'
                     player.save()
                     message = 'Добро пожаловать в Cave World!/n Введите свой ник:'
@@ -97,6 +97,7 @@ def register(user_id):
             player.first_name = user['first_name']
         if user['last_name']:
             player.last_name = user['last_name']
+        player.place = "new"
     else:
         player = Player.objects.get(user_id=user_id)
     return player

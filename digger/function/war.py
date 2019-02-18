@@ -7,22 +7,22 @@ from .CONSTANT import *
 from .function import *
 
 
-def is_shield(defender, action_time):
-    shield = defender.war.shield * SHIELD_X
-    shield = shield + defender.war.defend_last_time
-    if shield >= action_time:
-        return None
-    else:
-        return defender
-
-
 def find_enemy(player, action_time):
     find_time = action_time - player.war.find_last_time
     if find_time >= FIND_TIME:
         lvl = player.lvl - 2
         defender = Player.objects.filter(build__citadel=True, lvl__gte=lvl).exclude(user_id=player.user_id).order_by('war__defend_last_time').first()
+        print(defender.user_id)
 
-        defender = is_shield(defender=defender, action_time=action_time)
+        def is_shield():
+            shield = defender.war.shield * SHIELD_X
+            shield = shield + defender.war.defend_last_time
+            if shield >= action_time:
+                return False
+            else:
+                return defender
+
+        defender = is_shield()
 
         if defender:
             player.war.enemy_id = defender.user_id
