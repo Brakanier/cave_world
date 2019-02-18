@@ -151,6 +151,7 @@ class Player(models.Model):
     nickname = models.CharField(
         max_length=30,
         blank=True,
+        default='',
     )
     win = models.IntegerField(
         default=0,

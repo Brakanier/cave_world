@@ -7,7 +7,7 @@ from .CONSTANT import *
 from .function import *
 
 
-def find_enemy(vk, player, action_time, token):
+def find_enemy(player, action_time):
     find_time = action_time - player.war.find_last_time
     if find_time >= FIND_TIME:
         lvl = player.lvl - 2
@@ -38,16 +38,10 @@ def find_enemy(vk, player, action_time, token):
         sec = (FIND_TIME - find_time) - (minutes * 60)
         message = 'Искать противника можно раз в 5 минут\n' + \
                   'До следующего поиска: ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)
 
 
-def attack(vk, player, action_time, token):
+def attack(player, action_time):
     war_time = action_time - player.war.war_last_time
     if war_time >= WAR_TIME:
         if player.war.enemy_id:
@@ -144,7 +138,7 @@ def attack(vk, player, action_time, token):
                     # Награда
 
                     attack_after_army = attack_after_warrior + attack_after_archer + attack_after_wizard
-                    reward = round((attack_after_army * REWARD_PER_UNIT) / 5)
+                    reward = round(attack_after_army * REWARD_PER_UNIT)
                     reward_stone = min(defender.stock.stone, reward)
                     reward_wood = min(defender.stock.wood, reward)
                     reward_iron = min(defender.stock.iron, reward)
@@ -153,7 +147,7 @@ def attack(vk, player, action_time, token):
                     reward_skull = 1
                     reward_exp = round(defender_lost_army / REWARD_EXP_Y)
                     reward_exp = max(reward_exp, 1)
-                    player = exp(vk=vk, player=player, token=token, exp=reward_exp)
+                    player = exp(player=player, exp=reward_exp)
 
                     # Проигравший
 
@@ -264,13 +258,7 @@ def attack(vk, player, action_time, token):
                 defender.army.save()
                 defender.war.save()
 
-                vk.messages.send(
-                    access_token=token,
-                    user_id=str(defender.user_id),
-                    keyboard=get_keyboard(player=defender),
-                    message=message_def,
-                    random_id=get_random_id()
-                )
+                send(player=defender, message=message_def)
 
         else:
             message = 'Найдите противника для нападения!'
@@ -278,10 +266,4 @@ def attack(vk, player, action_time, token):
         minutes = (WAR_TIME - war_time) // 60
         sec = (WAR_TIME - war_time) - (minutes * 60)
         message = 'До нападения: ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)

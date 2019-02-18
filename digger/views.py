@@ -3,7 +3,6 @@ from django.http import HttpResponse
 
 from decouple import config
 import json
-import vk_api
 
 
 from .models import Player, Stock, Build, Forge, Army, War
@@ -18,12 +17,7 @@ from .function.war import *
 
 secret_token = config('SECRET_TOKEN')
 confirmation_token = config('CONFIRMATION_TOKEN')
-token_list = ['dca8e5d9e3fb7d614429e8594fddb92ac1c123c6d925db0d81fa495743812e2cf9654801170376388a999',
-         'cc7ba24c70f316a4b5f8d3611a56c544ba7d54f3229c53e8a2f4111a044cc50934888361356e08c66482c',
-         '8f85b07e455f06cd4e0389b3fbd0cc11d1a96a284facef48d763709670312da698002ca678b5771dd77e4',
-         ]
 
-token = random.choice(token_list)
 
 @csrf_exempt
 def index(request):
@@ -33,43 +27,34 @@ def index(request):
             if data['type'] == 'confirmation':
                 return HttpResponse(confirmation_token, content_type="text/plain", status=200)
             if data['type'] == 'message_new':
-                token = random.choice(token_list)
-                vk_session = vk_api.VkApi(token=token)
-                vk = vk_session.get_api()
                 user_id = data['object']['from_id']
-                reg = register(vk=vk, user_id=user_id)
-                player = Player.objects.get(user_id=user_id)
+                peer_id = data['object']['peer_id']
+                player = register(user_id=user_id)
                 player = check_models(player=player)
-                if reg == 'new':
+                if player.nickname == '':
                     player.place = 'reg'
                     player.save()
-                    vk.messages.send(
-                        access_token=token,
-                        user_id=str(user_id),
-                        message='Добро пожаловать в Cave World!\nВведите свой ник:',
-                        keyboard=get_keyboard(player=player),
-                        random_id=get_random_id()
-                    )
+                    message = 'Добро пожаловать в Cave World!/n Введите свой ник:'
+                    send(player=player, message=message)
                     return HttpResponse('ok', content_type="text/plain", status=200)
-                elif reg == 'old':
+                else:
                     if player.place == 'reg':
                         nick = data['object']['text']
                         player.nickname = nick
                         player.place = 'cave'
                         player.save()
                         message = 'Ваш ник - ' + player.nickname
-                        vk.messages.send(
-                            access_token=token,
-                            user_id=str(user_id),
-                            message=message,
-                            keyboard=get_keyboard(player=player),
-                            random_id=get_random_id()
-                        )
+                        send(player=player, message=message)
                     elif 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
-                        command = payload['command']
                         action_time = data['object']['date']
-                        action(vk=vk, command=command, player=player, action_time=action_time)
+                        info = str(action_time) + ' | ' + \
+                               str(player.user_id) + ' | ' + \
+                               payload['command'] + ' | ' + \
+                               player.nickname + ' | ' + \
+                               player.last_name + ' ' + player.first_name
+                        print(info)
+                        action(command=payload['command'], player=player, action_time=action_time)
                     else:
                         text = data['object']['text']
                         text = text.split()
@@ -79,21 +64,10 @@ def index(request):
                                 player.nickname = text[1]
                                 player.save()
                                 message = 'Ваш ник - ' + player.nickname
-                                vk.messages.send(
-                                    access_token=token,
-                                    user_id=str(user_id),
-                                    message=message,
-                                    keyboard=get_keyboard(player=player),
-                                    random_id=get_random_id()
-                                )
+                                send(player=player, message=message)
                             else:
-                                vk.messages.send(
-                                    access_token=token,
-                                    user_id=str(user_id),
-                                    message='Используйте кнопки для управления!',
-                                    keyboard=get_keyboard(player=player),
-                                    random_id=get_random_id()
-                                )
+                                message = 'Используйте кнопки для управления!'
+                                send(player=player, message=message)
                     return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
@@ -102,7 +76,7 @@ def index(request):
         return HttpResponse('Сайт находится в разработке!')
 
 
-def register(vk, user_id):
+def register(user_id):
     if not Player.objects.filter(user_id=user_id).exists():
         army = Army.objects.create(user_id=user_id)
         war = War.objects.create(user_id=user_id)
@@ -116,15 +90,16 @@ def register(vk, user_id):
                                        army=army,
                                        war=war,
                                        )
+        vk = vk_connect()
         user = vk.users.get(user_ids=str(user_id))
         user = user[0]
         if user['first_name']:
             player.first_name = user['first_name']
         if user['last_name']:
             player.last_name = user['last_name']
-        player.save()
-        return 'new'
-    return 'old'
+    else:
+        player = Player.objects.get(user_id=user_id)
+    return player
 
 
 def check_models(player):
@@ -151,102 +126,114 @@ def check_models(player):
     return player
 
 
-def action(vk, command, player, action_time):
+def action(command, player, action_time):
 
     # Инфо
 
     if command.lower() == 'profile':
-        profile(vk=vk, player=player, action_time=action_time, token=token)
+        profile(player=player, action_time=action_time)
     elif command.lower() == 'bonus':
-        bonus(vk=vk, player=player, action_time=action_time, token=token)
+        bonus(player=player, action_time=action_time)
     elif command.lower() == 'stock':
-        stock(vk=vk, player=player, token=token)
+        stock(player=player)
     elif command.lower() == 'army':
-        army(vk=vk, player=player, token=token, action_time=action_time)
+        army(player=player)
 
     # Подземелье
 
     elif command.lower() == 'cave':
-        cave(vk=vk, player=player, token=token)
+        cave(player=player)
     elif command.lower() == 'cave_build':
-        cave_build(vk=vk, player=player, token=token)
+        cave_build(player=player)
     elif command.lower() == 'build_forge':
-        build_forge(vk=vk, player=player, token=token)
+        build_forge(player=player)
     elif command.lower() == 'build_tavern':
-        build_tavern(vk=vk, player=player, token=token)
+        build_tavern(player=player)
     elif command.lower() == 'build_stock':
-        build_stock(vk=vk, player=player, token=token)
+        build_stock(player=player)
     elif command.lower() == 'build_citadel':
-        build_citadel(vk=vk, player=player, token=token)
+        build_citadel(player=player)
 
     # Кузница
 
     elif command.lower() == 'forge':
-        forge(vk=vk, player=player, token=token)
+        forge(player=player)
     elif command.lower() == 'forge_pickaxe':
-        forge_pickaxe(vk=vk, player=player, token=token)
+        forge_pickaxe(player=player)
     elif command.lower() == 'forge_pickaxe_info':
-        forge_pickaxe_info(vk=vk, player=player, token=token)
+        forge_pickaxe_info(player=player)
     elif command.lower() == 'craft_pickaxe_stone':
-        craft_pickaxe_stone(vk=vk, player=player, action_time=action_time, token=token)
+        craft_pickaxe_stone(player=player, action_time=action_time)
     elif command.lower() == 'craft_pickaxe_iron':
-        craft_pickaxe_iron(vk=vk, player=player, action_time=action_time, token=token)
+        craft_pickaxe_iron(player=player, action_time=action_time)
     elif command.lower() == 'craft_pickaxe_diamond':
-        craft_pickaxe_diamond(vk=vk, player=player, action_time=action_time, token=token)
+        craft_pickaxe_diamond(player=player, action_time=action_time)
     elif command.lower() == 'forge_kit':
-        forge_kit(vk=vk, player=player, token=token)
+        forge_kit(player=player)
     elif command.lower() == 'forge_kit_info':
-        forge_kit_info(vk=vk, player=player, token=token)
+        forge_kit_info(player=player)
     elif command.lower() == 'craft_sword':
-        craft_sword(vk=vk, player=player, token=token)
+        craft_sword(player=player)
     elif command.lower() == 'craft_bow':
-        craft_bow(vk=vk, player=player, token=token)
+        craft_bow(player=player)
     elif command.lower() == 'craft_orb':
-        craft_orb(vk=vk, player=player, token=token)
+        craft_orb(player=player)
+    elif command.lower() == 'craft_bow_x10':
+        craft_bow(player=player, amount=10)
+    elif command.lower() == 'craft_sword_x10':
+        craft_sword(player=player, amount=10)
+    elif command.lower() == 'craft_orb_x10':
+        craft_orb(player=player, amount=10)
 
     # Шахта
 
     elif command.lower() == 'mine':
-        mine(vk=vk, player=player, token=token)
+        mine(player=player)
     elif command.lower() == 'dig_stone':
-        dig_stone(vk=vk, player=player, action_time=action_time, token=token)
+        dig_stone(player=player, action_time=action_time)
     elif command.lower() == 'dig_iron':
-        dig_iron(vk=vk, player=player, action_time=action_time, token=token)
+        dig_iron(player=player, action_time=action_time)
     elif command.lower() == 'dig_gold':
-        dig_gold(vk=vk, player=player, action_time=action_time, token=token)
+        dig_gold(player=player, action_time=action_time)
     elif command.lower() == 'dig_diamond':
-        dig_diamond(vk=vk, player=player, action_time=action_time, token=token)
+        dig_diamond(player=player, action_time=action_time)
 
     # Таверна
 
     elif command.lower() == 'tavern':
-        tavern(vk=vk, player=player, token=token)
+        tavern(player=player)
     elif command.lower() == 'buy_warrior':
-        buy_warrior(vk=vk, player=player, token=token)
+        buy_warrior(player=player)
     elif command.lower() == 'buy_archer':
-        buy_archer(vk=vk, player=player, token=token)
+        buy_archer(player=player)
     elif command.lower() == 'buy_wizard':
-        buy_wizard(vk=vk, player=player, token=token)
+        buy_wizard(player=player)
+    elif command.lower() == 'buy_warrior_x10':
+        buy_warrior(player=player, amount=10)
+    elif command.lower() == 'buy_archer_x10':
+        buy_archer(player=player, amount=10)
+    elif command.lower() == 'buy_wizard_x10':
+        buy_wizard(player=player, amount=10)
 
     # Земли
 
     elif command.lower() == 'land':
-        land(vk=vk, player=player, token=token)
+        land(player=player)
     elif command.lower() == 'cut_wood':
-        cut_wood(vk=vk, player=player, action_time=action_time, token=token)
+        cut_wood(player=player, action_time=action_time)
     elif command.lower() == 'land_build':
-        land_build(vk=vk, player=player, token=token)
+        land_build(player=player)
     elif command.lower() == 'build_tower':
-        build_tower(vk=vk, player=player, token=token)
+        build_tower(player=player)
     elif command.lower() == 'build_wall':
-        build_wall(vk=vk, player=player, token=token)
+        build_wall(player=player)
 
     # Война
     elif command.lower() == 'war':
-        war(vk=vk, player=player, token=token)
+        war(player=player)
     elif command.lower() == 'find_enemy':
-        find_enemy(vk=vk, player=player, action_time=action_time, token=token)
+        find_enemy(player=player, action_time=action_time)
     elif command.lower() == 'attack':
-        attack(vk=vk, player=player, action_time=action_time, token=token)
+        attack(player=player, action_time=action_time)
     elif command.lower() == 'shield_info':
-        shield_info(vk=vk, player=player, action_time=action_time, token=token)
+        shield_info(player=player, action_time=action_time)

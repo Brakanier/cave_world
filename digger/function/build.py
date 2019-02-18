@@ -1,7 +1,7 @@
 from .function import *
 
 
-def build_forge(vk, player, token):
+def build_forge(player):
     if not player.build.forge:
         if player.stock.stone >= FORGE_STONE:
             player.stock.stone = player.stock.stone - FORGE_STONE
@@ -15,16 +15,10 @@ def build_forge(vk, player, token):
                       'Камня: ' + str(FORGE_STONE) + ' ◾'
     else:
         message = 'У вас уже есть Кузница'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)
 
 
-def build_tavern(vk, player, token):
+def build_tavern(player):
     if not player.build.tavern:
         if player.stock.stone >= TAVERN_STONE and player.stock.iron >= TAVERN_IRON:
             player.stock.stone = player.stock.stone - TAVERN_STONE
@@ -40,16 +34,10 @@ def build_tavern(vk, player, token):
                       'Железо: ' + str(TAVERN_IRON) + ' ◽'
     else:
         message = 'У вас уже есть Таверна'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)
 
 
-def build_stock(vk, player, token):
+def build_stock(player):
     stone_need = player.stock.lvl * STOCK_X
     if player.stock.stone >= stone_need:
         player.stock.stone = player.stock.stone - stone_need
@@ -61,16 +49,10 @@ def build_stock(vk, player, token):
         message = 'Недостаточно ресурсов! \n' + \
                   'Нужно:\n' + \
                   'Камня: ' + str(stone_need) + ' ◾\n'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)
 
 
-def build_citadel(vk, player, token):
+def build_citadel(player):
     if not player.build.citadel:
         if player.stock.stone >= CITADEL_STONE and player.stock.iron >= CITADEL_IRON:
             player.stock.stone = player.stock.stone - CITADEL_STONE
@@ -88,16 +70,10 @@ def build_citadel(vk, player, token):
                       'Железо: ' + str(CITADEL_IRON) + ' ◽\n'
     else:
         message = 'У вас уже есть Цитадель'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)
 
 
-def build_tower(vk, player, token):
+def build_tower(player):
     need_stone = player.build.tower_lvl * TOWER_STONE
     need_wood = player.build.tower_lvl * TOWER_WOOD
     if player.stock.stone >= need_stone and player.stock.wood >= need_wood:
@@ -112,16 +88,10 @@ def build_tower(vk, player, token):
                   'Нужно:\n' + \
                   'Камня: ' + str(need_stone) + ' ◾\n' + \
                   'Дерева: ' + str(need_wood) + ' 🌲'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)
 
 
-def build_wall(vk, player, token):
+def build_wall(player):
     need_stone = player.build.wall_lvl * WALL_STONE
     need_iron = player.build.wall_lvl * WALL_IRON
     if player.stock.stone >= need_stone and player.stock.wood >= need_iron:
@@ -136,10 +106,4 @@ def build_wall(vk, player, token):
                   'Нужно:\n' + \
                   'Камня: ' + str(need_stone) + ' ◾\n' + \
                   'Дерева: ' + str(need_iron) + ' ◽'
-    vk.messages.send(
-        access_token=token,
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player=player),
-        message=message,
-        random_id=get_random_id()
-    )
+    send(player=player, message=message)
