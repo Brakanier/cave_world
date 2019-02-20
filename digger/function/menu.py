@@ -20,7 +20,7 @@ def profile(player, action_time):
     send(player=player, message=message, keyboard=get_keyboard(player=player, action_time=action_time))
 
 
-def stock(player):
+def stock(player, action_time):
     message = 'Склад - ' + str(player.stock.lvl) + ' ур.' + '\n' + \
               'Дерево: ' + str(player.stock.wood) + '/' + str(player.stock.max) + ' 🌲\n' + \
               'Камень: ' + str(player.stock.stone) + '/' + str(player.stock.max) + ' ◾\n' + \
@@ -28,7 +28,7 @@ def stock(player):
               'Золото: ' + str(player.stock.gold) + '/' + str(player.stock.max) + ' ✨\n' + \
               'Алмазы: ' + str(player.stock.diamond) + '/' + str(player.stock.max) + ' 💎\n' + \
               'Черепа: ' + str(player.stock.skull) + ' 💀'
-    send(player=player, message=message)
+    send(player=player, message=message, keyboard=get_keyboard(player=player, action_time=action_time))
 
 
 def cave_build(player):

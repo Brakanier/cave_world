@@ -144,7 +144,7 @@ def action(command, player, action_time):
     elif command.lower() == 'bonus':
         bonus(player=player, action_time=action_time)
     elif command.lower() == 'stock':
-        stock(player=player)
+        stock(player=player, action_time=action_time)
     elif command.lower() == 'army':
         army(player=player, action_time=action_time)
 
