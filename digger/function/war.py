@@ -265,6 +265,7 @@ def attack(player, action_time):
                 defender.stock.save()
                 defender.army.save()
                 defender.war.save()
+                defender.save()
 
                 send(player=defender, message=message_def)
 
