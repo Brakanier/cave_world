@@ -238,6 +238,8 @@ def get_keyboard(player, action_time=0):
         if action_time - player.crusade.crusade_last_time <= CRUSADE_TIME:
             color = VkKeyboardColor.NEGATIVE
         keyboard.add_button('🎯 В путь', color=color, payload={"command": "crusade_wildman"})
+        keyboard.add_line()
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
 
     elif player.place == 'crusade_wildman':
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
@@ -250,6 +252,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('🏰 Домой', color=VkKeyboardColor.DEFAULT, payload={"command": "crusade_home"})
         keyboard.add_button('🎯 В путь', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_rogue"})
+        keyboard.add_line()
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
 
     elif player.place == 'crusade_rogue':
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
@@ -262,6 +266,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('🏰 Домой', color=VkKeyboardColor.DEFAULT, payload={"command": "crusade_home"})
         keyboard.add_button('🎯 В путь', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_golem"})
+        keyboard.add_line()
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
 
     elif player.place == 'crusade_golem':
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
@@ -274,6 +280,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('🏰 Домой', color=VkKeyboardColor.DEFAULT, payload={"command": "crusade_home"})
         keyboard.add_button('🎯 В путь', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_elemental"})
+        keyboard.add_line()
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
 
     elif player.place == 'crusade_elemental':
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
