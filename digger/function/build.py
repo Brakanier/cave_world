@@ -94,7 +94,7 @@ def build_tower(player):
 def build_wall(player):
     need_stone = player.build.wall_lvl * WALL_STONE
     need_iron = player.build.wall_lvl * WALL_IRON
-    if player.stock.stone >= need_stone and player.stock.wood >= need_iron:
+    if player.stock.stone >= need_stone and player.stock.iron >= need_iron:
         player.stock.stone = player.stock.stone - need_stone
         player.stock.iron = player.stock.iron - need_iron
         player.build.wall_lvl = player.build.wall_lvl + 1
