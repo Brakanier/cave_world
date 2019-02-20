@@ -3,7 +3,7 @@ from django.http import HttpResponse
 
 from decouple import config
 import json
-
+from datetime import datetime
 
 from .models import Player, Stock, Build, Forge, Army, War, Crusade
 
@@ -49,7 +49,8 @@ def index(request):
                     elif 'payload' in data['object']:
                         payload = json.loads(data['object']['payload'])
                         action_time = data['object']['date']
-                        info = str(action_time) + ' | ' + \
+                        time = datetime.fromtimestamp(int(action_time + (3600 * 3)))
+                        info = time.strftime('%Y-%m-%d %H:%M:%S') + ' | ' + \
                                str(player.user_id) + ' | ' + \
                                payload['command'] + ' | ' + \
                                player.nickname + ' | ' + \
