@@ -55,7 +55,7 @@ def index(request):
                                payload['command'] + ' | ' + \
                                player.nickname + ' | ' + \
                                player.last_name + ' ' + player.first_name
-                        print('\n' + info + '\n')
+                        print(info)
                         action(command=payload['command'], player=player, action_time=action_time)
                     else:
                         text = data['object']['text']
