@@ -132,14 +132,12 @@ def crusade_attack(player):
         player_attack = player_warrior_attack + player_archer_attack + player_wizard_attack
         player_hp = player_warrior_hp + player_archer_hp + player_wizard_hp
 
-        # WALL AND TOWER BUFF
+        # TOWER BUFF
 
-        player_hp_with_wall = (player.build.wall_lvl * WALL_BUFF * player_hp) + player_hp
         player_tower = player.build.tower_lvl * TOWER_BUFF * player_attack
         player_attack = player_attack + player_tower
 
-        player_after_hp = player_hp_with_wall - enemy_attack
-        player_after_hp = min(player_hp, player_after_hp)
+        player_after_hp = player_hp - enemy_attack
 
         player_after_warrior = 0
         player_after_archer = 0
