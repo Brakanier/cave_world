@@ -83,14 +83,15 @@ def attack(player, action_time):
                 attack_hp = attack_warrior_hp + attack_archer_hp + attack_wizard_hp
 
                 # WALL AND TOWER BUFF
-                attack_wall_x = player.build.wall_lvl * WALL_BUFF
+
+                attack_hp_with_wall = (player.build.wall_lvl * WALL_BUFF * attack_hp) + attack_hp
                 attack_tower_x = player.build.tower_lvl * TOWER_BUFF
-                attack_hp = attack_hp * (1 + attack_wall_x)
                 attack_attack = attack_attack * (1 + attack_tower_x)
 
                 attack_power = attack_attack + attack_hp
 
                 # Защитник
+
                 defender_warrior_attack = defender.army.warrior * WARRIOR_ATTACK
                 defender_warrior_hp = defender.army.warrior * WARRIOR_HP
                 defender_archer_attack = defender.army.archer * ARCHER_ATTACK
@@ -102,17 +103,18 @@ def attack(player, action_time):
 
                 # WALL AND TOWER BUFF
 
-                defender_wall_x = defender.build.wall_lvl * WALL_BUFF
+                defender_hp_with_wall = (defender.build.wall_lvl * WALL_BUFF * defender_hp) + defender_hp
                 defender_tower_x = defender.build.tower_lvl * TOWER_BUFF
-                defender_hp = defender_hp * (1 + defender_wall_x)
                 defender_attack = defender_attack * (1 + defender_tower_x)
 
                 defender_power = defender_attack + defender_hp
 
                 # Остатки армий
 
-                attack_after_hp = attack_hp - defender_attack
-                defender_after_hp = defender_hp - attack_attack
+                attack_after_hp = attack_hp_with_wall - defender_attack
+                attack_after_hp = min(attack_hp, attack_after_hp)
+                defender_after_hp = defender_hp_with_wall - attack_attack
+                defender_after_hp = min(defender_hp, defender_after_hp)
 
                 attack_after_warrior = 0
                 attack_after_archer = 0

@@ -104,6 +104,27 @@ class War(models.Model):
     )
 
 
+class Crusade(models.Model):
+    user_id = models.BigIntegerField(
+        db_index=True,
+        unique=True,
+    )
+    part = models.IntegerField(
+        default=0,
+    )
+    crusade_last_time = models.BigIntegerField(
+        default=0,
+    )
+    enemy = models.CharField(
+        max_length=30,
+        blank=True,
+        default='',
+    )
+    enemy_army = models.IntegerField(
+        default=0,
+    )
+
+
 class Forge(models.Model):
     user_id = models.BigIntegerField(
         db_index=True,
@@ -212,12 +233,18 @@ class Player(models.Model):
         on_delete=models.SET(None),
         null=True,
     )
+    crusade = models.OneToOneField(
+        Crusade,
+        on_delete=models.SET(None),
+        null=True,
+    )
 
-    def create(self, user_id, stock, forge, build, army, war):
+    def create(self, user_id, stock, forge, build, army, war, crusade):
         self.forge = forge
         self.stock = stock
         self.build = build
         self.army = army
         self.war = war
+        self.crusade = crusade
         self.user_id = user_id
         return self

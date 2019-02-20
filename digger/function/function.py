@@ -87,8 +87,8 @@ def get_keyboard(player, action_time=0):
     # Земли
 
     elif player.place == 'land':
-        keyboard.add_button('⚔ Война', color=VkKeyboardColor.NEGATIVE, payload={"command": "war"})
-        keyboard.add_button('🎯 Поход', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade"})
+        keyboard.add_button('⚔ Война', color=VkKeyboardColor.DEFAULT, payload={"command": "war"})
+        keyboard.add_button('🎯 Поход', color=VkKeyboardColor.DEFAULT, payload={"command": "crusade"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('🔨 Здания', color=VkKeyboardColor.DEFAULT, payload={"command": "land_build"})
@@ -217,7 +217,6 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
 
-
     # Война
 
     elif player.place == 'war':
@@ -228,5 +227,58 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "attack"})
         keyboard.add_line()
         keyboard.add_button('🛡 Щит ⏳', color=VkKeyboardColor.DEFAULT, payload={"command": "shield_info"})
+
+    # Поход
+
+    elif player.place == 'crusade':
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        color = VkKeyboardColor.POSITIVE
+        if action_time - player.crusade.crusade_last_time <= CRUSADE_TIME:
+            color = VkKeyboardColor.NEGATIVE
+        keyboard.add_button('🎯 В путь', color=color, payload={"command": "crusade_wildman"})
+
+    elif player.place == 'crusade_wildman':
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('Сбежать', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade_exit"})
+        keyboard.add_button('⚔ Атака ⚔', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_attack"})
+
+    elif player.place == 'crusade_wildman_after':
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('🏰 Домой', color=VkKeyboardColor.DEFAULT, payload={"command": "crusade_home"})
+        keyboard.add_button('🎯 В путь', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_rogue"})
+
+    elif player.place == 'crusade_rogue':
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('Сбежать', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade_exit"})
+        keyboard.add_button('⚔ Атака ⚔', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_attack"})
+
+    elif player.place == 'crusade_rogue_after':
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('🏰 Домой', color=VkKeyboardColor.DEFAULT, payload={"command": "crusade_home"})
+        keyboard.add_button('🎯 В путь', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_golem"})
+
+    elif player.place == 'crusade_golem':
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('Сбежать', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade_exit"})
+        keyboard.add_button('⚔ Атака ⚔', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_attack"})
+
+    elif player.place == 'crusade_golem_after':
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('🏰 Домой', color=VkKeyboardColor.DEFAULT, payload={"command": "crusade_home"})
+        keyboard.add_button('🎯 В путь', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_elemental"})
+
+    elif player.place == 'crusade_elemental':
+        keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
+        keyboard.add_line()
+        keyboard.add_button('Сбежать', color=VkKeyboardColor.NEGATIVE, payload={"command": "crusade_exit"})
+        keyboard.add_button('⚔ Атака ⚔', color=VkKeyboardColor.POSITIVE, payload={"command": "crusade_attack"})
 
     return keyboard.get_keyboard()

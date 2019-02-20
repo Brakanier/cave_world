@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Player, Stock, Build, Forge, Army, War
+from .models import Player, Stock, Build, Forge, Army, War, Crusade
 
 # Register your models here.
 # admin.site.register(Player)
@@ -27,6 +27,7 @@ class ArmyAdmin(admin.ModelAdmin):
 
 admin.site.register(Forge)
 admin.site.register(War)
+admin.site.register(Crusade)
 
 
 

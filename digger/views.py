@@ -5,13 +5,14 @@ from decouple import config
 import json
 
 
-from .models import Player, Stock, Build, Forge, Army, War
+from .models import Player, Stock, Build, Forge, Army, War, Crusade
 
 from .function.build import *
 from .function.place import *
 from .function.action import *
 from .function.menu import *
 from .function.war import *
+from .function.crusade import *
 
 # Create your views here.
 
@@ -53,7 +54,7 @@ def index(request):
                                payload['command'] + ' | ' + \
                                player.nickname + ' | ' + \
                                player.last_name + ' ' + player.first_name
-                        print(info)
+                        print('\n' + info + '\n')
                         action(command=payload['command'], player=player, action_time=action_time)
                     else:
                         text = data['object']['text']
@@ -83,12 +84,14 @@ def register(user_id):
         forge = Forge.objects.create(user_id=user_id)
         stock = Stock.objects.create(user_id=user_id)
         build = Build.objects.create(user_id=user_id)
+        crusade = Crusade.objects.create(user_id=user_id)
         player = Player.objects.create(user_id=user_id,
                                        stock=stock,
                                        build=build,
                                        forge=forge,
                                        army=army,
                                        war=war,
+                                       crusade=crusade,
                                        )
         vk = vk_connect()
         user = vk.users.get(user_ids=str(user_id))
@@ -124,6 +127,10 @@ def check_models(player):
         war = War.objects.create(user_id=player.user_id)
         player.war = war
         player.war.save()
+    if not player.crusade:
+        crusade = Crusade.objects.create(user_id=player.user_id)
+        player.crusade = crusade
+        player.crusade.save()
     return player
 
 
@@ -232,6 +239,7 @@ def action(command, player, action_time):
         build_wall(player=player)
 
     # Война
+
     elif command.lower() == 'war':
         war(player=player)
     elif command.lower() == 'find_enemy':
@@ -240,3 +248,22 @@ def action(command, player, action_time):
         attack(player=player, action_time=action_time)
     elif command.lower() == 'shield_info':
         shield_info(player=player, action_time=action_time)
+
+    # Поход
+
+    elif command.lower() == 'crusade':
+        crusade(player=player, action_time=action_time)
+    elif command.lower() == 'crusade_home':
+        crusade_home(player=player)
+    elif command.lower() == 'crusade_exit':
+        crusade_exit(player=player)
+    elif command.lower() == 'crusade_attack':
+        crusade_attack(player=player)
+    elif command.lower() == 'crusade_wildman':
+        crusade_wildman(player=player, action_time=action_time)
+    elif command.lower() == 'crusade_rogue':
+        crusade_rogue(player=player)
+    elif command.lower() == 'crusade_golem':
+        crusade_golem(player=player)
+    elif command.lower() == 'crusade_elemental':
+        crusade_elemental(player=player)
