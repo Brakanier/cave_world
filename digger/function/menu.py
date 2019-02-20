@@ -127,7 +127,7 @@ def forge_kit_info(player):
     send(player=player, message=message)
 
 
-def army(player):
+def army(player, action_time):
     message = 'Армия:\n' + \
               'Воины: ' + str(player.army.warrior) + ' 🗡👥\n' + \
               'Лучники: ' + str(player.army.archer) + ' 🏹👥\n' + \
@@ -137,7 +137,7 @@ def army(player):
         tower_and_wall = 'Башня: ' + str(player.build.tower_lvl) + ' ур.\n' + \
                          'Стена: ' + str(player.build.wall_lvl) + ' ур.'
         message = message + tower_and_wall
-    send(player=player, message=message)
+    send(player=player, message=message, keyboard=get_keyboard(player=player, action_time=action_time))
 
 
 def shield_info(player, action_time):
