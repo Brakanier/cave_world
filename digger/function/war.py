@@ -188,11 +188,11 @@ def attack(player, action_time):
                               'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
                               'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮\n' + \
                               '[Награда]\n' + \
-                              'Дерево: ' + str(reward_wood) + ' ◾\n' + \
+                              'Дерево: ' + str(reward_wood) + ' 🌲\n' + \
                               'Камень: ' + str(reward_stone) + ' ◾\n' + \
-                              'Железо: ' + str(reward_iron) + ' ◾\n' + \
+                              'Железо: ' + str(reward_iron) + ' ◽\n' + \
                               'Золото: ' + str(reward_gold) + ' ✨\n' + \
-                              'Алмазы: ' + str(reward_diamond) + ' ◾\n' + \
+                              'Алмазы: ' + str(reward_diamond) + ' 💎\n' + \
                               'Черепа: ' + str(reward_skull) + ' 💀\n' + \
                               'Опыт: ' + str(reward_exp) + ' 📚'
 
@@ -207,11 +207,11 @@ def attack(player, action_time):
                                   'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮\n' + \
                                   '[Ресурсов потеряно]\n' + \
-                                  'Дерево: ' + str(reward_wood) + ' ◾\n' + \
+                                  'Дерево: ' + str(reward_wood) + ' 🌲\n' + \
                                   'Камень: ' + str(reward_stone) + ' ◾\n' + \
-                                  'Железо: ' + str(reward_iron) + ' ◾\n' + \
+                                  'Железо: ' + str(reward_iron) + ' ◽\n' + \
                                   'Золото: ' + str(reward_gold) + ' ✨\n' + \
-                                  'Алмазы: ' + str(reward_diamond) + ' ◾\n' + \
+                                  'Алмазы: ' + str(reward_diamond) + ' 💎\n' + \
                                   '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
                                   'Если вы нападёте, щит пропадёт!'
 

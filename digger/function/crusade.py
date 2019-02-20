@@ -34,9 +34,9 @@ def crusade_exit(player):
 def crusade_wildman(player, action_time):
     time = action_time - player.crusade.crusade_last_time
     if time <= CRUSADE_TIME:
-        hour = (BONUS_TIME - time) // 3600
-        minutes = ((BONUS_TIME - time) - (hour * 3600)) // 60
-        sec = (BONUS_TIME - time) - (minutes * 60) - (hour * 3600)
+        hour = (CRUSADE_TIME - time) // 3600
+        minutes = ((CRUSADE_TIME - time) - (hour * 3600)) // 60
+        sec = (CRUSADE_TIME - time) - (minutes * 60) - (hour * 3600)
         message = 'Вы отдыхаете, еще: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
     else:
         player.crusade.crusade_last_time = action_time
@@ -212,11 +212,11 @@ def crusade_attack(player):
                       'Лучники: ' + str(player_lost_archer) + ' / ' + str(player.army.archer) + ' 🏹\n' + \
                       'Маги: ' + str(player_lost_wizard) + ' / ' + str(player.army.wizard) + ' 🔮\n' + \
                       '[Награда]\n' + \
-                      'Дерево: ' + str(wood) + ' ◾\n' + \
+                      'Дерево: ' + str(wood) + ' 🌲\n' + \
                       'Камень: ' + str(stone) + ' ◾\n' + \
-                      'Железо: ' + str(iron) + ' ◾\n' + \
+                      'Железо: ' + str(iron) + ' ◽\n' + \
                       'Золото: ' + str(gold) + ' ✨\n' + \
-                      'Алмазы: ' + str(diamond) + ' ◾\n' + \
+                      'Алмазы: ' + str(diamond) + ' 💎\n' + \
                       'Опыт: ' + str(reward_exp) + ' 📚\n\n' + \
                       end
 
