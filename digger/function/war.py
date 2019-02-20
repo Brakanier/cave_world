@@ -33,6 +33,7 @@ def find_enemy(player, action_time):
                       'Уровень: ' + str(defender.lvl) + ' 👑\n' + \
                       'Успейте напасть, пока вас не опередили!'
         else:
+            player.war.enemy_id = 0
             message = 'Противник не найден'
 
         player.war.find_last_time = action_time
@@ -253,6 +254,7 @@ def attack(player, action_time):
                 player.army.wizard = attack_after_wizard // 1
                 player.war.war_last_time = action_time
                 player.war.shield = 0
+                player.war.enemy_id = 0
                 player.stock.save()
                 player.army.save()
                 player.war.save()

@@ -67,7 +67,6 @@ def crusade_rogue(player):
 def crusade_golem(player):
     player.place = 'crusade_golem'
     golem_type = random.choice(GOLEM_TYPE)
-    print(golem_type)
     player.crusade.enemy = golem_type
     player.crusade.enemy_army = random.randint(1, CRUSADE_MAX)
     player.crusade.save()
