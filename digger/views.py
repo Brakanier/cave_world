@@ -111,27 +111,27 @@ def check_models(player):
     if not player.forge:
         forge = Forge.objects.create(user_id=player.user_id)
         player.forge = forge
-        player.forge.save()
+        player.save()
     if not player.stock:
         stock = Stock.objects.create(user_id=player.user_id)
         player.stock = stock
-        player.stock.save()
+        player.save()
     if not player.build:
         build = Build.objects.create(user_id=player.user_id)
         player.build = build
-        player.build.save()
+        player.save()
     if not player.army:
         army = Army.objects.create(user_id=player.user_id)
         player.army = army
-        player.army.save()
+        player.save()
     if not player.war:
         war = War.objects.create(user_id=player.user_id)
         player.war = war
-        player.war.save()
+        player.save()
     if not player.crusade:
         crusade = Crusade.objects.create(user_id=player.user_id)
         player.crusade = crusade
-        player.crusade.save()
+        player.save()
     return player
 
 
