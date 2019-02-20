@@ -22,8 +22,8 @@ def crusade_home(player):
 def crusade_exit(player):
     player.place = 'land'
     player.army.warrior = round(player.army.warrior * 0.9)
-    player.army.archer = round(player.army.warrior * 0.9)
-    player.army.wizard = round(player.army.warrior * 0.9)
+    player.army.archer = round(player.army.archer * 0.9)
+    player.army.wizard = round(player.army.wizard * 0.9)
     player.army.save()
     player.save()
     message = 'Вы сбежали с поля боя!\n' + \
