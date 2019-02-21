@@ -3,6 +3,7 @@ from django.http import HttpResponse
 
 from decouple import config
 import json
+from time import sleep
 from datetime import datetime
 
 from .models import Player, Stock, Build, Forge, Army, War, Crusade
@@ -67,6 +68,10 @@ def index(request):
                                 player.save()
                                 message = 'Ваш ник - ' + player.nickname
                                 send(player=player, message=message)
+                            elif s.lower() == 'unsleep':
+                                while(True):
+                                    print('Unsleep')
+                                    sleep(10)
                             else:
                                 message = 'Используйте кнопки для управления!'
                                 send(player=player, message=message)
