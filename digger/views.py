@@ -152,6 +152,14 @@ def action(command, player, action_time):
         stock(player=player, action_time=action_time)
     elif command.lower() == 'army':
         army(player=player, action_time=action_time)
+    elif command.lower() == 'top':
+        top(player=player)
+    elif command.lower() == 'top_lvl':
+        top_lvl(player=player)
+    elif command.lower() == 'top_attack':
+        top_attack(player=player)
+    elif command.lower() == 'top_defend':
+        top_defend(player=player)
 
     # Подземелье
 

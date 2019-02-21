@@ -77,12 +77,22 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('Инфо', color=VkKeyboardColor.DEFAULT, payload={"command": "profile"})
+        keyboard.add_button('🔝 Топ 🔝', color=VkKeyboardColor.DEFAULT, payload={"command": "top"})
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "army"})
         keyboard.add_line()
         color = VkKeyboardColor.POSITIVE
         if action_time - player.bonus_time <= BONUS_TIME:
             color = VkKeyboardColor.NEGATIVE
         keyboard.add_button('🎁 Бонус', color=color, payload={"command": "bonus"})
+
+    if player.place == 'top':
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_line()
+        keyboard.add_button('👑 По уровню 👑', color=VkKeyboardColor.DEFAULT, payload={"command": "top_lvl"})
+        keyboard.add_line()
+        keyboard.add_button('⚔ По нападениям ⚔', color=VkKeyboardColor.DEFAULT, payload={"command": "top_attack"})
+        keyboard.add_line()
+        keyboard.add_button('🛡 По оборонам 🛡', color=VkKeyboardColor.DEFAULT, payload={"command": "top_attack"})
 
     # Земли
 

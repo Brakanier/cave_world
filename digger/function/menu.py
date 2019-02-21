@@ -1,5 +1,6 @@
 from .function import *
 from .CONSTANT import *
+from ..models import Player
 
 
 def profile(player, action_time):
@@ -29,6 +30,46 @@ def stock(player, action_time):
               'Алмазы: ' + str(player.stock.diamond) + '/' + str(player.stock.max) + ' 💎\n' + \
               'Черепа: ' + str(player.stock.skull) + ' 💀'
     send(player=player, message=message, keyboard=get_keyboard(player=player, action_time=action_time))
+
+
+def top(player):
+    player.place = 'top'
+    player.save()
+    message = 'Выберите топ'
+    send(player=player, message=message)
+
+
+def top_lvl(player):
+    top = Player.objects.order_by('-lvl').values_list('nickname', 'lvl')[0:9]
+    count = 1
+    main_message = 'Топ игроков по уровню 👑\n'
+    for user in top:
+        message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 👑\n'
+        count += 1
+        main_message = main_message + message
+    send(player=player, message=main_message)
+
+
+def top_attack(player):
+    top = Player.objects.filter(win__gt=0).order_by('-win').values_list('nickname', 'win')[0:9]
+    count = 1
+    main_message = 'Топ игроков по нападениям ⚔\n'
+    for user in top:
+        message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' ⚔\n'
+        count += 1
+        main_message = main_message + message
+    send(player=player, message=main_message)
+
+
+def top_defend(player):
+    top = Player.objects.filter(defend__gt=0).order_by('-defend').values_list('nickname', 'defend')[0:9]
+    count = 1
+    main_message = 'Топ игроков по оборонам 🛡\n'
+    for user in top:
+        message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 🛡\n'
+        count += 1
+        main_message = main_message + message
+    send(player=player, message=main_message)
 
 
 def cave_build(player):
