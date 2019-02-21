@@ -168,11 +168,10 @@ def get_keyboard(player, action_time=0):
     # Кузница
 
     elif player.place == 'forge':
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": 'cave'})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
-        keyboard.add_button('⚒ ⛏ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": 'forge_pickaxe'})
-        keyboard.add_button('⚒ ⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": 'forge_kit'})
-        print('keyboard - ready')
+        keyboard.add_button('⚒ ⛏ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_pickaxe"})
+        keyboard.add_button('⚒ ⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit"})
 
     # Кузница - крафт наборов
 
