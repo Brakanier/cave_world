@@ -92,26 +92,27 @@ def attack(player, action_time):
 
                 # Защитник
 
+                # WALL BUFF
+                defender_wall_x = 1 + (WALL_BUFF * defender.build.wall_lvl)
+                def_warrior_hp = WARRIOR_HP * defender_wall_x
+                def_archer_hp = ARCHER_HP * defender_wall_x
+                def_wizard_hp = WIZARD_HP * defender_wall_x
+
                 defender_warrior_attack = defender.army.warrior * WARRIOR_ATTACK
-                defender_warrior_hp = defender.army.warrior * WARRIOR_HP
+                defender_warrior_hp = defender.army.warrior * def_warrior_hp
                 defender_archer_attack = defender.army.archer * ARCHER_ATTACK
-                defender_archer_hp = defender.army.archer * ARCHER_HP
+                defender_archer_hp = defender.army.archer * def_archer_hp
                 defender_wizard_attack = defender.army.wizard * WIZARD_ATTACK
-                defender_wizard_hp = defender.army.wizard * WIZARD_HP
+                defender_wizard_hp = defender.army.wizard * def_wizard_hp
                 defender_attack = defender_warrior_attack + defender_archer_attack + defender_wizard_attack
                 defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
-
-                # WALL BUFF
-
-                defender_hp_with_wall = (defender.build.wall_lvl * WALL_BUFF * defender_hp) + defender_hp
 
                 defender_power = defender_attack + defender_hp
 
                 # Остатки армий
 
                 attack_after_hp = attack_hp - defender_attack
-                defender_after_hp = defender_hp_with_wall - attack_attack
-                defender_after_hp = min(defender_hp, defender_after_hp)
+                defender_after_hp = defender_hp - attack_attack
 
                 attack_after_warrior = 0
                 attack_after_archer = 0
@@ -128,9 +129,9 @@ def attack(player, action_time):
                 defender_after_archer = 0
                 defender_after_wizard = 0
                 if defender_hp > 0 and defender_after_hp > 0:
-                    defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // WARRIOR_HP
-                    defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // ARCHER_HP
-                    defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // WIZARD_HP
+                    defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // def_warrior_hp
+                    defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // def_archer_hp
+                    defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // def_wizard_hp
                 defender_lost_warrior = round(defender.army.warrior - defender_after_warrior)
                 defender_lost_archer = round(defender.army.archer - defender_after_archer)
                 defender_lost_wizard = round(defender.army.wizard - defender_after_wizard)
