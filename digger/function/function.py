@@ -92,7 +92,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('⚔ По нападениям ⚔', color=VkKeyboardColor.DEFAULT, payload={"command": "top_attack"})
         keyboard.add_line()
-        keyboard.add_button('🛡 По оборонам 🛡', color=VkKeyboardColor.DEFAULT, payload={"command": "top_attack"})
+        keyboard.add_button('🛡 По оборонам 🛡', color=VkKeyboardColor.DEFAULT, payload={"command": "top_defend"})
 
     # Земли
 
