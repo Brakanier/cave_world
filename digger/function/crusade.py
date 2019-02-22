@@ -101,6 +101,7 @@ def crusade_elemental(player):
 
 
 def crusade_attack(player):
+    reward_exp = 0
     if player.crusade.enemy == '':
         message = 'Вы не в походе!'
     else:
@@ -150,6 +151,8 @@ def crusade_attack(player):
         player_lost_archer = round(player.army.archer - player_after_archer)
         player_lost_wizard = round(player.army.wizard - player_after_wizard)
 
+        enemy_lost = min(round((player_attack / enemy_hp) * player.crusade.enemy_army), player.crusade.enemy_army)
+
         if player_attack >= enemy_hp:
 
             # Победа Игрока
@@ -189,8 +192,6 @@ def crusade_attack(player):
             player.stock.gold = player.stock.gold + min(gold, player.stock.max - player.stock.gold)
             player.stock.diamond = player.stock.diamond + min(diamond, player.stock.max - player.stock.diamond)
 
-            player = exp(player=player, exp=reward_exp)
-
             end = 'Лорд, продолжаем поход или возвращаемся домой?'
 
             if player.place == 'crusade_wildman':
@@ -223,6 +224,7 @@ def crusade_attack(player):
 
             player.place = 'land'
             message = '⚔ Поражение ⚔\n' + \
+                      'Убито существ: ' + str(enemy_lost) + ' / ' + str(player.crusade.enemy_army) + '\n' + \
                       '[Ваши потери]\n' + \
                       'Воины: ' + str(player_lost_warrior) + ' / ' + str(player.army.warrior) + ' 🗡\n' + \
                       'Лучники: ' + str(player_lost_archer) + ' / ' + str(player.army.archer) + ' 🏹\n' + \
@@ -237,5 +239,7 @@ def crusade_attack(player):
         player.army.save()
         player.stock.save()
         player.crusade.save()
-        player.save()
+
     send(player=player, message=message)
+    player = exp(player=player, exp=reward_exp)
+    player.save()

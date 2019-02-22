@@ -144,34 +144,32 @@ def attack(player, action_time):
                     # Награда
 
                     attack_after_army = attack_after_warrior + attack_after_archer + attack_after_wizard
+                    cost = round(attack_after_army * COST_PER_UNIT)
                     reward = round(attack_after_army * REWARD_PER_UNIT)
-                    reward_stone = min(defender.stock.stone, reward)
-                    reward_wood = min(defender.stock.wood, reward)
-                    reward_iron = min(defender.stock.iron, reward)
-                    reward_gold = min(defender.stock.gold, reward)
-                    reward_diamond = min(defender.stock.diamond, reward)
                     reward_skull = 1
                     reward_exp = round(defender_lost_army / REWARD_EXP_Y)
                     reward_exp = max(reward_exp, 1)
                     player = exp(player=player, exp=reward_exp)
+                    print('Забрали - ' + str(cost))
+                    print('Награда - ' + str(reward))
 
                     # Проигравший
 
-                    defender.stock.stone = defender.stock.stone - reward_stone
-                    defender.stock.wood = defender.stock.wood - reward_wood
-                    defender.stock.iron = defender.stock.iron - reward_iron
-                    defender.stock.gold = defender.stock.gold - reward_gold
-                    defender.stock.diamond = defender.stock.diamond - reward_diamond
+                    defender.stock.stone = defender.stock.stone - min(cost, defender.stock.stone)
+                    defender.stock.wood = defender.stock.wood - min(cost, defender.stock.wood)
+                    defender.stock.iron = defender.stock.iron - min(cost, defender.stock.iron)
+                    defender.stock.gold = defender.stock.gold - min(cost, defender.stock.gold)
+                    defender.stock.diamond = defender.stock.diamond - min(cost, defender.stock.diamond)
 
                     defender.war.shield = 8
 
                     # Выдаём победителю
 
-                    player.stock.stone = player.stock.stone + min(reward_stone, (player.stock.max - player.stock.stone))
-                    player.stock.wood = player.stock.wood + min(reward_wood, (player.stock.max - player.stock.wood))
-                    player.stock.iron = player.stock.iron + min(reward_iron, (player.stock.max - player.stock.iron))
-                    player.stock.gold = player.stock.gold + min(reward_gold, (player.stock.max - player.stock.gold))
-                    player.stock.diamond = player.stock.diamond + min(reward_diamond, (player.stock.max - player.stock.diamond))
+                    player.stock.stone = player.stock.stone + min(reward, (player.stock.max - player.stock.stone))
+                    player.stock.wood = player.stock.wood + min(reward, (player.stock.max - player.stock.wood))
+                    player.stock.iron = player.stock.iron + min(reward, (player.stock.max - player.stock.iron))
+                    player.stock.gold = player.stock.gold + min(reward, (player.stock.max - player.stock.gold))
+                    player.stock.diamond = player.stock.diamond + min(reward, (player.stock.max - player.stock.diamond))
                     player.stock.skull = player.stock.skull + reward_skull
                     player.win = player.win + 1
 
@@ -186,11 +184,11 @@ def attack(player, action_time):
                               'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
                               'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮\n' + \
                               '[Награда]\n' + \
-                              'Дерево: ' + str(reward_wood) + ' 🌲\n' + \
-                              'Камень: ' + str(reward_stone) + ' ◾\n' + \
-                              'Железо: ' + str(reward_iron) + ' ◽\n' + \
-                              'Золото: ' + str(reward_gold) + ' ✨\n' + \
-                              'Алмазы: ' + str(reward_diamond) + ' 💎\n' + \
+                              'Дерево: ' + str(reward) + ' 🌲\n' + \
+                              'Камень: ' + str(reward) + ' ◾\n' + \
+                              'Железо: ' + str(reward) + ' ◽\n' + \
+                              'Золото: ' + str(reward) + ' ✨\n' + \
+                              'Алмазы: ' + str(reward) + ' 💎\n' + \
                               'Черепа: ' + str(reward_skull) + ' 💀\n' + \
                               'Опыт: ' + str(reward_exp) + ' 📚'
 
@@ -205,11 +203,11 @@ def attack(player, action_time):
                                   'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.army.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.army.wizard) + ' 🔮\n' + \
                                   '[Ресурсов потеряно]\n' + \
-                                  'Дерево: ' + str(reward_wood) + ' 🌲\n' + \
-                                  'Камень: ' + str(reward_stone) + ' ◾\n' + \
-                                  'Железо: ' + str(reward_iron) + ' ◽\n' + \
-                                  'Золото: ' + str(reward_gold) + ' ✨\n' + \
-                                  'Алмазы: ' + str(reward_diamond) + ' 💎\n' + \
+                                  'Дерево: ' + str(cost) + ' 🌲\n' + \
+                                  'Камень: ' + str(cost) + ' ◾\n' + \
+                                  'Железо: ' + str(cost) + ' ◽\n' + \
+                                  'Золото: ' + str(cost) + ' ✨\n' + \
+                                  'Алмазы: ' + str(cost) + ' 💎\n' + \
                                   '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
                                   'Если вы нападёте, щит пропадёт!'
 
