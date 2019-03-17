@@ -91,7 +91,7 @@ def log(player, command, action_time):
     print(info)
 
 
-def action(command, player, action_time, amount=1):
+def action(command, player, action_time):
     answer = 'пусто'
 
     # Меню
@@ -131,25 +131,13 @@ def action(command, player, action_time, amount=1):
     # Добыча
 
     elif 'камень' in command:
-        part = command.split()
-        if len(part) > 1:
-            amount = int(part[1])
-        answer = player.get_stone(action_time, amount)
+        answer = player.get_stone(action_time, amount(command))
     elif 'дерево' in command:
-        part = command.split()
-        if len(part) > 1:
-            amount = int(part[1])
-        answer = player.get_wood(action_time, amount)
+        answer = player.get_wood(action_time, amount(command))
     elif 'железо' in command:
-        part = command.split()
-        if len(part) > 1:
-            amount = int(part[1])
-        answer = player.get_iron(action_time, amount)
+        answer = player.get_iron(action_time, amount(command))
     elif 'кристалы' in command:
-        part = command.split()
-        if len(part) > 1:
-            amount = int(part[1])
-        answer = player.get_diamond(action_time, amount)
+        answer = player.get_diamond(action_time, amount(command))
 
     elif command == 'ковать каменная кирка':
         answer = player.craft_stone_pickaxe()
@@ -180,20 +168,11 @@ def action(command, player, action_time, amount=1):
     # Армия
 
     elif 'воин' in command:
-        part = command.split()
-        if len(part) > 1:
-            amount = int(part[1])
-        answer = player.war.craft_warrior(player.build.stock, player.build.barracks, amount)
+        answer = player.war.craft_warrior(player.build.stock, player.build.barracks, amount(command))
     elif 'лучник' in command:
-        part = command.split()
-        if len(part) > 1:
-            amount = int(part[1])
-        answer = player.war.craft_archer(player.build.stock, player.build.archery, amount)
+        answer = player.war.craft_archer(player.build.stock, player.build.archery, amount(command))
     elif 'маг' in command:
-        part = command.split()
-        if len(part) > 1:
-            amount = int(part[1])
-        answer = player.war.craft_wizard(player.build.stock, player.build.magic, amount)
+        answer = player.war.craft_wizard(player.build.stock, player.build.magic, amount(command))
 
     # Война
 

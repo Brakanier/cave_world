@@ -11,6 +11,14 @@ def get_random_id():
     return random.getrandbits(31) * random.choice([-1, 1])
 
 
+def amount(command):
+    count = 1
+    part = command.split()
+    if len(part) > 1:
+        count = int(part[1])
+    return count
+
+
 def in_items(items, slug):
     for item in items:
         if item.slug == slug:
