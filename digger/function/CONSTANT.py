@@ -25,7 +25,6 @@ BONUS_GOLD = 30
 
 BONUS_TIME = 86400
 
-
 # Крафт
 
 CRAFT_ENEGRY = 1

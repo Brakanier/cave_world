@@ -164,8 +164,8 @@ def craft_pickaxe_stone(player, action_time):
                 player = exp(player=player, exp=CRAFT_ENEGRY)
                 player.stock.save()
                 player.forge.save()
-                message = 'Поздравляю!\n' \
-                          'Вы скрафтили ◾ Каменную Кирку ◾\n' \
+                message = 'Поздравляю!\n' + \
+                          'Вы скрафтили ◾ Каменную Кирку ◾\n' + \
                           'Теперь вы можете добывать железо и золото в шахте.\n' + \
                           'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n' + \
                           'Опыт: ' + str(player.exp) + '/' + str(player.exp_need) + ' 📚'
