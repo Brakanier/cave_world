@@ -80,6 +80,7 @@ def send(chat_info, message, keyboard=None):
             random_id=get_random_id()
         )
     else:
+        message = '@id' + str(chat_info['user_id']) + '(' + chat_info['nick'] + ')\n' + message
         vk.messages.send(
             access_token=token(),
             peer_id=str(chat_info['peer_id']),

@@ -133,6 +133,7 @@ def log(player, command, action_time):
 
 def action(command, player, action_time, chat_info):
     answer = 'пусто'
+    chat_info['nick'] = player.nickname
 
     # Меню
 
