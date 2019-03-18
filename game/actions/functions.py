@@ -86,9 +86,20 @@ def send(chat_info, message, keyboard=None):
                 access_token=token(),
                 peer_id=str(chat_info['peer_id']),
                 chat_id=str(chat_info['chat_id']),
+                keyboard=keyboard_for_chat(),
                 message=message,
                 random_id=get_random_id()
             )
+
+
+def keyboard_for_chat():
+    keyboard = VkKeyboard()
+
+    keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
+    keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "!команды"})
+    keyboard.add_button('🎁 Бонус', color=VkKeyboardColor.POSITIVE, payload={"command": "бонус"})
+
+    return keyboard.get_keyboard()
 
 
 def vk_connect():
