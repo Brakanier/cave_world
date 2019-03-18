@@ -15,7 +15,8 @@ def amount(command):
     count = 1
     part = command.split()
     if len(part) > 1:
-        count = int(part[1])
+        if part[1].isdigit():
+            count = int(part[1])
     return count
 
 
