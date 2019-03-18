@@ -70,24 +70,25 @@ def exp(player, chat_info, exp):
 
 
 def send(chat_info, message, keyboard=None):
-    vk = vk_connect()
-    if chat_info['user_id'] == chat_info['chat_id']:
-        vk.messages.send(
-            access_token=token(),
-            peer_id=str(chat_info['user_id']),
-            keyboard=keyboard,
-            message=message,
-            random_id=get_random_id()
-        )
-    else:
-        message = '@id' + str(chat_info['user_id']) + '(' + chat_info['nick'] + ')\n' + message
-        vk.messages.send(
-            access_token=token(),
-            peer_id=str(chat_info['peer_id']),
-            chat_id=str(chat_info['chat_id']),
-            message=message,
-            random_id=get_random_id()
-        )
+    if not message == 'пусто':
+        vk = vk_connect()
+        if chat_info['user_id'] == chat_info['chat_id']:
+            vk.messages.send(
+                access_token=token(),
+                peer_id=str(chat_info['user_id']),
+                keyboard=keyboard,
+                message=message,
+                random_id=get_random_id()
+            )
+        else:
+            message = '@id' + str(chat_info['user_id']) + '(' + chat_info['nick'] + ')\n' + message
+            vk.messages.send(
+                access_token=token(),
+                peer_id=str(chat_info['peer_id']),
+                chat_id=str(chat_info['chat_id']),
+                message=message,
+                random_id=get_random_id()
+            )
 
 
 def vk_connect():

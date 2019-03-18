@@ -87,14 +87,17 @@ class Player(models.Model):
             stone = stone + random.randint(-4 * amount, 4 * amount)
             space = self.build.stock.max - self.build.stock.stone
             if space > 0:
-                self.energy = self.energy - GET_ENERGY * amount
-                stone = min(stone, space)
-                self.build.stock.stone = self.build.stock.stone + stone
-                self = exp(self, chat_info, GET_ENERGY * amount)
-                message = 'Добыто камня: ' + str(stone) + icon('stone') + '\n' + \
-                          'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
-                          'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                Stock.objects.filter(user_id=self.user_id).update(stone=self.build.stock.stone)
+                if space >= stone:
+                    self.energy = self.energy - GET_ENERGY * amount
+                    stone = min(stone, space)
+                    self.build.stock.stone = self.build.stock.stone + stone
+                    self = exp(self, chat_info, GET_ENERGY * amount)
+                    message = 'Добыто камня: ' + str(stone) + icon('stone') + '\n' + \
+                              'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
+                              'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
+                    Stock.objects.filter(user_id=self.user_id).update(stone=self.build.stock.stone)
+                else:
+                    message = 'Нехватает места!\n'
             else:
                 message = 'Склад заполнен!'
             Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
@@ -112,14 +115,17 @@ class Player(models.Model):
             wood = wood + random.randint(-4 * amount, 4 * amount)
             space = self.build.stock.max - self.build.stock.wood
             if space > 0:
-                self.energy = self.energy - GET_ENERGY * amount
-                wood = min(wood, space)
-                self.build.stock.wood = self.build.stock.wood + wood
-                self = exp(self, chat_info, GET_ENERGY * amount)
-                message = 'Добыто дерева: ' + str(wood) + icon('wood') + '\n' + \
-                          'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
-                          'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                Stock.objects.filter(user_id=self.user_id).update(wood=self.build.stock.wood)
+                if space >= wood:
+                    self.energy = self.energy - GET_ENERGY * amount
+                    wood = min(wood, space)
+                    self.build.stock.wood = self.build.stock.wood + wood
+                    self = exp(self, chat_info, GET_ENERGY * amount)
+                    message = 'Добыто дерева: ' + str(wood) + icon('wood') + '\n' + \
+                              'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
+                              'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
+                    Stock.objects.filter(user_id=self.user_id).update(wood=self.build.stock.wood)
+                else:
+                    message = 'Нехватает места!\n'
             else:
                 message = 'Склад заполнен!'
             Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
@@ -139,14 +145,17 @@ class Player(models.Model):
                 iron = iron + random.randint(-2 * amount, 2 * amount)
                 space = self.build.stock.max - self.build.stock.iron
                 if space > 0:
-                    self.energy = self.energy - GET_ENERGY * amount
-                    iron = min(iron, space)
-                    self.build.stock.iron = self.build.stock.iron + iron
-                    self = exp(self, chat_info, GET_ENERGY * amount)
-                    message = 'Добыто железа: ' + str(iron) + icon('iron') + '\n' + \
-                              'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
-                              'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                    Stock.objects.filter(user_id=self.user_id).update(iron=self.build.stock.iron)
+                    if space >= iron:
+                        self.energy = self.energy - GET_ENERGY * amount
+                        iron = min(iron, space)
+                        self.build.stock.iron = self.build.stock.iron + iron
+                        self = exp(self, chat_info, GET_ENERGY * amount)
+                        message = 'Добыто железа: ' + str(iron) + icon('iron') + '\n' + \
+                                  'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
+                                  'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
+                        Stock.objects.filter(user_id=self.user_id).update(iron=self.build.stock.iron)
+                    else:
+                        message = 'Нехватает места!\n'
                 else:
                     message = 'Склад заполнен!'
                 Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
@@ -169,14 +178,17 @@ class Player(models.Model):
                 diamond = diamond + random.randint(-1 * amount, 1 * amount)
                 space = self.build.stock.max - self.build.stock.diamond
                 if space > 0:
-                    self.energy = self.energy - GET_ENERGY * amount
-                    diamond = min(diamond, space)
-                    self.build.stock.diamond = self.build.stock.diamond + diamond
-                    self = exp(self, chat_info, GET_ENERGY * amount)
-                    message = 'Добыто кристалов: ' + str(diamond) + icon('diamond') + '\n' + \
-                              'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
-                              'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                    Stock.objects.filter(user_id=self.user_id).update(diamond=self.build.stock.diamond)
+                    if space >= diamond:
+                        self.energy = self.energy - GET_ENERGY * amount
+                        diamond = min(diamond, space)
+                        self.build.stock.diamond = self.build.stock.diamond + diamond
+                        self = exp(self, chat_info, GET_ENERGY * amount)
+                        message = 'Добыто кристалов: ' + str(diamond) + icon('diamond') + '\n' + \
+                                  'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
+                                  'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
+                        Stock.objects.filter(user_id=self.user_id).update(diamond=self.build.stock.diamond)
+                    else:
+                        message = 'Не хватает места!\n'
                 else:
                     message = 'Склад заполнен!'
                 Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
