@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
+import re
 import json
 from decouple import config
 from datetime import datetime
@@ -173,13 +174,13 @@ def action(command, player, action_time, chat_info):
 
     # Добыча
 
-    elif 'камень' in command:
+    elif re.match(r'камень', command):
         answer = player.get_stone(action_time, chat_info, amount(command))
-    elif 'дерево' in command:
+    elif re.match(r'дерево', command):
         answer = player.get_wood(action_time, chat_info, amount(command))
-    elif 'железо' in command:
+    elif re.match(r'железо', command):
         answer = player.get_iron(action_time, chat_info, amount(command))
-    elif 'кристалы' in command:
+    elif re.match(r'кристалы', command):
         answer = player.get_diamond(action_time, chat_info, amount(command))
 
     elif command == 'ковать каменная кирка':
@@ -210,11 +211,11 @@ def action(command, player, action_time, chat_info):
 
     # Армия
 
-    elif 'воин' in command:
+    elif re.match(r'воин', command):
         answer = player.war.craft_warrior(player.build.stock, player.build.barracks, amount(command))
-    elif 'лучник' in command:
+    elif re.match(r'лучник', command):
         answer = player.war.craft_archer(player.build.stock, player.build.archery, amount(command))
-    elif 'маг' in command:
+    elif re.match(r'маг', command):
         answer = player.war.craft_wizard(player.build.stock, player.build.magic, amount(command))
 
     # Война
