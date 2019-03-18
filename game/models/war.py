@@ -289,7 +289,7 @@ class War(models.Model):
                         reward = round(defender.build.stock.max * 4 * 0.2 / 11)
                         reward_skull = 1
                         reward_exp = 5
-                        player = exp(player=player, exp=reward_exp)
+                        player = exp(self, chat_info, reward_exp)
                         print('Забрали - ' + str(cost))
                         print('Награда - ' + str(reward))
 

@@ -80,7 +80,7 @@ class Player(models.Model):
 
     # Действия
 
-    def get_stone(self, action_time, amount=1):
+    def get_stone(self, action_time, chat_info, amount=1):
         self = energy(self, action_time)
         if self.energy >= GET_ENERGY * amount:
             stone = 8 * amount
@@ -90,7 +90,7 @@ class Player(models.Model):
                 self.energy = self.energy - GET_ENERGY * amount
                 stone = min(stone, space)
                 self.build.stock.stone = self.build.stock.stone + stone
-                self = exp(self, GET_ENERGY * amount)
+                self = exp(self, chat_info, GET_ENERGY * amount)
                 message = 'Добыто камня: ' + str(stone) + icon('stone') + '\n' + \
                           'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                           'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
@@ -105,7 +105,7 @@ class Player(models.Model):
             message = 'Недостаточно энергии!'
         return message
 
-    def get_wood(self, action_time, amount=1):
+    def get_wood(self, action_time, chat_info, amount=1):
         self = energy(self, action_time)
         if self.energy >= GET_ENERGY * amount:
             wood = 8 * amount
@@ -115,7 +115,7 @@ class Player(models.Model):
                 self.energy = self.energy - GET_ENERGY * amount
                 wood = min(wood, space)
                 self.build.stock.wood = self.build.stock.wood + wood
-                self = exp(self, GET_ENERGY * amount)
+                self = exp(self, chat_info, GET_ENERGY * amount)
                 message = 'Добыто дерева: ' + str(wood) + icon('wood') + '\n' + \
                           'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                           'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
@@ -130,7 +130,7 @@ class Player(models.Model):
             message = 'Недостаточно энергии!'
         return message
 
-    def get_iron(self, action_time, amount=1):
+    def get_iron(self, action_time, chat_info, amount=1):
         item = in_items(self.inventory.items.all(), 'stone_pickaxe')
         if item:
             self = energy(self, action_time)
@@ -142,7 +142,7 @@ class Player(models.Model):
                     self.energy = self.energy - GET_ENERGY * amount
                     iron = min(iron, space)
                     self.build.stock.iron = self.build.stock.iron + iron
-                    self = exp(self, GET_ENERGY * amount)
+                    self = exp(self, chat_info, GET_ENERGY * amount)
                     message = 'Добыто железа: ' + str(iron) + icon('iron') + '\n' + \
                               'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                               'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
@@ -160,7 +160,7 @@ class Player(models.Model):
                       'Нужна Каменная Кирка!'
         return message
 
-    def get_diamond(self, action_time, amount=1):
+    def get_diamond(self, action_time, chat_info, amount=1):
         item = in_items(self.inventory.items.all(), 'iron_pickaxe')
         if item:
             self = energy(self, action_time)
@@ -172,7 +172,7 @@ class Player(models.Model):
                     self.energy = self.energy - GET_ENERGY * amount
                     diamond = min(diamond, space)
                     self.build.stock.diamond = self.build.stock.diamond + diamond
-                    self = exp(self, GET_ENERGY * amount)
+                    self = exp(self, chat_info, GET_ENERGY * amount)
                     message = 'Добыто кристалов: ' + str(diamond) + icon('diamond') + '\n' + \
                               'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                               'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')

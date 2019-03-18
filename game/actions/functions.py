@@ -54,7 +54,7 @@ def energy(player, action_time):
     return player
 
 
-def exp(player, exp):
+def exp(player, chat_info, exp):
     current_exp = player.exp + exp
     if current_exp >= exp_need(player.lvl):
         more_exp = current_exp - exp_need(player.lvl)
@@ -63,18 +63,18 @@ def exp(player, exp):
         player.energy = player.max_energy
         message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.\n' + \
                   'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n'
-        send(player=player, message=message)
+        send(chat_info, message)
     else:
         player.exp = current_exp
     return player
 
 
-def send(user_id, message, chat_id, keyboard=None):
+def send(chat_info, message, keyboard=None):
     vk = vk_connect()
-    if user_id == chat_id:
+    if chat_info['user_id'] == chat_info['chat_id']:
         vk.messages.send(
             access_token=token(),
-            user_id=str(user_id),
+            peer_id=str(chat_info['user_id']),
             keyboard=keyboard,
             message=message,
             random_id=get_random_id()
@@ -82,8 +82,8 @@ def send(user_id, message, chat_id, keyboard=None):
     else:
         vk.messages.send(
             access_token=token(),
-            chat_id=str(chat_id),
-            keyboard=keyboard,
+            peer_id=str(chat_info['peer_id']),
+            chat_id=str(chat_info['chat_id']),
             message=message,
             random_id=get_random_id()
         )
@@ -96,11 +96,7 @@ def vk_connect():
 
 
 def token():
-    token_list = ['dca8e5d9e3fb7d614429e8594fddb92ac1c123c6d925db0d81fa495743812e2cf9654801170376388a999',
-                  'cc7ba24c70f316a4b5f8d3611a56c544ba7d54f3229c53e8a2f4111a044cc50934888361356e08c66482c',
-                  '8f85b07e455f06cd4e0389b3fbd0cc11d1a96a284facef48d763709670312da698002ca678b5771dd77e4',
-                  ]
-    return random.choice(token_list)
+    return 'e93e44b3eac62bca17249148d0013240b6fdfaaacea23b08981dbaf90d931490b424f334de3a1912a2f8e'
 
 
 def commands():
