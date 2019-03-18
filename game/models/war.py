@@ -187,7 +187,7 @@ class War(models.Model):
                       'До следующего поиска: ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
         return message
 
-    def attack(self, player, action_time):
+    def attack(self, player, action_time, chat_info):
         war_time = action_time - self.war_last_time
         if war_time >= WAR_TIME:
             if self.enemy_id:

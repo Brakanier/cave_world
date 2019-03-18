@@ -109,12 +109,14 @@ def enter(chat_info, data):
             player = Player.objects.get(user_id=chat_info['user_id'])
             action_time = data['object']['date']
             if 'payload' in data['object']:
+                print('payload')
                 payload = json.loads(data['object']['payload'])
                 log(player, payload['command'], action_time)
                 action(payload['command'], player, action_time, chat_info)
             else:
                 text = data['object']['text']
                 if text:
+                    print('текст')
                     log(player, text, action_time)
                     action(text.lower(), player, action_time, chat_info)
 
@@ -169,13 +171,14 @@ def action(command, player, action_time, chat_info):
     # Добыча
 
     elif 'камень' in command:
-        answer = player.get_stone(action_time, amount(command))
+        print(amount(command))
+        answer = player.get_stone(action_time, chat_info, amount(command))
     elif 'дерево' in command:
-        answer = player.get_wood(action_time, amount(command))
+        answer = player.get_wood(action_time, chat_info, amount(command))
     elif 'железо' in command:
-        answer = player.get_iron(action_time, amount(command))
+        answer = player.get_iron(action_time, chat_info, amount(command))
     elif 'кристалы' in command:
-        answer = player.get_diamond(action_time, amount(command))
+        answer = player.get_diamond(action_time, chat_info, amount(command))
 
     elif command == 'ковать каменная кирка':
         answer = player.craft_stone_pickaxe()
@@ -184,7 +187,7 @@ def action(command, player, action_time, chat_info):
     elif command == 'ковать кристальная кирка':
         answer = player.craft_diamond_pickaxe()
 
-    # Локации
+    # Локацииц
 
     elif command == 'подземелье':
         answer = player.cave()
@@ -221,7 +224,7 @@ def action(command, player, action_time, chat_info):
     elif command == 'поиск':
         answer = player.war.find_enemy(player.lvl, action_time)
     elif command == 'атака':
-        answer = player.war.attack(player, action_time)
+        answer = player.war.attack(player, action_time, chat_info)
     elif command == 'армия':
         answer = player.war.army()
 
