@@ -38,6 +38,7 @@ def index(request):
                         'user_id': from_id,
                         'peer_id': peer_id,
                         'chat_id': peer_id - 2000000000,
+                        'nick': 'Новый игрок',
                     }
                     enter(chat_info, data)
                 return HttpResponse('ok', content_type="text/plain", status=200)
@@ -229,5 +230,5 @@ def action(command, player, action_time, chat_info):
     elif command == 'армия':
         answer = player.war.army()
 
-    print(answer)
+    print('Не команда')
     send(chat_info, answer, get_keyboard(player, action_time))
