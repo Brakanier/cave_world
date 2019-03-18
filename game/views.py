@@ -104,6 +104,7 @@ def enter(chat_info, data):
                 Registration.objects.filter(user_id=chat_info['user_id']).update(reg=True)
                 message = 'Ваш ник - ' + player.nickname
                 print('Новый пользователь - ' + player.nickname)
+                chat_info['nick'] = player.nickname
                 send(chat_info, message, get_keyboard(player))
         else:
             print('ветка команд')
