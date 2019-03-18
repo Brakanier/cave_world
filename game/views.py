@@ -174,7 +174,6 @@ def action(command, player, action_time, chat_info):
     # Добыча
 
     elif 'камень' in command:
-        print(amount(command))
         answer = player.get_stone(action_time, chat_info, amount(command))
     elif 'дерево' in command:
         answer = player.get_wood(action_time, chat_info, amount(command))
@@ -231,5 +230,4 @@ def action(command, player, action_time, chat_info):
     elif command == 'армия':
         answer = player.war.army()
 
-    print('Не команда')
     send(chat_info, answer, get_keyboard(player, action_time))
