@@ -42,7 +42,7 @@ def index(request):
         return HttpResponse('Сайт находится в разработке!')
 
 
-def register(user_id, nick):
+def register(user_id, nick, chat_id):
     print('регистрация')
     if not Player.objects.filter(user_id=user_id).exists() and not Player.objects.filter(nickname=nick).exists():
         print('cоздание пользователя')
@@ -72,7 +72,7 @@ def register(user_id, nick):
         print('ник занят')
         message = 'Ник уже занят!\n' + \
                   'Введите ник:'
-        send(user_id, message)
+        send(user_id, message, chat_id)
         return None
 
 
@@ -80,7 +80,7 @@ def enter(user_id, data, chat_id):
     if not Registration.objects.filter(user_id=user_id).exists():
         message = 'Добро пожаловать в Cave World!\n' \
                   'Введите свой ник:'
-        send(user_id, message)
+        send(user_id, message, chat_id)
         reg = Registration.objects.create(user_id=user_id)
         reg.save()
         print('Новый пользователь - Регистрация начата')
@@ -89,7 +89,7 @@ def enter(user_id, data, chat_id):
         if not r.reg:
             print('ветка регистрации')
             nick = data['object']['text']
-            player = register(user_id, nick)
+            player = register(user_id, nick, chat_id)
             print(player)
             if player:
                 player.place = 'cave'
@@ -97,7 +97,7 @@ def enter(user_id, data, chat_id):
                 Registration.objects.filter(user_id=user_id).update(reg=True)
                 message = 'Ваш ник - ' + player.nickname
                 print('Новый пользователь - ' + player.nickname)
-                send(user_id, message, get_keyboard(player))
+                send(user_id, message, chat_id, get_keyboard(player))
         else:
             print('ветка команд')
             player = Player.objects.get(user_id=user_id)
@@ -220,4 +220,4 @@ def action(command, player, action_time, chat_id=None):
         answer = player.war.army()
 
     print(answer)
-    send(player.user_id, answer, get_keyboard(player, action_time))
+    send(player.user_id, answer, chat_id, get_keyboard(player, action_time))
