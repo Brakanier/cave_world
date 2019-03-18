@@ -8,10 +8,12 @@ from datetime import datetime
 from .models.build import Build, Stock
 from .models.player import Player
 from .models.war import War
+from .models.inventory import Inventory
 from .actions.functions import *
+from system.models import Registration
 
 secret_token = config('SECRET_TOKEN')
-confirmation_token = config('CONFIRMATION_TOKEN')
+confirmation_token = 'f20f512c'
 
 
 @csrf_exempt
@@ -24,34 +26,12 @@ def index(request):
             if data['type'] == 'message_new':
                 user_id = data['object']['from_id']
                 peer_id = data['object']['peer_id']
-                player = register(user_id=user_id)
-                if player.place == 'new':
-                    player.place = 'reg'
-                    player.save()
-                    message = 'Добро пожаловать в Cave World!\n' \
-                              'Введите свой ник:'
-                    send(player=player, message=message)
-                    return HttpResponse('ok', content_type="text/plain", status=200)
+                if user_id == peer_id:
+                    enter(user_id, data)
                 else:
-                    action_time = data['object']['date']
-                    if player.place == 'reg':
-                        nick = data['object']['text']
-                        player.nickname = nick
-                        player.place = 'cave'
-                        Player.objects.filter(user_id=player.user_id).update(place=player.place)
-                        message = 'Ваш ник - ' + player.nickname
-                        send(player=player, message=message)
-                    elif 'payload' in data['object']:
-                        payload = json.loads(data['object']['payload'])
-                        log(player, payload['command'], action_time)
-                        action(command=payload['command'], player=player, action_time=action_time)
-                    else:
-                        text = data['object']['text']
-                        if text:
-                            log(player, text, action_time)
-                            action(text.lower(), player, action_time)
-
-                    return HttpResponse('ok', content_type="text/plain", status=200)
+                    chat_id = peer_id - 2000000000
+                    enter(chat_id, data)
+                return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
             return HttpResponse('Ошибка - неверный secret key')
@@ -59,14 +39,19 @@ def index(request):
         return HttpResponse('Сайт находится в разработке!')
 
 
-def register(user_id):
-    if not Player.objects.filter(user_id=user_id).exists():
+def register(user_id, nick):
+    print('регистрация')
+    if not Player.objects.filter(user_id=user_id).exists() and not Player.objects.filter(nickname=nick).exists():
+        print('cоздание пользователя')
         war = War.objects.create(user_id=user_id)
         stock = Stock.objects.create(user_id=user_id)
         build = Build.objects.create(user_id=user_id, stock=stock)
+        inventory = Inventory.objects.create(user_id=user_id)
         player = Player.objects.create(user_id=user_id,
+                                       nickname=nick,
                                        build=build,
                                        war=war,
+                                       inventory=inventory,
                                        )
         vk = vk_connect()
         user = vk.users.get(user_ids=str(user_id))
@@ -75,10 +60,54 @@ def register(user_id):
             player.first_name = user['first_name']
         if user['last_name']:
             player.last_name = user['last_name']
-        player.place = "new"
-    else:
+        return player
+    elif Player.objects.filter(user_id=user_id).exists():
+        print('пользователь существует')
         player = Player.objects.get(user_id=user_id)
-    return player
+        return player
+    else:
+        print('ник занят')
+        message = 'Ник уже занят!\n' + \
+                  'Введите ник:'
+        send(user_id, message)
+        return None
+
+
+def enter(user_id, data):
+    if not Registration.objects.filter(user_id=user_id).exists():
+        message = 'Добро пожаловать в Cave World!\n' \
+                  'Введите свой ник:'
+        send(user_id, message)
+        reg = Registration.objects.create(user_id=user_id)
+        reg.save()
+        print('Новый пользователь - Регистрация начата')
+    elif Registration.objects.filter(user_id=user_id).exists():
+        r = Registration.objects.get(user_id=user_id)
+        if not r.reg:
+            print('ветка регистрации')
+            nick = data['object']['text']
+            player = register(user_id, nick)
+            print(player)
+            if player:
+                player.place = 'cave'
+                player.save()
+                Registration.objects.filter(user_id=user_id).update(reg=True)
+                message = 'Ваш ник - ' + player.nickname
+                print('Новый пользователь - ' + player.nickname)
+                send(user_id, message, get_keyboard(player))
+        else:
+            print('ветка команд')
+            player = Player.objects.get(user_id=user_id)
+            action_time = data['object']['date']
+            if 'payload' in data['object']:
+                payload = json.loads(data['object']['payload'])
+                log(player, payload['command'], action_time)
+                action(command=payload['command'], player=player, action_time=action_time)
+            else:
+                text = data['object']['text']
+                if text:
+                    log(player, text, action_time)
+                    action(text.lower(), player, action_time)
 
 
 def log(player, command, action_time):
@@ -91,7 +120,7 @@ def log(player, command, action_time):
     print(info)
 
 
-def action(command, player, action_time):
+def action(command, player, action_time, chat_id=None):
     answer = 'пусто'
 
     # Меню
@@ -188,4 +217,4 @@ def action(command, player, action_time):
         answer = player.war.army()
 
     print(answer)
-    send(player, answer, action_time)
+    send(player.user_id, answer, get_keyboard(player, action_time))

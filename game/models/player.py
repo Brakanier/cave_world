@@ -24,8 +24,8 @@ class Player(models.Model):
     )
     nickname = models.CharField(
         max_length=30,
-        blank=True,
-        default='',
+        db_index=True,
+        unique=True,
     )
     lvl = models.IntegerField(
         default=1,

@@ -69,12 +69,12 @@ def exp(player, exp):
     return player
 
 
-def send(player, message, action_time):
+def send(user_id, message, keyboard=None):
     vk = vk_connect()
     vk.messages.send(
         access_token=token(),
-        user_id=str(player.user_id),
-        keyboard=get_keyboard(player, action_time),
+        user_id=str(user_id),
+        keyboard=keyboard,
         message=message,
         random_id=get_random_id()
     )

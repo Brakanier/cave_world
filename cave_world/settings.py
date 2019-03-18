@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'digger',
     'game',
+    'system',
 ]
 
 MIDDLEWARE = [

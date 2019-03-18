@@ -1,9 +1,5 @@
 from django.db import models
 
-from .items import Item
-from .trophy import Trophy
-from .chest import Chest
-
 
 class Inventory(models.Model):
     user_id = models.BigIntegerField(
@@ -11,15 +7,15 @@ class Inventory(models.Model):
         unique=True,
     )
     items = models.ManyToManyField(
-        Item,
+        'game.Item',
         blank=True,
     )
     trophy = models.ManyToManyField(
-        Trophy,
+        'game.Trophy',
         blank=True,
     )
     chests = models.ManyToManyField(
-        Chest,
+        'game.Chest',
         blank=True,
     )
 
