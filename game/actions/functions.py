@@ -69,15 +69,24 @@ def exp(player, exp):
     return player
 
 
-def send(user_id, message, keyboard=None):
+def send(user_id, message, chat_id, keyboard=None):
     vk = vk_connect()
-    vk.messages.send(
-        access_token=token(),
-        user_id=str(user_id),
-        keyboard=keyboard,
-        message=message,
-        random_id=get_random_id()
-    )
+    if user_id == chat_id:
+        vk.messages.send(
+            access_token=token(),
+            user_id=str(user_id),
+            keyboard=keyboard,
+            message=message,
+            random_id=get_random_id()
+        )
+    else:
+        vk.messages.send(
+            access_token=token(),
+            chat_id=str(chat_id),
+            keyboard=keyboard,
+            message=message,
+            random_id=get_random_id()
+        )
 
 
 def vk_connect():

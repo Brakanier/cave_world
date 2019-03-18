@@ -24,13 +24,16 @@ def index(request):
             if data['type'] == 'confirmation':
                 return HttpResponse(confirmation_token, content_type="text/plain", status=200)
             if data['type'] == 'message_new':
-                user_id = data['object']['from_id']
+                from_id = data['object']['from_id']
                 peer_id = data['object']['peer_id']
-                if user_id == peer_id:
-                    enter(user_id, data)
+                if from_id == peer_id:
+                    user_id = peer_id
+                    chat_id = peer_id
+                    enter(user_id, data, chat_id)
                 else:
                     chat_id = peer_id - 2000000000
-                    enter(chat_id, data)
+                    user_id = from_id
+                    enter(user_id, data, chat_id)
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
@@ -73,7 +76,7 @@ def register(user_id, nick):
         return None
 
 
-def enter(user_id, data):
+def enter(user_id, data, chat_id):
     if not Registration.objects.filter(user_id=user_id).exists():
         message = 'Добро пожаловать в Cave World!\n' \
                   'Введите свой ник:'
