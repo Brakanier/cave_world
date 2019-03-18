@@ -416,8 +416,9 @@ class War(models.Model):
                                                                         war_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         enemy_id=defender.war.enemy_id)
-
-                    send(player=defender, message=message_def)
+                    chat_info['user_id'] = defender.user_id
+                    chat_info['nick'] = defender.nickname
+                    send(chat_info, message_def)
                     print(message_def)
 
             else:
