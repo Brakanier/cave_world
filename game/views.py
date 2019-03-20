@@ -231,4 +231,12 @@ def action(command, player, action_time, chat_info):
     elif command == 'армия':
         answer = player.war.army()
 
+    elif command == 'тест':
+        test_models(player)
+
     send(chat_info, answer, get_keyboard(player, action_time))
+
+
+def test_models(player):
+    chests = player.inventory.inventorychest_set.get()
+    print(chests.count)

@@ -5,10 +5,10 @@ from .models.player import Player
 from .models.build import Build, Stock
 from .models.war import War
 from .models.effects import Effect
-from .models.items import Item, ItemChance
-from .models.trophy import Trophy, TrophyChance
-from .models.chest import Chest, ChestChance
-from .models.inventory import Inventory
+from .models.items import Item
+from .models.trophy import Trophy
+from .models.chest import Chest, ChestItem, ChestTrophy
+from .models.inventory import Inventory, InventoryChest, InventoryTrophy
 
 
 # Register your models here.
@@ -34,6 +34,11 @@ admin.site.register(War)
 
 
 admin.site.register(Inventory)
+admin.site.register(InventoryChest)
+admin.site.register(InventoryTrophy)
+
+admin.site.register(ChestItem)
+admin.site.register(ChestTrophy)
 
 
 @admin.register(Effect)
@@ -46,26 +51,11 @@ class ChestAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug')
 
 
-@admin.register(ChestChance)
-class ChestChanceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'chance')
-
-
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
     list_display = ('title', 'id')
 
 
-@admin.register(ItemChance)
-class ItemChanceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'chance')
-
-
 @admin.register(Trophy)
 class TrophyAdmin(admin.ModelAdmin):
     list_display = ('title', 'value')
-
-
-@admin.register(TrophyChance)
-class TrophyChanceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'chance')

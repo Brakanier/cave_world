@@ -1,8 +1,5 @@
 from django.db import models
 
-from .trophy import TrophyChance
-from .items import ItemChance
-
 
 class Chest(models.Model):
     id = models.AutoField(
@@ -18,12 +15,17 @@ class Chest(models.Model):
         blank=True,
         db_index=True,
     )
+
     trophy_chance = models.ManyToManyField(
-        TrophyChance,
+        'game.Trophy',
+        through='ChestTrophy',
+        through_fields=('chest', 'trophy'),
         blank=True,
     )
     items_chance = models.ManyToManyField(
-        ItemChance,
+        'game.Item',
+        through='ChestItem',
+        through_fields=('chest', 'item'),
         blank=True,
     )
 
@@ -35,23 +37,33 @@ class Chest(models.Model):
         return self.title
 
 
-class ChestChance(models.Model):
-    id = models.AutoField(
-        db_index=True,
-        unique=True,
-        primary_key=True,
+class ChestTrophy(models.Model):
+    trophy = models.ForeignKey(
+        'game.Trophy',
+        on_delete=models.CASCADE,
+        null=True,
     )
-    title = models.CharField(
-        max_length=50,
+    chest = models.ForeignKey(
+        'game.Chest',
+        on_delete=models.CASCADE,
+        null=True,
     )
-    chest = models.ManyToManyField(Chest)
     chance = models.FloatField(
         default=0,
     )
 
-    class Meta:
-        verbose_name = 'Шанс сундука'
-        verbose_name_plural = 'Шансы сундуков'
 
-    def __str__(self):
-        return self.title
+class ChestItem(models.Model):
+    item = models.ForeignKey(
+        'game.Item',
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    chest = models.ForeignKey(
+        'game.Chest',
+        on_delete=models.CASCADE,
+        null=True,
+    )
+    chance = models.FloatField(
+        default=0,
+    )

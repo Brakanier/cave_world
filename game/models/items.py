@@ -26,24 +26,3 @@ class Item(models.Model):
     def __str__(self):
         return self.title
 
-
-class ItemChance(models.Model):
-    id = models.AutoField(
-        db_index=True,
-        unique=True,
-        primary_key=True,
-    )
-    title = models.CharField(
-        max_length=50,
-    )
-    item = models.ManyToManyField(Item)
-    chance = models.FloatField(
-        default=0,
-    )
-
-    class Meta:
-        verbose_name = 'Шанс предмета'
-        verbose_name_plural = 'Шансы предметов'
-
-    def __str__(self):
-        return self.title
