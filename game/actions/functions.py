@@ -256,6 +256,7 @@ def exp_need(lvl):
 
 
 def get_keyboard(player, action_time=0):
+    # TODO кнопки добычи х5 х10
     keyboard = VkKeyboard()
 
     if player.place == 'reg':
@@ -403,8 +404,8 @@ def get_keyboard(player, action_time=0):
 
     # Таверна
 
-    # elif player.place == 'tavern':
-        # keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+    elif player.place == 'tavern':
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         # keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         # keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
 
