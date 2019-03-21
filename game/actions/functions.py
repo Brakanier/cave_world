@@ -320,6 +320,16 @@ def get_keyboard(player, action_time=0):
         wall_lvl_up = '🔨 Стена ' + str(player.build.wall_lvl + 1) + ' ур.'
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
+        if player.build.citadel:
+            if not player.build.barracks:
+                keyboard.add_line()
+                keyboard.add_button('🗡 Казармы 🗡', color=VkKeyboardColor.DEFAULT, payload={"command": "строить казармы"})
+            if not player.build.archery:
+                keyboard.add_line()
+                keyboard.add_button('🏹 Стрельбище 🏹', color=VkKeyboardColor.DEFAULT, payload={"command": "строить стрельбище"})
+            if not player.build.magic:
+                keyboard.add_line()
+                keyboard.add_button('🔮 Башня магов 🔮', color=VkKeyboardColor.DEFAULT, payload={"command": "строить башня магов"})
         keyboard.add_line()
         keyboard.add_button(tower_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "строить башня"})
         keyboard.add_button(wall_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "строить стена"})
