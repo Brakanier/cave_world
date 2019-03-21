@@ -232,9 +232,14 @@ class War(models.Model):
                     attack_tower_x = player.build.tower_lvl * TOWER_BUFF
                     attack_attack = attack_attack * (1 + attack_tower_x)
 
+                    attack_wall_x = player.build.wall_lvl * WALL_BUFF
+                    attack_wall_power = attack_hp * (1 + attack_wall_x)
+                    attack_power = attack_attack + attack_hp + attack_wall_power
+
                     # Защитник
 
                     # WALL BUFF
+
                     defender_wall_x = 1 + (WALL_BUFF * defender.build.wall_lvl)
                     def_warrior_hp = WARRIOR_HP * defender_wall_x
                     def_archer_hp = ARCHER_HP * defender_wall_x
@@ -248,6 +253,10 @@ class War(models.Model):
                     defender_wizard_hp = defender.war.wizard * def_wizard_hp
                     defender_attack = defender_warrior_attack + defender_archer_attack + defender_wizard_attack
                     defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
+
+                    defender_tower_x = player.build.tower_lvl * TOWER_BUFF
+                    defender_tower_power = defender_hp * (1 + defender_tower_x)
+                    defender_power = defender_attack + defender_hp + defender_tower_power
 
                     # Остатки армий
 
@@ -282,7 +291,7 @@ class War(models.Model):
                     defender_lost_archer = round(defender.war.archer - defender_after_archer)
                     defender_lost_wizard = round(defender.war.wizard - defender_after_wizard)
 
-                    if attack_attack >= defender_attack:
+                    if attack_power >= defender_power:
 
                         # Обновляем склады
 
