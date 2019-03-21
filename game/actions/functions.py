@@ -410,7 +410,7 @@ def get_keyboard(player, action_time=0):
         if not diamond:
             keyboard.add_line()
             keyboard.add_button('⛏ 💎 Кристальная', color=VkKeyboardColor.POSITIVE,
-                                payload={"command": "ковать кристальная кирк"})
+                                payload={"command": "ковать кристальная кирка"})
 
     # Таверна
 
