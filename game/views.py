@@ -157,6 +157,22 @@ def action(command, player, action_time, chat_info):
     elif command == 'строить земли':
         answer = player.land_build()
 
+    # Таверна
+
+    elif re.match(r'кости', command):
+        print('кости')
+        if re.search(r'дерево', command):
+            print('дерево')
+            answer = player.build.tavern_bones(action_time, 'wood', amount(command))
+        elif re.search(r'камень', command):
+            answer = player.build.tavern_bones(action_time, 'stone', amount(command))
+        elif re.search(r'железо', command):
+            answer = player.build.tavern_bones(action_time, 'iron', amount(command))
+        elif re.search(r'кристалы', command):
+            answer = player.build.tavern_bones(action_time, 'diamond', amount(command))
+        elif re.search(r'золото', command):
+            answer = player.build.tavern_bones(action_time, 'gold', amount(command))
+
     # Строительство
 
     elif command == 'строить склад':

@@ -453,3 +453,78 @@ class Build(models.Model):
             message = 'Башня: ' + str(self.tower_lvl) + ' ур. (+' + str(self.tower_lvl) + '%)\n' + \
                              'Стена: ' + str(self.wall_lvl) + ' ур. (+' + str(self.wall_lvl) + '%)'
         return message
+
+    def tavern_bones(self, action_time, res, amount):
+        if self.tavern_bones_check(action_time, res, amount):
+            result = random.randint(3, 18)
+            enemy_result = random.randint(3, 18)
+            if result > enemy_result:
+                # Выйгрыш
+                self.tavern_res_remove(res, amount)
+                self.tavern_res_add(res, amount)
+                message = 'Вы выйграли: ' + str(amount*2) + icon(res) + '\n' + \
+                          'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
+                          'Результат соперника: ' + str(enemy_result) + icon('cube')
+            elif result < enemy_result:
+                # Проигрыш
+                self.tavern_res_remove(res, amount)
+                message = 'Вы проиграли: ' + str(amount) + icon(res) + '\n' + \
+                          'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
+                          'Результат соперника: ' + str(enemy_result) + icon('cube')
+            elif result == enemy_result:
+                # Ничья
+                message = 'Ничья!\n' + \
+                          'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
+                          'Результат соперника: ' + str(enemy_result) + icon('cube')
+        else:
+            message = 'Нехватает ресурса для ставки!'
+        Stock.objects.filter(user_id=self.user_id).update(wood=self.stock.wood,
+                                                          stone=self.stock.stone,
+                                                          iron=self.stock.iron,
+                                                          diamond=self.stock.diamond,
+                                                          gold=self.stock.gold,
+                                                          )
+
+        return message
+
+    def tavern_bones_check(self, action_time, res, amount):
+        self.stock = self.get_passive(action_time)
+        check = False
+        if res == 'wood' and self.stock.wood >= amount:
+            check = True
+        elif res == 'stone' and self.stock.stone >= amount:
+            check = True
+        elif res == 'iron' and self.stock.iron >= amount:
+            check = True
+        elif res == 'diamond' and self.stock.diamond >= amount:
+            check = True
+        elif res == 'gold' and self.stock.gold >= amount:
+            check = True
+        return check
+
+    def tavern_res_remove(self, res, amount):
+        if res == 'wood':
+            self.stock.wood -= amount
+        if res == 'stone':
+            self.stock.stone -= amount
+        if res == 'iron':
+            self.stock.iron -= amount
+        if res == 'diamond':
+            self.stock.diamond -= amount
+        if res == 'gold':
+            self.stock.gold -= amount
+        return self
+
+    def tavern_res_add(self, res, amount):
+        if res == 'wood':
+            self.stock.wood = min(self.stock.wood + amount*2, self.stock.max)
+        if res == 'stone':
+            self.stock.stone = min(self.stock.stone + amount*2, self.stock.max)
+        if res == 'iron':
+            self.stock.iron = min(self.stock.iron + amount*2, self.stock.max)
+        if res == 'diamond':
+            self.stock.diamond = min(self.stock.diamond + amount*2, self.stock.max)
+        if res == 'gold':
+            self.stock.gold = min(self.stock.gold + amount*2, self.stock.max)
+        return self
+

@@ -14,9 +14,12 @@ def get_random_id():
 def amount(command):
     count = 1
     part = command.split()
-    if len(part) > 1:
+    if len(part) == 2:
         if part[1].isdigit():
             count = int(part[1])
+    if len(part) == 3:
+        if part[2].isdigit():
+            count = int(part[2])
     return count
 
 
@@ -190,6 +193,7 @@ def icon(name):
         'other': ' 💬',
         'shield': ' 🛡',
         'help': ' ❓',
+        'cube': ' 🎲',
     }
     return icons[name]
 
