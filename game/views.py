@@ -160,9 +160,7 @@ def action(command, player, action_time, chat_info):
     # Таверна
 
     elif re.match(r'кости', command):
-        print('кости')
         if re.search(r'дерево', command):
-            print('дерево')
             answer = player.build.tavern_bones(action_time, 'wood', amount(command))
         elif re.search(r'камень', command):
             answer = player.build.tavern_bones(action_time, 'stone', amount(command))

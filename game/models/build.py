@@ -455,36 +455,38 @@ class Build(models.Model):
         return message
 
     def tavern_bones(self, action_time, res, amount):
-        if self.tavern_bones_check(action_time, res, amount):
-            result = random.randint(3, 18)
-            enemy_result = random.randint(3, 18)
-            if result > enemy_result:
-                # Выйгрыш
-                self.tavern_res_remove(res, amount)
-                self.tavern_res_add(res, amount)
-                message = 'Вы выйграли: ' + str(amount*2) + icon(res) + '\n' + \
-                          'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
-                          'Результат соперника: ' + str(enemy_result) + icon('cube')
-            elif result < enemy_result:
-                # Проигрыш
-                self.tavern_res_remove(res, amount)
-                message = 'Вы проиграли: ' + str(amount) + icon(res) + '\n' + \
-                          'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
-                          'Результат соперника: ' + str(enemy_result) + icon('cube')
-            elif result == enemy_result:
-                # Ничья
-                message = 'Ничья!\n' + \
-                          'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
-                          'Результат соперника: ' + str(enemy_result) + icon('cube')
+        if self.tavern:
+            if self.tavern_bones_check(action_time, res, amount):
+                result = random.randint(3, 18)
+                enemy_result = random.randint(3, 18)
+                if result > enemy_result:
+                    # Выйгрыш
+                    self.tavern_res_remove(res, amount)
+                    self.tavern_res_add(res, amount)
+                    message = 'Вы выйграли: ' + str(amount*2) + icon(res) + '\n' + \
+                              'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
+                              'Результат соперника: ' + str(enemy_result) + icon('cube')
+                elif result < enemy_result:
+                    # Проигрыш
+                    self.tavern_res_remove(res, amount)
+                    message = 'Вы проиграли: ' + str(amount) + icon(res) + '\n' + \
+                              'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
+                              'Результат соперника: ' + str(enemy_result) + icon('cube')
+                elif result == enemy_result:
+                    # Ничья
+                    message = 'Ничья!\n' + \
+                              'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
+                              'Результат соперника: ' + str(enemy_result) + icon('cube')
+            else:
+                message = 'Нехватает ресурса для ставки!'
+            Stock.objects.filter(user_id=self.user_id).update(wood=self.stock.wood,
+                                                              stone=self.stock.stone,
+                                                              iron=self.stock.iron,
+                                                              diamond=self.stock.diamond,
+                                                              gold=self.stock.gold,
+                                                              )
         else:
-            message = 'Нехватает ресурса для ставки!'
-        Stock.objects.filter(user_id=self.user_id).update(wood=self.stock.wood,
-                                                          stone=self.stock.stone,
-                                                          iron=self.stock.iron,
-                                                          diamond=self.stock.diamond,
-                                                          gold=self.stock.gold,
-                                                          )
-
+            message = 'Сначала постройте Таверну!'
         return message
 
     def tavern_bones_check(self, action_time, res, amount):
