@@ -80,13 +80,14 @@ class War(models.Model):
             message = 'У вас нет щита!'
         return message
 
-    def craft_warrior(self, stock, barracks, amount=1):
-        if barracks:
+    def craft_warrior(self, build, action_time, amount=1):
+        build.stock = build.get_passive(action_time)
+        if build.barracks:
             need_iron = amount * WARRIOR_IRON
-            if stock.iron >= need_iron:
-                stock.iron = stock.iron - need_iron
+            if build.stock.iron >= need_iron:
+                build.stock.iron = build.stock.iron - need_iron
                 self.warrior = self.warrior + amount
-                Stock.objects.filter(user_id=self.user_id).update(iron=stock.iron)
+                Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron)
                 War.objects.filter(user_id=self.user_id).update(warrior=self.warrior)
                 message = 'Вы наняли ' + str(amount) + icon('sword')
             else:
@@ -97,17 +98,18 @@ class War(models.Model):
             message = 'Сначала постройте Казармы!'
         return message
 
-    def craft_archer(self, stock, archery, amount=1):
-        if archery:
+    def craft_archer(self, build, action_time, amount=1):
+        build.stock = build.get_passive(action_time)
+        if build.archery:
             need_iron = amount * ARCHER_IRON
             need_wood = amount * ARCHER_WOOD
-            if stock.iron >= need_iron \
-                    and stock.wood >= need_wood:
-                stock.iron = stock.iron - need_iron
-                stock.wood = stock.wood - need_wood
+            if build.stock.iron >= need_iron \
+                    and build.stock.wood >= need_wood:
+                build.stock.iron = build.stock.iron - need_iron
+                build.stock.wood = build.stock.wood - need_wood
                 self.archer = self.archer + amount
-                Stock.objects.filter(user_id=self.user_id).update(iron=stock.iron,
-                                                                  wood=stock.wood)
+                Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
+                                                                  wood=build.stock.wood)
                 War.objects.filter(user_id=self.user_id).update(archer=self.archer)
                 message = 'Вы наняли ' + str(amount) + icon('bow')
             else:
@@ -119,21 +121,22 @@ class War(models.Model):
             message = 'Сначала постройте Стрельбище!'
         return message
 
-    def craft_wizard(self, stock, magic, amount=1):
-        if magic:
+    def craft_wizard(self, build, action_time, amount=1):
+        build.stock = build.get_passive(action_time)
+        if build.magic:
             need_iron = amount * WIZARD_IRON
             need_wood = amount * WIZARD_WOOD
             need_diamond = amount * WIZARD_DIAMOND
-            if stock.iron >= need_iron \
-                    and stock.wood >= need_wood \
-                    and stock.wood >= need_diamond:
-                stock.iron = stock.iron - need_iron
-                stock.wood = stock.wood - need_wood
-                stock.diamond = stock.diamond - need_diamond
+            if build.stock.iron >= need_iron \
+                    and build.stock.wood >= need_wood \
+                    and build.stock.wood >= need_diamond:
+                build.stock.iron = build.stock.iron - need_iron
+                build.stock.wood = build.stock.wood - need_wood
+                build.stock.diamond = build.stock.diamond - need_diamond
                 self.wizard = self.wizard + amount
-                Stock.objects.filter(user_id=self.user_id).update(iron=stock.iron,
-                                                                  wood=stock.wood,
-                                                                  diamond=stock.diamond)
+                Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
+                                                                  wood=build.stock.wood,
+                                                                  diamond=build.stock.diamond)
                 War.objects.filter(user_id=self.user_id).update(wizard=self.wizard)
                 message = 'Вы наняли ' + str(amount) + icon('orb')
             else:
@@ -281,12 +284,17 @@ class War(models.Model):
 
                     if attack_attack >= defender_attack:
 
+                        # Обновляем склады
+
+                        defender.build.stock = defender.build.get_passive(action_time)
+                        player.build.stock = player.build.get_passive(action_time)
+
                         # Победа нападавшего
 
                         # Награда
-
-                        cost = round(defender.build.stock.max * 4 * 0.1 / 11)
-                        reward = round(defender.build.stock.max * 4 * 0.2 / 11)
+                        # TODO После резлиза следить за наградой, проверить
+                        cost = round(defender.build.stock.max * 4 * 0.2 / 11)
+                        reward = round(defender.build.stock.max * 4 * 0.3 / 11)
                         reward_skull = 1
                         reward_exp = 5
                         player = exp(self, chat_info, reward_exp)
@@ -307,7 +315,7 @@ class War(models.Model):
                         player.build.stock.stone += min(reward * 4, (player.build.stock.max - player.build.stock.stone))
                         player.build.stock.wood += min(reward * 4, (player.build.stock.max - player.build.stock.wood))
                         player.build.stock.iron += min(reward * 2, (player.build.stock.max - player.build.stock.iron))
-                        player.build.stock.diamond += min(reward * 1, (player.build.stock.max - player.build.stock.diamond))
+                        player.build.stock.diamond += min(reward, (player.build.stock.max - player.build.stock.diamond))
                         player.build.stock.skull += reward_skull
 
                         message = 'Вы напали на ' + defender.nickname + '\n' + \

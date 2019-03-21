@@ -81,6 +81,7 @@ class Player(models.Model):
     # Действия
 
     def get_stone(self, action_time, chat_info, amount=1):
+        self.build.stock = self.build.get_passive(action_time)
         self = energy(self, action_time)
         if self.energy >= GET_ENERGY * amount:
             stone = 8 * amount
@@ -109,6 +110,7 @@ class Player(models.Model):
         return message
 
     def get_wood(self, action_time, chat_info, amount=1):
+        self.build.stock = self.build.get_passive(action_time)
         self = energy(self, action_time)
         if self.energy >= GET_ENERGY * amount:
             wood = 8 * amount
@@ -137,6 +139,7 @@ class Player(models.Model):
         return message
 
     def get_iron(self, action_time, chat_info, amount=1):
+        self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'stone_pickaxe')
         if item:
             self = energy(self, action_time)
@@ -170,6 +173,7 @@ class Player(models.Model):
         return message
 
     def get_diamond(self, action_time, chat_info, amount=1):
+        self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'iron_pickaxe')
         if item:
             self = energy(self, action_time)
@@ -230,7 +234,8 @@ class Player(models.Model):
             message = 'До бонуса: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек.'
         return message
 
-    def craft_stone_pickaxe(self):
+    def craft_stone_pickaxe(self, action_time):
+        self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'stone_pickaxe')
         if not item:
             if self.build.stock.stone >= STONE_PICKAXE:
@@ -249,7 +254,8 @@ class Player(models.Model):
             message = 'У вас уже есть ' + item.title + '!'
         return message
 
-    def craft_iron_pickaxe(self):
+    def craft_iron_pickaxe(self, action_time):
+        self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'iron_pickaxe')
         if not item:
             if self.build.stock.iron >= IRON_PICKAXE:
@@ -268,7 +274,8 @@ class Player(models.Model):
             message = 'У вас уже есть ' + item.title + '!'
         return message
 
-    def craft_diamond_pickaxe(self):
+    def craft_diamond_pickaxe(self, action_time):
+        self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'diamond_pickaxe')
         if not item:
             if self.build.stock.diamond >= DIAMOND_PICKAXE:

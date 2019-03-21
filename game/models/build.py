@@ -35,12 +35,16 @@ class Stock(models.Model):
     skull = models.IntegerField(
         default=0,
     )
+    get_passive_last_time = models.BigIntegerField(
+        default=0,
+    )
 
     class Meta:
         verbose_name = 'Склад'
         verbose_name_plural = 'Склады'
 
-    def stock(self, action_time):
+    def stock(self, build, action_time):
+        self = build.get_passive(action_time)
         message = 'Склад - ' + str(self.lvl) + ' ур.' + '\n' + \
                   'Камень: ' + str(self.stone) + '/' + str(self.max) + icon('stone') + '\n' + \
                   'Дерево: ' + str(self.wood) + '/' + str(self.max) + icon('wood') + '\n' + \
@@ -48,6 +52,7 @@ class Stock(models.Model):
                   'Кристалы: ' + str(self.diamond) + '/' + str(self.max) + icon('diamond') + '\n' + \
                   'Золото: ' + str(self.gold) + '/' + str(self.max) + icon('gold') + '\n' + \
                   'Черепа: ' + str(self.skull) + icon('skull')
+
         return message
 
 
@@ -108,7 +113,37 @@ class Build(models.Model):
         verbose_name = 'Здание'
         verbose_name_plural = 'Здания'
 
-    def build_stock(self):
+    def get_passive(self, action_time):
+        delta = action_time - self.stock.get_passive_last_time
+        delta = delta // 60
+        if delta >= 60:
+            print(delta)
+            if self.wood_mine_lvl > 0:
+                wood = (delta // 60) * (GET_PASSIVE_WOOD + GET_PASSIVE_WOOD_X * self.wood_mine_lvl) // 24
+                wood_sum = wood + self.stock.wood
+                self.stock.wood = min(wood_sum, self.stock.max)
+            if self.stone_mine_lvl > 0:
+                stone = (delta // 60) * (GET_PASSIVE_STONE + GET_PASSIVE_STONE_X * self.stone_mine_lvl) // 24
+                stone_sum = stone + self.stock.stone
+                self.stock.stone = min(stone_sum, self.stock.max)
+            if self.iron_mine_lvl > 0:
+                iron = (delta // 60) * (GET_PASSIVE_IRON + GET_PASSIVE_IRON_X * self.iron_mine_lvl) // 24
+                iron_sum = iron + self.stock.iron
+                self.stock.iron = min(iron_sum, self.stock.max)
+            if self.diamond_mine_lvl > 0:
+                diamond = (delta // 60) * (GET_PASSIVE_DIAMOND + GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl) // 24
+                diamond_sum = diamond + self.stock.diamond
+                self.stock.diamond = min(diamond_sum, self.stock.max)
+            self.stock.get_passive_last_time = self.stock.get_passive_last_time + (delta * 60)
+            Stock.objects.filter(user_id=self.user_id).update(wood=self.stock.wood,
+                                                              stone=self.stock.stone,
+                                                              iron=self.stock.iron,
+                                                              diamond=self.stock.diamond,
+                                                              get_passive_last_time=self.stock.get_passive_last_time)
+        return self.stock
+
+    def build_stock(self, action_time):
+        self.stock = self.get_passive(action_time)
         if self.stock.lvl >= 10:
             stone_need = self.stock.lvl * STOCK_STONE * 2
         else:
@@ -127,7 +162,8 @@ class Build(models.Model):
                       'Камня: ' + str(stone_need) + icon('stone')
         return message
 
-    def build_forge(self):
+    def build_forge(self, action_time):
+        self.stock = self.get_passive(action_time)
         if not self.forge:
             if self.stock.stone >= FORGE_STONE:
                 self.stock.stone = self.stock.stone - FORGE_STONE
@@ -143,7 +179,8 @@ class Build(models.Model):
             message = 'У вас уже есть Кузница'
         return message
 
-    def build_tavern(self):
+    def build_tavern(self, action_time):
+        self.stock = self.get_passive(action_time)
         if not self.tavern:
             if self.stock.stone >= TAVERN_STONE \
                     and self.stock.iron >= TAVERN_IRON:
@@ -163,7 +200,8 @@ class Build(models.Model):
             message = 'У вас уже есть Таверна'
         return message
 
-    def build_citadel(self):
+    def build_citadel(self, action_time):
+        self.stock = self.get_passive(action_time)
         if not self.citadel:
             if self.stock.stone >= CITADEL_STONE \
                     and self.stock.iron >= CITADEL_IRON \
@@ -187,7 +225,8 @@ class Build(models.Model):
             message = 'У вас уже есть Цитадель'
         return message
 
-    def build_tower(self):
+    def build_tower(self, action_time):
+        self.stock = self.get_passive(action_time)
         if self.citadel:
             need_stone = (self.tower_lvl + 1) * TOWER_STONE
             need_wood = (self.tower_lvl + 1) * TOWER_WOOD
@@ -209,7 +248,8 @@ class Build(models.Model):
             message = "Сначала постройте Цитадель!"
         return message
 
-    def build_wall(self):
+    def build_wall(self, action_time):
+        self.stock = self.get_passive(action_time)
         if self.citadel:
             need_stone = (self.wall_lvl + 1) * WALL_STONE
             need_wood = (self.wall_lvl + 1) * WALL_WOOD
@@ -231,7 +271,8 @@ class Build(models.Model):
             message = "Сначала постройте Цитадель!"
         return message
 
-    def build_barracks(self):
+    def build_barracks(self, action_time):
+        self.stock = self.get_passive(action_time)
         if self.citadel:
             if not self.barracks:
                 if self.stock.stone >= BARRACKS_STONE \
@@ -254,7 +295,8 @@ class Build(models.Model):
             message = "Сначала постройте Цитадель!"
         return message
 
-    def build_archery(self):
+    def build_archery(self, action_time):
+        self.stock = self.get_passive(action_time)
         if self.citadel:
             if not self.archery:
                 if self.stock.stone >= ARCHERY_STONE \
@@ -277,7 +319,8 @@ class Build(models.Model):
             message = "Сначала постройте Цитадель!"
         return message
 
-    def build_magic(self):
+    def build_magic(self, action_time):
+        self.stock = self.get_passive(action_time)
         if self.citadel:
             if not self.magic:
                 if self.stock.stone >= MAGIC_STONE \
@@ -304,7 +347,8 @@ class Build(models.Model):
             message = "Сначала постройте Цитадель!"
         return message
 
-    def build_stone_mine(self):
+    def build_stone_mine(self, action_time):
+        self.stock = self.get_passive(action_time)
         need_wood = (self.stone_mine_lvl + 1) * STONE_MINE_WOOD
         need_iron = (self.stone_mine_lvl + 1) * STONE_MINE_IRON
         need_diamond = (self.stone_mine_lvl + 1) * STONE_MINE_DIAMOND
@@ -328,7 +372,8 @@ class Build(models.Model):
                               'Кристалов: ' + str(need_diamond) + icon('diamond')
         return message
 
-    def build_wood_mine(self):
+    def build_wood_mine(self, action_time):
+        self.stock = self.get_passive(action_time)
         need_stone = (self.wood_mine_lvl + 1) * WOOD_MINE_STONE
         need_iron = (self.wood_mine_lvl + 1) * WOOD_MINE_IRON
         need_diamond = (self.wood_mine_lvl + 1) * WOOD_MINE_DIAMOND
@@ -352,7 +397,8 @@ class Build(models.Model):
                               'Кристалов: ' + str(need_diamond) + icon('diamond')
         return message
 
-    def build_iron_mine(self):
+    def build_iron_mine(self, action_time):
+        self.stock = self.get_passive(action_time)
         need_stone = (self.iron_mine_lvl + 1) * IRON_MINE_STONE
         need_wood = (self.iron_mine_lvl + 1) * IRON_MINE_WOOD
         need_diamond = (self.iron_mine_lvl + 1) * IRON_MINE_DIAMOND
@@ -376,7 +422,8 @@ class Build(models.Model):
                               'Кристалов: ' + str(need_diamond) + icon('diamond')
         return message
 
-    def build_diamond_mine(self):
+    def build_diamond_mine(self, action_time):
+        self.stock = self.get_passive(action_time)
         need_stone = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_STONE
         need_wood = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_WOOD
         need_iron = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_IRON

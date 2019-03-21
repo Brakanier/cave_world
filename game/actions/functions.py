@@ -10,6 +10,32 @@ def get_random_id():
     """ Get random int32 number (signed) """
     return random.getrandbits(31) * random.choice([-1, 1])
 
+'''
+def get_passive(build, action_time):
+    delta = action_time - build.stock.get_passive_last_time
+    delta = delta // 60
+    if delta >= 30:
+        print(delta)
+        if build.wood_mine_lvl > 0:
+            wood = (delta // 30) * (GET_PASSIVE_WOOD + GET_PASSIVE_WOOD_X * build.wood_mine_lvl) / 48
+            print(wood)
+            wood_sum = wood + build.stock.wood
+            build.stock.wood = max(wood_sum, build.stock.max)
+        if build.stone_mine_lvl > 0:
+            stone = (delta // 30) * (GET_PASSIVE_STONE + GET_PASSIVE_STONE_X * build.stone_mine_lvl) / 48
+            stone_sum = stone + build.stock.stone
+            build.stock.stone = max(stone_sum, build.stock.max)
+        if build.iron_mine_lvl > 0:
+            iron = (delta // 30) * (GET_PASSIVE_IRON + GET_PASSIVE_IRON_X * build.iron_mine_lvl) / 48
+            iron_sum = iron + build.stock.iron
+            build.stock.iron = max(iron_sum, build.stock.max)
+        if build.diamond_mine_lvl > 0:
+            diamond = (delta // 30) * (GET_PASSIVE_DIAMOND + GET_PASSIVE_DIAMOND_X * build.diamond_mine_lvl) / 48
+            diamond_sum = diamond + build.stock.diamond
+            build.stock.diamond = max(diamond_sum, build.stock.max)
+        build.stock.get_passive_last_time = build.stock.get_passive_last_time + (delta * 60)
+    return build
+'''
 
 def amount(command):
     count = 1

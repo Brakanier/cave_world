@@ -151,7 +151,7 @@ def action(command, player, action_time, chat_info):
     elif command == 'топ лвл':
         answer = player.top_lvl()
     elif command == 'склад':
-        answer = player.build.stock.stock(action_time)
+        answer = player.build.stock.stock(player.build, action_time)
     elif command == 'строить подземелье':
         answer = player.cave_build()
     elif command == 'строить земли':
@@ -160,17 +160,31 @@ def action(command, player, action_time, chat_info):
     # Строительство
 
     elif command == 'строить склад':
-        answer = player.build.build_stock()
+        answer = player.build.build_stock(action_time)
     elif command == 'строить кузница':
-        answer = player.build.build_forge()
+        answer = player.build.build_forge(action_time)
     elif command == 'строить таверна':
-        answer = player.build.build_tavern()
+        answer = player.build.build_tavern(action_time)
     elif command == 'строить цитадель':
-        answer = player.build.build_citadel()
+        answer = player.build.build_citadel(action_time)
     elif command == 'строить башня':
-        answer = player.build.build_tower()
+        answer = player.build.build_tower(action_time)
     elif command == 'строить стена':
-        answer = player.build.build_wall()
+        answer = player.build.build_wall(action_time)
+    elif command == 'строить казармы':
+        answer = player.build.build_barracks(action_time)
+    elif command == 'строить стрельбище':
+        answer = player.build.build_archery(action_time)
+    elif command == 'строить башня магов':
+        answer = player.build.build_magic(action_time)
+    elif command == 'строить лесопилка':
+        answer = player.build.build_wood_mine(action_time)
+    elif command == 'строить каменоломня':
+        answer = player.build.build_stone_mine(action_time)
+    elif command == 'строить рудник':
+        answer = player.build.build_iron_mine(action_time)
+    elif command == 'строить прииск':
+        answer = player.build.build_diamond_mine(action_time)
 
     # Добыча
 
@@ -184,11 +198,11 @@ def action(command, player, action_time, chat_info):
         answer = player.get_diamond(action_time, chat_info, amount(command))
 
     elif command == 'ковать каменная кирка':
-        answer = player.craft_stone_pickaxe()
+        answer = player.craft_stone_pickaxe(action_time)
     elif command == 'ковать железная кирка':
-        answer = player.craft_iron_pickaxe()
+        answer = player.craft_iron_pickaxe(action_time)
     elif command == 'ковать кристальная кирка':
-        answer = player.craft_diamond_pickaxe()
+        answer = player.craft_diamond_pickaxe(action_time)
 
     # Локацииц
 
@@ -212,11 +226,11 @@ def action(command, player, action_time, chat_info):
     # Армия
 
     elif re.match(r'воин', command):
-        answer = player.war.craft_warrior(player.build.stock, player.build.barracks, amount(command))
+        answer = player.war.craft_warrior(player.build, action_time, amount(command))
     elif re.match(r'лучник', command):
-        answer = player.war.craft_archer(player.build.stock, player.build.archery, amount(command))
+        answer = player.war.craft_archer(player.build, action_time, amount(command))
     elif re.match(r'маг', command):
-        answer = player.war.craft_wizard(player.build.stock, player.build.magic, amount(command))
+        answer = player.war.craft_wizard(player.build, action_time, amount(command))
 
     # Война
 
