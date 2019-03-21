@@ -140,7 +140,7 @@ def action(command, player, action_time, chat_info):
 
     # Меню
 
-    if command == '!команды':
+    if command == '!команды' or command == 'команды' or command == 'помощь' or command == '!помощь':
         answer = commands()
     elif command == 'бонус':
         answer = player.bonus(action_time)
@@ -171,11 +171,11 @@ def action(command, player, action_time, chat_info):
         answer = player.build.build_tower(action_time)
     elif command == 'строить стена':
         answer = player.build.build_wall(action_time)
-    elif command == 'строить казармы':
+    elif re.match(r'строить казарм', command):
         answer = player.build.build_barracks(action_time)
-    elif command == 'строить стрельбище':
+    elif re.match(r'строить стрельбищ', command):
         answer = player.build.build_archery(action_time)
-    elif command == 'строить башня магов':
+    elif re.match(r'строить башня маг', command):
         answer = player.build.build_magic(action_time)
     elif command == 'строить лесопилка':
         answer = player.build.build_wood_mine(action_time)
