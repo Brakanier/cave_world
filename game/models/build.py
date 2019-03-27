@@ -115,8 +115,8 @@ class Build(models.Model):
 
     def get_passive(self, action_time):
         delta = action_time - self.stock.get_passive_last_time
-        delta = delta // 60
-        if delta >= 60:
+        delta = delta // 3600
+        if delta >= 1:
             print(delta)
             if self.wood_mine_lvl > 0:
                 wood = (delta // 60) * (GET_PASSIVE_WOOD + GET_PASSIVE_WOOD_X * self.wood_mine_lvl) // 24
@@ -134,7 +134,7 @@ class Build(models.Model):
                 diamond = (delta // 60) * (GET_PASSIVE_DIAMOND + GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl) // 24
                 diamond_sum = diamond + self.stock.diamond
                 self.stock.diamond = min(diamond_sum, self.stock.max)
-            self.stock.get_passive_last_time = self.stock.get_passive_last_time + (delta * 60)
+            self.stock.get_passive_last_time = self.stock.get_passive_last_time + (delta * 3600)
             Stock.objects.filter(user_id=self.user_id).update(wood=self.stock.wood,
                                                               stone=self.stock.stone,
                                                               iron=self.stock.iron,
