@@ -119,19 +119,19 @@ class Build(models.Model):
         if delta >= 1:
             print(delta)
             if self.wood_mine_lvl > 0:
-                wood = (delta // 60) * (GET_PASSIVE_WOOD + GET_PASSIVE_WOOD_X * self.wood_mine_lvl) // 24
+                wood = delta * (GET_PASSIVE_WOOD + GET_PASSIVE_WOOD_X * self.wood_mine_lvl) // 24
                 wood_sum = wood + self.stock.wood
                 self.stock.wood = min(wood_sum, self.stock.max)
             if self.stone_mine_lvl > 0:
-                stone = (delta // 60) * (GET_PASSIVE_STONE + GET_PASSIVE_STONE_X * self.stone_mine_lvl) // 24
+                stone = delta * (GET_PASSIVE_STONE + GET_PASSIVE_STONE_X * self.stone_mine_lvl) // 24
                 stone_sum = stone + self.stock.stone
                 self.stock.stone = min(stone_sum, self.stock.max)
             if self.iron_mine_lvl > 0:
-                iron = (delta // 60) * (GET_PASSIVE_IRON + GET_PASSIVE_IRON_X * self.iron_mine_lvl) // 24
+                iron = delta * (GET_PASSIVE_IRON + GET_PASSIVE_IRON_X * self.iron_mine_lvl) // 24
                 iron_sum = iron + self.stock.iron
                 self.stock.iron = min(iron_sum, self.stock.max)
             if self.diamond_mine_lvl > 0:
-                diamond = (delta // 60) * (GET_PASSIVE_DIAMOND + GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl) // 24
+                diamond = delta * (GET_PASSIVE_DIAMOND + GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl) // 24
                 diamond_sum = diamond + self.stock.diamond
                 self.stock.diamond = min(diamond_sum, self.stock.max)
             self.stock.get_passive_last_time = self.stock.get_passive_last_time + (delta * 3600)
