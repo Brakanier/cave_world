@@ -376,12 +376,12 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
         keyboard.add_button('◾⛏ Добыть камень', color=VkKeyboardColor.POSITIVE, payload={"command": "камень"})
-        if iron:
-            keyboard.add_line()
-            keyboard.add_button('💎⛏ Добыть кристалы', color=VkKeyboardColor.POSITIVE, payload={"command": "кристалы"})
         if stone:
             keyboard.add_line()
             keyboard.add_button('◽⛏ Добыть железо', color=VkKeyboardColor.POSITIVE, payload={"command": "железо"})
+        if iron:
+            keyboard.add_line()
+            keyboard.add_button('💎⛏ Добыть кристалы', color=VkKeyboardColor.POSITIVE, payload={"command": "кристалы"})
 
     # Кузница
 
@@ -416,6 +416,8 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'tavern':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_line()
+        keyboard.add_button('🎲 Кости 🎲', color=VkKeyboardColor.POSITIVE, payload={"command": "кости"})
         # keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
         # keyboard.add_button('⚔ Арсенал', color=VkKeyboardColor.DEFAULT, payload={"command": "forge_kit_info"})
 

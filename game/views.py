@@ -170,6 +170,8 @@ def action(command, player, action_time, chat_info):
             answer = player.build.tavern_bones(action_time, 'diamond', amount(command))
         elif re.search(r'золото', command):
             answer = player.build.tavern_bones(action_time, 'gold', amount(command))
+        else:
+            answer = player.bones()
 
     # Строительство
 

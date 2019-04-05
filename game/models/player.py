@@ -435,6 +435,11 @@ class Player(models.Model):
             message = 'Вы зашли в Таверну!\n'
         return message
 
+    def bones(self):
+        message = icon('cube') + ' Игра Кости' + icon('cube') + '\n' + \
+                  'Чтобы сыграть в "Кости" напишите команду:\n' + 'Кости [ресурс] [кол-во]'
+        return message
+
     def war_menu(self):
         if self.place == 'war':
             message = 'Вы уже в меню Войны'
