@@ -54,7 +54,7 @@ WSGI_APPLICATION = 'cave_world.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'django_project_db',
+        'NAME': 'cave_world',
         'USER': 'django',
         'PASSWORD': 'YaicaicheiM5',
         'HOST': 'localhost',
