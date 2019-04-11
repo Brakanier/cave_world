@@ -150,6 +150,9 @@ class War(models.Model):
         return message
 
     def find_enemy(self, lvl, action_time):
+        if lvl < 10:
+            message = 'Поиск противника доступен с 10 ур.'
+            return message
         find_time = action_time - self.find_last_time
         if find_time >= FIND_TIME:
             lvl = max(lvl - 2, 10)
@@ -191,6 +194,9 @@ class War(models.Model):
         return message
 
     def attack(self, player, action_time, chat_info):
+        if player.lvl < 10:
+            message = 'Нападения доступны с 10 ур.'
+            return message
         war_time = action_time - self.war_last_time
         if war_time >= WAR_TIME:
             if self.enemy_id:
@@ -333,10 +339,6 @@ class War(models.Model):
                                   'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
                                   'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
-                                  '[Потери врага]\n' + \
-                                  'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
-                                  'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
                                   '[Награда]\n' + \
                                   'Дерево: ' + str(reward) + ' 🌲\n' + \
                                   'Камень: ' + str(reward) + ' ◾\n' + \
@@ -348,10 +350,6 @@ class War(models.Model):
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
                                       '⚔ Вы проиграли ⚔\n' + \
-                                      '[Потери врага]\n' + \
-                                      'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
-                                      'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
-                                      'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
                                       '[Ваши потери]\n' + \
                                       'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
                                       'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
@@ -376,18 +374,10 @@ class War(models.Model):
                                   '[Ваши потери]\n' + \
                                   'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
                                   'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
-                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
-                                  '[Потери врага]\n' + \
-                                  'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
-                                  'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮'
+                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n'
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
                                       '⚔ Вы победили ⚔\n' + \
-                                      '[Потери врага]\n' + \
-                                      'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
-                                      'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
-                                      'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
                                       '[Ваши потери]\n' + \
                                       'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
                                       'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
