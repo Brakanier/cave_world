@@ -2,7 +2,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '73NkEEVlVJR90AByPMgge2UBDnQq9d7CVm95mrvfqIOz5YKi3AGcTxeMpNNWvrvE'
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '89.108.99.87',
