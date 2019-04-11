@@ -6,7 +6,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '89.108.99.87',
-    '89.108.99.87.cloudvps.regruhosting.ru',
+    '89-108-99-87.cloudvps.regruhosting.ru',
     'cave-world.ru'
 ]
 
