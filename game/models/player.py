@@ -84,7 +84,10 @@ class Player(models.Model):
         self.build.stock = self.build.get_passive(action_time)
         self = energy(self, action_time)
         if self.energy >= GET_ENERGY * amount:
+            diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
             stone = 8 * amount
+            if diamond_pickaxe:
+                stone = stone * 2
             stone = stone + random.randint(-4 * amount, 4 * amount)
             space = self.build.stock.max - self.build.stock.stone
             if space > 0:
@@ -113,7 +116,10 @@ class Player(models.Model):
         self.build.stock = self.build.get_passive(action_time)
         self = energy(self, action_time)
         if self.energy >= GET_ENERGY * amount:
+            diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
             wood = 8 * amount
+            if diamond_pickaxe:
+                wood = wood * 2
             wood = wood + random.randint(-4 * amount, 4 * amount)
             space = self.build.stock.max - self.build.stock.wood
             if space > 0:
@@ -140,11 +146,14 @@ class Player(models.Model):
 
     def get_iron(self, action_time, chat_info, amount=1):
         self.build.stock = self.build.get_passive(action_time)
-        item = in_items(self.inventory.items.all(), 'stone_pickaxe')
-        if item:
+        stone_pickaxe = in_items(self.inventory.items.all(), 'stone_pickaxe')
+        if stone_pickaxe:
             self = energy(self, action_time)
             if self.energy >= GET_ENERGY * amount:
+                diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
                 iron = 4 * amount
+                if diamond_pickaxe:
+                    iron = iron * 2
                 iron = iron + random.randint(-2 * amount, 2 * amount)
                 space = self.build.stock.max - self.build.stock.iron
                 if space > 0:
@@ -174,11 +183,14 @@ class Player(models.Model):
 
     def get_diamond(self, action_time, chat_info, amount=1):
         self.build.stock = self.build.get_passive(action_time)
-        item = in_items(self.inventory.items.all(), 'iron_pickaxe')
-        if item:
+        iron_pickaxe = in_items(self.inventory.items.all(), 'iron_pickaxe')
+        if iron_pickaxe:
             self = energy(self, action_time)
             if self.energy >= GET_ENERGY * amount:
+                diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
                 diamond = 2 * amount
+                if diamond_pickaxe:
+                    diamond = diamond * 2
                 diamond = diamond + random.randint(-1 * amount, 1 * amount)
                 space = self.build.stock.max - self.build.stock.diamond
                 if space > 0:
