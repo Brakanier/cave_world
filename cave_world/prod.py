@@ -5,9 +5,8 @@ SECRET_KEY = '73NkEEVlVJR90AByPMgge2UBDnQq9d7CVm95mrvfqIOz5YKi3AGcTxeMpNNWvrvE'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '188.93.210.50',
-    '2a00:f940:2:4:2::9cc',
-    '188-93-210-50.cloudvps.regruhosting.ru',
+    '89.108.99.87',
+    '89.108.99.87.cloudvps.regruhosting.ru',
     'cave-world.ru'
 ]
 
@@ -58,7 +57,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'django_project_db',
         'USER': 'django',
-        'PASSWORD': 'thoh0aeVo1ai',
+        'PASSWORD': 'YaicaicheiM5',
         'HOST': 'localhost',
         'PORT': '',
     }
