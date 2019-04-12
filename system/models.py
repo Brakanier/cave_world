@@ -11,3 +11,13 @@ class Registration(models.Model):
     reg = models.BooleanField(
         default=False,
     )
+
+
+class Chat(models.Model):
+    peer_id = models.BigIntegerField(
+        db_index=True,
+        unique=True,
+    )
+    count_users = models.IntegerField(
+        default=0,
+    )

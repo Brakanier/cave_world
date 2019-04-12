@@ -106,6 +106,16 @@ def keyboard_for_chat():
     return keyboard.get_keyboard()
 
 
+def count_users_chat(chat_info):
+    vk = vk_connect()
+    users = vk.messages.getConversationMembers(
+        access_token=token(),
+        peer_id=str(chat_info['peer_id']),
+        group_id='179848057',
+    )
+    return users['count']
+
+
 def vk_connect():
     vk_session = vk_api.VkApi(token=token())
     vk = vk_session.get_api()

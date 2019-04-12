@@ -11,7 +11,7 @@ from .models.player import Player
 from .models.war import War
 from .models.inventory import Inventory
 from .actions.functions import *
-from system.models import Registration
+from system.models import Registration, Chat
 
 secret_token = config('SECRET_TOKEN')
 confirmation_token = 'f20f512c'
@@ -42,6 +42,18 @@ def index(request):
                         'nick': 'Новый игрок',
                     }
                     enter(chat_info, data)
+                    if Chat.objects.filter(peer_id=chat_info['peer_id']).exists():
+                        try:
+                            count = count_users_chat(chat_info)
+                            Chat.objects.filter(peer_id=chat_info['peer_id']).update(count=count)
+                        except vk_api.ApiError:
+                            print('У бота нет прав админа')
+                    else:
+                        try:
+                            count = count_users_chat(chat_info)
+                            Chat.objects.create(peer_id=chat_info['peer_id'], count_users=count)
+                        except vk_api.ApiError:
+                            print('У бота нет прав админа')
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
