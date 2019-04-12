@@ -113,7 +113,7 @@ def vk_connect():
 
 
 def token():
-    return 'e93e44b3eac62bca17249148d0013240b6fdfaaacea23b08981dbaf90d931490b424f334de3a1912a2f8e'
+    return 'fd5b3113cc8eaf3943ca4bcbc70936beaef7d5b4f19e532e91d319ecf6e1bafe738dbf96bb3ba3a73dc7c'
 
 
 def commands():
@@ -376,12 +376,15 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
         keyboard.add_button('◾⛏ Добыть камень', color=VkKeyboardColor.POSITIVE, payload={"command": "камень"})
+        keyboard.add_button('◾⛏ x5', color=VkKeyboardColor.POSITIVE, payload={"command": "камень 5"})
         if stone:
             keyboard.add_line()
             keyboard.add_button('◽⛏ Добыть железо', color=VkKeyboardColor.POSITIVE, payload={"command": "железо"})
+            keyboard.add_button('◽⛏ x5', color=VkKeyboardColor.POSITIVE, payload={"command": "железо 5"})
         if iron:
             keyboard.add_line()
             keyboard.add_button('💎⛏ Добыть кристалы', color=VkKeyboardColor.POSITIVE, payload={"command": "кристалы"})
+            keyboard.add_button('💎⛏ x5', color=VkKeyboardColor.POSITIVE, payload={"command": "кристалы 5"})
 
     # Кузница
 
@@ -426,10 +429,11 @@ def get_keyboard(player, action_time=0):
     elif player.place == 'war':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
-        keyboard.add_line()
-        keyboard.add_button('🔎 Поиск', color=VkKeyboardColor.POSITIVE, payload={"command": "поиск"})
-        keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "атака"})
-        keyboard.add_line()
-        keyboard.add_button('🛡 Щит ⏳', color=VkKeyboardColor.DEFAULT, payload={"command": "щит"})
+        if player.lvl >= 10:
+            keyboard.add_line()
+            keyboard.add_button('🔎 Поиск', color=VkKeyboardColor.POSITIVE, payload={"command": "поиск"})
+            keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "атака"})
+            keyboard.add_line()
+            keyboard.add_button('🛡 Щит ⏳', color=VkKeyboardColor.DEFAULT, payload={"command": "щит"})
 
     return keyboard.get_keyboard()
