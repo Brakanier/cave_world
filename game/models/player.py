@@ -3,6 +3,7 @@ from django.db import models
 from .build import Stock
 from .items import Item
 from ..actions.functions import *
+from ..actions.chests import *
 
 import random
 
@@ -324,6 +325,23 @@ class Player(models.Model):
                   'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp') + '\n' + \
                   'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy')
 
+        return message
+
+    def go_inventory(self):
+        if not self.place == 'inventory':
+            self.place = 'inventory'
+            Player.objects.filter(user_id=self.user_id).update(place=self.place)
+        message = 'Инвентарь'
+        return message
+
+    def go_chests(self):
+        message = get_chests(self)
+        if not message:
+            message = 'У вас нет сундуков!'
+            self.place = 'inventory'
+        else:
+            self.place = 'chests'
+        Player.objects.filter(user_id=self.user_id).update(place=self.place)
         return message
 
     def top(self):

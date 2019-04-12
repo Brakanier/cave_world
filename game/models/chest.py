@@ -9,6 +9,7 @@ class Chest(models.Model):
     )
     title = models.CharField(
         max_length=50,
+        db_index=True,
     )
     slug = models.CharField(
         max_length=30,
@@ -52,6 +53,13 @@ class ChestTrophy(models.Model):
         default=0,
     )
 
+    class Meta:
+        verbose_name = 'Сундук с трофеем'
+        verbose_name_plural = 'Сундуки с трофеями'
+
+    def __str__(self):
+        return str(self.chest) + ' - ' + str(self.trophy) + ' | ' + str(self.chance * 100) + ' %'
+
 
 class ChestItem(models.Model):
     item = models.ForeignKey(
@@ -67,3 +75,10 @@ class ChestItem(models.Model):
     chance = models.FloatField(
         default=0,
     )
+
+    class Meta:
+        verbose_name = 'Сундук с предметом'
+        verbose_name_plural = 'Сундуки с предметами'
+
+    def __str__(self):
+        return str(self.chest) + ' - ' + str(self.item) + ' | ' + str(self.chance * 100) + ' %'

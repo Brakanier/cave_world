@@ -1,5 +1,5 @@
 from .constant import *
-
+from ..models.inventory import InventoryChest
 
 import random
 import vk_api
@@ -266,7 +266,6 @@ def exp_need(lvl):
 
 
 def get_keyboard(player, action_time=0):
-    # TODO кнопки добычи х5 х10
     keyboard = VkKeyboard()
 
     if player.place == 'reg':
@@ -287,6 +286,23 @@ def get_keyboard(player, action_time=0):
         if action_time - player.bonus_time <= BONUS_TIME:
             color = VkKeyboardColor.NEGATIVE
         keyboard.add_button('🎁 Бонус', color=color, payload={"command": "бонус"})
+
+    if player.place == 'inventory':
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_line()
+        keyboard.add_button('🎁 Сундуки 🎁', color=VkKeyboardColor.DEFAULT, payload={"command": "сундуки"})
+        # keyboard.add_button('Трофей', color=VkKeyboardColor.DEFAULT, payload={"command": "трофеи"})
+
+    if player.place == 'chests':
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_line()
+        chests = InventoryChest.objects.filter(inventory=player.inventory)
+        for chest in chests:
+            title = str(chest.chest.title) + ' - ' + str(chest.count) + ' шт.'
+            command = 'открыть ' + str(chest.chest.title)
+            keyboard.add_button(title, color=VkKeyboardColor.POSITIVE, payload={"command": command})
 
     if player.place == 'top':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})

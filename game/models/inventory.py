@@ -27,6 +27,9 @@ class Inventory(models.Model):
         verbose_name = 'Инвентарь'
         verbose_name_plural = 'Инвентари'
 
+    def __str__(self):
+        return str(self.user_id) + ' - Инвентарь'
+
 
 class InventoryChest(models.Model):
     chest = models.ForeignKey(
@@ -37,11 +40,19 @@ class InventoryChest(models.Model):
     inventory = models.ForeignKey(
         'game.Inventory',
         on_delete=models.CASCADE,
+        db_index=True,
         null=True,
     )
     count = models.IntegerField(
         default=0,
     )
+
+    class Meta:
+        verbose_name = 'Инвентарь сундуков'
+        verbose_name_plural = 'Инвентари сундуков'
+
+    def __str__(self):
+        return str(self.inventory) + ' - ' + str(self.chest) + ' [' + str(self.count) + ']'
 
 
 class InventoryTrophy(models.Model):
@@ -53,9 +64,16 @@ class InventoryTrophy(models.Model):
     inventory = models.ForeignKey(
         'game.Inventory',
         on_delete=models.CASCADE,
+        db_index=True,
         null=True,
     )
     count = models.IntegerField(
         default=0,
     )
 
+    class Meta:
+        verbose_name = 'Инвентарь трофеев'
+        verbose_name_plural = 'Инвентари трофеев'
+
+    def __str__(self):
+        return str(self.inventory) + ' - ' + str(self.trophy) + ' [' + str(self.count) + ']'

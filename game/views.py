@@ -11,6 +11,7 @@ from .models.player import Player
 from .models.war import War
 from .models.inventory import Inventory
 from .actions.functions import *
+from .actions.chests import *
 from system.models import Registration, Chat
 
 secret_token = config('SECRET_TOKEN')
@@ -45,7 +46,7 @@ def index(request):
                     if Chat.objects.filter(peer_id=chat_info['peer_id']).exists():
                         try:
                             count = count_users_chat(chat_info)
-                            Chat.objects.filter(peer_id=chat_info['peer_id']).update(count=count)
+                            Chat.objects.filter(peer_id=chat_info['peer_id']).update(count_users=count)
                         except vk_api.ApiError:
                             print('У бота нет прав админа')
                     else:
@@ -158,6 +159,10 @@ def action(command, player, action_time, chat_info):
         answer = player.bonus(action_time)
     elif command == 'профиль':
         answer = player.profile(action_time)
+    elif command == 'инвентарь':
+        answer = player.go_inventory()
+    elif command == 'сундуки':
+        answer = player.go_chests()
     elif command == 'топ':
         answer = player.top()
     elif command == 'топ лвл':
@@ -273,8 +278,20 @@ def action(command, player, action_time, chat_info):
     elif command == 'армия':
         answer = player.war.army()
 
-    elif command == 'тест':
-        test_models(player)
+    elif re.match(r'открыть', command):
+        chest = get_chest_name(command)
+        if chest:
+            answer = open_trophy_chest(player, chest)
+        else:
+            answer = 'Такого сундука не существует!'
+    '''
+    elif re.match(r'дать', command):
+        chest = get_chest_name(command)
+        if chest:
+            add_chest(player, chest)
+        else:
+            answer = 'Такого сундука не существует!'
+    '''
 
     send(chat_info, answer, get_keyboard(player, action_time))
 
