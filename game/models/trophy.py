@@ -2,11 +2,6 @@ from django.db import models
 
 
 class Trophy(models.Model):
-    id = models.AutoField(
-        db_index=True,
-        unique=True,
-        primary_key=True,
-    )
     title = models.CharField(
         max_length=50,
     )
