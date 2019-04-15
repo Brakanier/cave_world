@@ -18,15 +18,13 @@ class Chest(models.Model):
     )
 
     trophy_chance = models.ManyToManyField(
-        'game.Trophy',
-        through='ChestTrophy',
-        through_fields=('chest', 'trophy'),
+        'game.ChestTrophy',
+        related_name='trophy_chest',
         blank=True,
     )
     items_chance = models.ManyToManyField(
-        'game.Item',
-        through='ChestItem',
-        through_fields=('chest', 'item'),
+        'game.ChestItem',
+        related_name='item_chest',
         blank=True,
     )
 

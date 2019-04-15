@@ -279,11 +279,12 @@ def action(command, player, action_time, chat_info):
         answer = player.war.army()
 
     elif re.match(r'открыть', command):
-        chest = get_chest_name(command)
+        chest = get_chest_object(command)
         if chest:
             answer = open_trophy_chest(player, chest)
         else:
             answer = 'Такого сундука не существует!'
+
     '''
     elif re.match(r'дать', command):
         chest = get_chest_name(command)

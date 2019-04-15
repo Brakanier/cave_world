@@ -299,11 +299,12 @@ def get_keyboard(player, action_time=0):
     if player.place == 'chests':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
-        keyboard.add_line()
-        chests = InventoryChest.objects.filter(inventory=player.inventory)
+
+        chests = player.inventory.chests.all()
         for chest in chests:
             title = str(chest.chest.title) + ' - ' + str(chest.count) + ' шт.'
             command = 'открыть ' + str(chest.chest.title)
+            keyboard.add_line()
             keyboard.add_button(title, color=VkKeyboardColor.POSITIVE, payload={"command": command})
 
     if player.place == 'top':

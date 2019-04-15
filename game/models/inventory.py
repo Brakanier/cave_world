@@ -11,16 +11,14 @@ class Inventory(models.Model):
         blank=True,
     )
     trophy = models.ManyToManyField(
-        'game.Trophy',
-        through='InventoryTrophy',
-        through_fields=('inventory', 'trophy'),
+        'game.InventoryTrophy',
+        related_name='trophy_inventory',
         blank=True,
     )
     chests = models.ManyToManyField(
-        'game.Chest',
-        through='InventoryChest',
-        through_fields=('inventory', 'chest'),
+        'game.InventoryChest',
         blank=True,
+        related_name='chest_inventory',
     )
 
     class Meta:
