@@ -11,13 +11,13 @@ def get_data(message):
     return data
 
 
-def track(ga_id, user_id, stat):
+def track(user_id, stat):
 
     r = requests.post(
         TRACK_URL,
         params={
             "v": "1",
-            "tid": ga_id,
+            "tid": "UA-100938979-2",
             "cid": user_id,
             "t": "event",
             "ec": stat['category'],

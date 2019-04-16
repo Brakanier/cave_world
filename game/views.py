@@ -463,7 +463,7 @@ def action(command, player, action_time, chat_info):
     '''
 
     send(chat_info, answer, get_keyboard(player, action_time))
-    track(config('GA_ID'), player.user_id, stat)
+    track(player.user_id, stat)
 
 
 def test_models(player):
