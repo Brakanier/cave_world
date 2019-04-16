@@ -75,6 +75,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cave_world.wsgi.application'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/debug.log',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

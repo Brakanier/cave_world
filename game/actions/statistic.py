@@ -1,14 +1,6 @@
 import requests
-import json
 
 TRACK_URL = 'https://www.google-analytics.com/collect'
-
-
-def get_data(message):
-    data = {
-        "command": message,
-    }
-    return data
 
 
 def track(user_id, stat):
@@ -29,8 +21,3 @@ def track(user_id, stat):
     )
     print(r)
     # print(json.loads(r.text))
-
-
-actions_labels = {
-    'help': 'Помощь',
-}

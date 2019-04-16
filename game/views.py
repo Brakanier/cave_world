@@ -3,6 +3,7 @@ from django.http import HttpResponse
 
 import re
 import json
+import logging
 from decouple import config
 from datetime import datetime
 

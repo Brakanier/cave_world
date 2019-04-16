@@ -4,6 +4,25 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '73NkEEVlVJR90AByPMgge2UBDnQq9d7CVm95mrvfqIOz5YKi3AGcTxeMpNNWvrvE'
 DEBUG = False
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/debug.log',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 ALLOWED_HOSTS = [
     '89.108.99.87',
     '89-108-99-87.cloudvps.regruhosting.ru',
