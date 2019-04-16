@@ -20,14 +20,18 @@ def get_chest_object(command):
         return False
 
 
-def add_chest(player, chest):
+def get_chest(slug):
+    return Chest.objects.get(slug=slug)
+
+
+def add_chest(player, chest, count=1):
     try:
         inventory_chest = player.inventory.chests.get(chest=chest)
         print(inventory_chest)
-        player.inventory.chests.filter(chest=chest).update(count=inventory_chest.count + 1)
+        player.inventory.chests.filter(chest=chest).update(count=inventory_chest.count + count)
         print('Сундук добавлен: ' + str(inventory_chest) + ' +1')
     except InventoryChest.DoesNotExist:
-        player.inventory.chests.create(chest=chest, inventory=player.inventory, count=1)
+        player.inventory.chests.create(chest=chest, inventory=player.inventory, count=count)
 
 
 def remove_chest(player, chest):
@@ -43,10 +47,17 @@ def remove_chest(player, chest):
         print('Модель Инвентарь - Сундук создана')
 
 
+def get_chest_mine(player, message):
+    chest_rand = random.randint(0, 100)
+    if chest_rand > 90:
+        add_chest(player, get_chest('mine_chest'))
+        message += '\nВы нашли Шахтерский Сундук!'
+    return message
+
+
 def open_trophy_chest(player, chest):
     try:
         inventory_chest = player.inventory.chests.get(chest=chest)
-        print(inventory_chest)
     except InventoryChest.DoesNotExist:
         player.inventory.chests.create(chest=chest, inventory=player.inventory, count=0)
         return 'У вас нет такого сундука!'

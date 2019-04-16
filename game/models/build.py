@@ -162,6 +162,8 @@ class Build(models.Model):
                       'Камня: ' + str(stone_need) + icon('stone')
         return message
 
+    # TODO Проверки на уровень для постройки зданий в соответствии с балансом
+
     def build_forge(self, action_time):
         self.stock = self.get_passive(action_time)
         if not self.forge:

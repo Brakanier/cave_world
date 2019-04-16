@@ -101,6 +101,7 @@ class Player(models.Model):
                               'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                               'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.build.stock.stone)
+                    message = get_chest_mine(self, message)
                 else:
                     message = 'Нехватает места!\n'
             else:
@@ -167,6 +168,7 @@ class Player(models.Model):
                                   'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                                   'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
                         Stock.objects.filter(user_id=self.user_id).update(iron=self.build.stock.iron)
+                        message = get_chest_mine(self, message)
                     else:
                         message = 'Нехватает места!\n'
                 else:
@@ -204,6 +206,7 @@ class Player(models.Model):
                                   'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                                   'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
                         Stock.objects.filter(user_id=self.user_id).update(diamond=self.build.stock.diamond)
+                        message = get_chest_mine(self, message)
                     else:
                         message = 'Не хватает места!\n'
                 else:

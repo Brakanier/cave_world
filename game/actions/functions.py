@@ -67,10 +67,32 @@ def exp(player, chat_info, exp):
         player.energy = player.max_energy
         message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.\n' + \
                   'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n'
+        if new_content(player.lvl):
+            new = 'Открыто:\n' + new_content(player.lvl)
+            message += new
         send(chat_info, message)
     else:
         player.exp = current_exp
     return player
+
+
+def new_content(lvl):
+    new_content_message = {
+        2: icon('craft') + 'Кузница',
+        3: icon('craft') + icon('stone') + ' Каменная кирка',
+        4: icon('craft') + icon('iron') + ' Железная кирка',
+        5: icon('build') + 'Цитадель',
+        6: icon('build') + 'Казармы',
+        7: icon('build') + 'Таверна',
+        9: icon('craft') + icon('diamond') + ' Кристальная кирка',
+        10: icon('build') + 'Стрельбище\n' + icon('build') + 'Башня\n' + icon('build') + 'Стена\n' + icon('stone') + 'Каменоломня\n' + icon('wood') + 'Лесопилка\n' + icon('iron') + 'Рудник\n' + icon('diamond') + 'Прииск\n' + icon('war') + 'Нападения на игроков',
+        15: icon('build') + 'Башня магов',
+    }
+    try:
+        message = new_content_message[lvl]
+    except:
+        return False
+    return message
 
 
 def send(chat_info, message, keyboard=None):

@@ -240,7 +240,6 @@ def action(command, player, action_time, chat_info):
             answer = player.bones()
         stat['category'] = 'Bones'
 
-
     # Строительство
 
     elif command == 'строить склад':
@@ -465,8 +464,3 @@ def action(command, player, action_time, chat_info):
 
     send(chat_info, answer, get_keyboard(player, action_time))
     track(player.user_id, stat)
-
-
-def test_models(player):
-    chests = player.inventory.inventorychest_set.get()
-    print(chests.count)
