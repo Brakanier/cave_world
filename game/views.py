@@ -18,7 +18,7 @@ from system.models import Registration, Chat
 from .actions.statistic import *
 
 secret_token = config('SECRET_TOKEN')
-confirmation_token = 'f20f512c'
+confirmation_token = '1f0c6305'
 
 
 @csrf_exempt

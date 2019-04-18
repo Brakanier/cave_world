@@ -142,7 +142,7 @@ def vk_connect():
 
 
 def token():
-    return 'fd5b3113cc8eaf3943ca4bcbc70936beaef7d5b4f19e532e91d319ecf6e1bafe738dbf96bb3ba3a73dc7c'
+    return '92ea5a422d8e327dbe40934fbeefd4ec722786ce5b63b1db627cc29e2180c45e01dc4eb273910b4b0a30c'
 
 
 def commands():
