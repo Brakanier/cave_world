@@ -67,9 +67,6 @@ def exp(player, chat_info, exp):
         player.energy = player.max_energy
         message = 'Поздравляю! Вы теперь ' + str(player.lvl) + ' ур.\n' + \
                   'Энергия: ' + str(player.energy) + '/' + str(player.max_energy) + ' ⚡\n'
-        if new_content(player.lvl):
-            new = 'Открыто:\n' + new_content(player.lvl)
-            message += new
         send(chat_info, message)
     else:
         player.exp = current_exp

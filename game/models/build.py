@@ -349,7 +349,10 @@ class Build(models.Model):
             message = "Сначала постройте Цитадель!"
         return message
 
-    def build_stone_mine(self, action_time):
+    def build_stone_mine(self, action_time, lvl):
+        if lvl < 10:
+            message = 'Строительство Каменоломни доступно с 10 ур.'
+            return message
         self.stock = self.get_passive(action_time)
         need_wood = (self.stone_mine_lvl + 1) * STONE_MINE_WOOD
         need_iron = (self.stone_mine_lvl + 1) * STONE_MINE_IRON
@@ -374,7 +377,10 @@ class Build(models.Model):
                               'Кристалов: ' + str(need_diamond) + icon('diamond')
         return message
 
-    def build_wood_mine(self, action_time):
+    def build_wood_mine(self, action_time, lvl):
+        if lvl < 10:
+            message = 'Строительство Лесопилки доступно с 10 ур.'
+            return message
         self.stock = self.get_passive(action_time)
         need_stone = (self.wood_mine_lvl + 1) * WOOD_MINE_STONE
         need_iron = (self.wood_mine_lvl + 1) * WOOD_MINE_IRON
@@ -399,7 +405,10 @@ class Build(models.Model):
                               'Кристалов: ' + str(need_diamond) + icon('diamond')
         return message
 
-    def build_iron_mine(self, action_time):
+    def build_iron_mine(self, action_time, lvl):
+        if lvl < 10:
+            message = 'Строительство Рудника доступно с 10 ур.'
+            return message
         self.stock = self.get_passive(action_time)
         need_stone = (self.iron_mine_lvl + 1) * IRON_MINE_STONE
         need_wood = (self.iron_mine_lvl + 1) * IRON_MINE_WOOD
@@ -424,7 +433,10 @@ class Build(models.Model):
                               'Кристалов: ' + str(need_diamond) + icon('diamond')
         return message
 
-    def build_diamond_mine(self, action_time):
+    def build_diamond_mine(self, action_time, lvl):
+        if lvl < 10:
+            message = 'Строительство Прииска доступно с 10 ур.'
+            return message
         self.stock = self.get_passive(action_time)
         need_stone = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_STONE
         need_wood = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_WOOD

@@ -291,22 +291,22 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Woodmine'
         stat['label'] = 'Строить_Лесопилка'
-        answer = player.build.build_wood_mine(action_time)
+        answer = player.build.build_wood_mine(action_time, player.lvl)
     elif command == 'строить каменоломня':
         stat['category'] = 'Build'
         stat['action'] = 'Build_Stonemine'
         stat['label'] = 'Строить_Каменоломня'
-        answer = player.build.build_stone_mine(action_time)
+        answer = player.build.build_stone_mine(action_time, player.lvl)
     elif command == 'строить рудник':
         stat['category'] = 'Build'
         stat['action'] = 'Build_Ironmine'
         stat['label'] = 'Строить_Рудник'
-        answer = player.build.build_iron_mine(action_time)
+        answer = player.build.build_iron_mine(action_time, player.lvl)
     elif command == 'строить прииск':
         stat['category'] = 'Build'
         stat['action'] = 'Build_Diamondmine'
         stat['label'] = 'Строить_Прииск'
-        answer = player.build.build_diamond_mine(action_time)
+        answer = player.build.build_diamond_mine(action_time, player.lvl)
 
     # Добыча
 
