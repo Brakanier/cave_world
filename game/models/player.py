@@ -398,15 +398,24 @@ class Player(models.Model):
         # стена
         message_wall = 'Стена: ' + \
                        str((self.build.wall_lvl + 1) * WALL_STONE) + icon('stone') + ' + ' + \
-                       str((self.build.wall_lvl + 1) * WALL_WOOD) + icon('wood') + '\n'
+                       str((self.build.wall_lvl + 1) * WALL_WOOD) + icon('wood')
         message = 'Стоимость:\n'
         message = message + message_tower + message_wall
+        if not self.build.barracks:
+            barracks = '\nКазармы: ' + str(BARRACKS_STONE) + icon('stone') + ' + ' + str(BARRACKS_IRON) + icon('iron')
+            message += barracks
+        if not self.build.archery:
+            archery = '\nСтрельбище: ' + str(ARCHERY_STONE) + icon('stone') + ' + ' + str(ARCHERY_WOOD) + icon('wood')
+            message += archery
+        if not self.build.magic:
+            magic = '\nБашня Магов: ' + str(MAGIC_STONE) + icon('stone') + ' + ' + str(MAGIC_WOOD) + icon('wood') + ' + ' + str(MAGIC_DIAMOND) + icon('diamond')
+            message += magic
         if self.lvl >= 10:
             stone = self.build.stone_mine_lvl + 1
             wood = self.build.wood_mine_lvl + 1
             iron = self.build.iron_mine_lvl + 1
             diamond = self.build.diamond_mine_lvl + 1
-            stone_mine = 'Каменоломня: ' + str(stone * STONE_MINE_WOOD) + icon('wood') + ' + ' + \
+            stone_mine = '\nКаменоломня: ' + str(stone * STONE_MINE_WOOD) + icon('wood') + ' + ' + \
                          str(stone * STONE_MINE_IRON) + icon('iron') + ' + ' + \
                          str(stone * STONE_MINE_DIAMOND) + icon('diamond')
             wood_mine = '\nЛесопилка: ' + str(wood * WOOD_MINE_STONE) + icon('stone') + ' + ' + \
