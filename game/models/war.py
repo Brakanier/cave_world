@@ -144,7 +144,7 @@ class War(models.Model):
                           'Для ' + str(amount) + icon('orb') + ' нужно:\n' + \
                           'Дерева: ' + str(need_wood) + icon('wood') + '\n' + \
                           'Железа: ' + str(need_iron) + icon('iron') + '\n' + \
-                          'Кристалы: ' + str(need_diamond) + icon('diamond')
+                          'Кристаллы: ' + str(need_diamond) + icon('diamond')
         else:
             message = 'Сначала постройте Башню Магов!'
         return message

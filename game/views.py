@@ -228,7 +228,7 @@ def action(command, player, action_time, chat_info):
             answer = player.build.tavern_bones(action_time, 'iron', amount(command))
             stat['action'] = 'Iron'
             stat['label'] = 'Кости_Железо'
-        elif re.search(r'кристалы', command):
+        elif re.search(r'кристаллы', command):
             answer = player.build.tavern_bones(action_time, 'diamond', amount(command))
             stat['action'] = 'Diamond'
             stat['label'] = 'Кости_Кристалы'
@@ -328,12 +328,14 @@ def action(command, player, action_time, chat_info):
         stat['label'] = 'Добыть_Железо'
         stat['value'] = amount(command)
         answer = player.get_iron(action_time, chat_info, amount(command))
-    elif re.match(r'кристалы', command):
+    elif re.match(r'кристаллы', command):
         stat['category'] = 'Get'
         stat['action'] = 'Get_Diamond'
         stat['label'] = 'Добыть_Кристалы'
         stat['value'] = amount(command)
         answer = player.get_diamond(action_time, chat_info, amount(command))
+
+    # Крафт
 
     elif command == 'ковать каменная кирка':
         stat['category'] = 'Craft'

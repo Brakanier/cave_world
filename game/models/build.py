@@ -49,7 +49,7 @@ class Stock(models.Model):
                   'Камень: ' + str(self.stone) + '/' + str(self.max) + icon('stone') + '\n' + \
                   'Дерево: ' + str(self.wood) + '/' + str(self.max) + icon('wood') + '\n' + \
                   'Железо: ' + str(self.iron) + '/' + str(self.max) + icon('iron') + '\n' + \
-                  'Кристалы: ' + str(self.diamond) + '/' + str(self.max) + icon('diamond') + '\n' + \
+                  'Кристаллы: ' + str(self.diamond) + '/' + str(self.max) + icon('diamond') + '\n' + \
                   'Золото: ' + str(self.gold) + '/' + str(self.max) + icon('gold') + '\n' + \
                   'Черепа: ' + str(self.skull) + icon('skull')
 
@@ -222,7 +222,7 @@ class Build(models.Model):
                           'Нужно:\n' + \
                           'Камня: ' + str(CITADEL_STONE) + icon('stone') + '\n' + \
                           'Железо: ' + str(CITADEL_IRON) + icon('iron') + '\n' + \
-                          'Кристалы: ' + str(CITADEL_DIAMOND) + icon('diamond')
+                          'Кристаллы: ' + str(CITADEL_DIAMOND) + icon('diamond')
         else:
             message = 'У вас уже есть Цитадель'
         return message
@@ -342,7 +342,7 @@ class Build(models.Model):
                               'Нужно:\n' + \
                               'Камня: ' + str(MAGIC_STONE) + icon('stone') + '\n' + \
                               'Дерева: ' + str(MAGIC_WOOD) + icon('wood') + '\n' + \
-                              'Кристалов: ' + str(MAGIC_DIAMOND) + icon('diamond')
+                              'Кристаллов: ' + str(MAGIC_DIAMOND) + icon('diamond')
             else:
                 message = "У вас уже есть Башня Магов!"
         else:
@@ -374,7 +374,7 @@ class Build(models.Model):
                               'Нужно:\n' + \
                               'Дерева: ' + str(need_wood) + icon('wood') + '\n' + \
                               'Железа: ' + str(need_iron) + icon('iron') + '\n' + \
-                              'Кристалов: ' + str(need_diamond) + icon('diamond')
+                              'Кристаллов: ' + str(need_diamond) + icon('diamond')
         return message
 
     def build_wood_mine(self, action_time, lvl):
@@ -402,7 +402,7 @@ class Build(models.Model):
                               'Нужно:\n' + \
                               'Камня: ' + str(need_stone) + icon('stone') + '\n' + \
                               'Железа: ' + str(need_iron) + icon('iron') + '\n' + \
-                              'Кристалов: ' + str(need_diamond) + icon('diamond')
+                              'Кристаллов: ' + str(need_diamond) + icon('diamond')
         return message
 
     def build_iron_mine(self, action_time, lvl):
@@ -430,7 +430,7 @@ class Build(models.Model):
                               'Нужно:\n' + \
                               'Камня: ' + str(need_stone) + icon('stone') + '\n' + \
                               'Дерева: ' + str(need_wood) + icon('wood') + '\n' + \
-                              'Кристалов: ' + str(need_diamond) + icon('diamond')
+                              'Кристаллов: ' + str(need_diamond) + icon('diamond')
         return message
 
     def build_diamond_mine(self, action_time, lvl):

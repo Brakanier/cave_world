@@ -151,7 +151,7 @@ def commands():
               '&#12288;' + icon('stone') + ' Камень [кол-во] - добыть [кол-во] камня\n' + \
               '&#12288;' + icon('wood') + ' Дерево [кол-во] - добыть [кол-во] дерева\n' + \
               '&#12288;' + icon('iron') + ' Железо [кол-во] - добыть [кол-во] железа\n' + \
-              '&#12288;' + icon('diamond') + ' Кристалы [кол-во] - добыть [кол-во] кристалов\n' + \
+              '&#12288;' + icon('diamond') + ' Кристаллы [кол-во] - добыть [кол-во] кристаллов\n' + \
               '&#12288;' + icon('stock') + ' Склад - посмотреть склад\n' + \
               '\n' + icon('build') + 'Строительство:\n' + \
               '&#12288;' + icon('build') + ' Строить подземелье - меню строительства в подземелье\n' + \
@@ -398,7 +398,7 @@ def get_keyboard(player, action_time=0):
             keyboard.add_line()
             keyboard.add_button(diamond_mine, color=VkKeyboardColor.POSITIVE, payload={"command": "строить прииск"})
 
-        # Подземелье
+    # Подземелье
 
     elif player.place == 'cave':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
@@ -447,8 +447,8 @@ def get_keyboard(player, action_time=0):
             keyboard.add_button('◽⛏ x5', color=VkKeyboardColor.POSITIVE, payload={"command": "железо 5"})
         if iron:
             keyboard.add_line()
-            keyboard.add_button('💎⛏ Добыть кристалы', color=VkKeyboardColor.POSITIVE, payload={"command": "кристалы"})
-            keyboard.add_button('💎⛏ x5', color=VkKeyboardColor.POSITIVE, payload={"command": "кристалы 5"})
+            keyboard.add_button('💎⛏ Добыть кристаллы', color=VkKeyboardColor.POSITIVE, payload={"command": "кристаллы"})
+            keyboard.add_button('💎⛏ x5', color=VkKeyboardColor.POSITIVE, payload={"command": "кристаллы 5"})
 
     # Кузница
 

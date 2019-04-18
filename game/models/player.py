@@ -202,7 +202,7 @@ class Player(models.Model):
                         diamond = min(diamond, space)
                         self.build.stock.diamond = self.build.stock.diamond + diamond
                         self = exp(self, chat_info, GET_ENERGY * amount)
-                        message = 'Добыто кристалов: ' + str(diamond) + icon('diamond') + '\n' + \
+                        message = 'Добыто кристаллов: ' + str(diamond) + icon('diamond') + '\n' + \
                                   'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                                   'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
                         Stock.objects.filter(user_id=self.user_id).update(diamond=self.build.stock.diamond)
@@ -218,7 +218,7 @@ class Player(models.Model):
             else:
                 message = 'Недостаточно энергии!'
         else:
-            message = 'Вы не можете добывать' + icon('diamond') + ' Кристалы!\n' + \
+            message = 'Вы не можете добывать' + icon('diamond') + ' Кристаллы!\n' + \
                       'Нужна Железная Кирка!'
         return message
 
