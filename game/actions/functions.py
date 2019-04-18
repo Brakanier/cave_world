@@ -130,7 +130,7 @@ def count_users_chat(chat_info):
     users = vk.messages.getConversationMembers(
         access_token=token(),
         peer_id=str(chat_info['peer_id']),
-        group_id='179848057',
+        group_id='176853872',
     )
     return users['count']
 
