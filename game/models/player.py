@@ -458,6 +458,10 @@ class Player(models.Model):
             self.place = 'army'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
             message = 'Здесь вы можете нанять себе армию!'
+        warrior = '\n🗡 Воин: ' + str(WARRIOR_IRON) + icon('iron')
+        archer = '\n🏹 Лучник: ' + str(ARCHER_IRON) + icon('iron') + ' + ' + str(ARCHER_WOOD) + icon('wood')
+        wizard = '\n🔮 Маг: ' + str(WIZARD_IRON) + icon('iron') + ' + ' + str(WIZARD_WOOD) + icon('wood') + ' + ' + str(WIZARD_DIAMOND) + icon('diamond')
+        message += warrior + archer + wizard
         return message
 
     def forge(self):
