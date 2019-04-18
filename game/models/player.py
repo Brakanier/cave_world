@@ -265,7 +265,7 @@ class Player(models.Model):
                 for effect in effects:
                     message += effect.title + '!\n'
             else:
-                message = 'Недостаточно камня'
+                message = 'Недостаточно камня!'
         else:
             message = 'У вас уже есть ' + item.title + '!'
         return message
@@ -285,7 +285,7 @@ class Player(models.Model):
                 for effect in effects:
                     message += effect.title + '!\n'
             else:
-                message = 'Недостаточно камня'
+                message = 'Недостаточно железа!'
         else:
             message = 'У вас уже есть ' + item.title + '!'
         return message
@@ -306,7 +306,7 @@ class Player(models.Model):
                     message += effect.title + '!\n'
 
             else:
-                message = 'Недостаточно камня'
+                message = 'Недостаточно кристаллов!'
         else:
             message = 'У вас уже есть ' + item.title + '!'
         return message
