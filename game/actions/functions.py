@@ -341,7 +341,7 @@ def get_keyboard(player, action_time=0):
     # Земли
 
     elif player.place == 'land':
-        if player.build.citadel:
+        if player.build.citadel and player.lvl >= 10:
             keyboard.add_button('⚔ Война', color=VkKeyboardColor.DEFAULT, payload={"command": "война"})
         if player.build.barracks or player.build.archery or player.build.magic:
             keyboard.add_button('🎯 Нанять', color=VkKeyboardColor.DEFAULT, payload={"command": "нанять"})
