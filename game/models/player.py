@@ -401,6 +401,25 @@ class Player(models.Model):
                        str((self.build.wall_lvl + 1) * WALL_WOOD) + icon('wood') + '\n'
         message = 'Стоимость:\n'
         message = message + message_tower + message_wall
+        if self.lvl >= 10:
+            stone = self.build.stone_mine_lvl + 1
+            wood = self.build.wood_mine_lvl + 1
+            iron = self.build.iron_mine_lvl + 1
+            diamond = self.build.diamond_mine_lvl + 1
+            stone_mine = 'Каменоломня: ' + str(stone * STONE_MINE_WOOD) + icon('wood') + ' + ' + \
+                         str(stone * STONE_MINE_IRON) + icon('iron') + ' + ' + \
+                         str(stone * STONE_MINE_DIAMOND) + icon('diamond')
+            wood_mine = '\nЛесопилка: ' + str(wood * WOOD_MINE_STONE) + icon('stone') + ' + ' + \
+                         str(wood * WOOD_MINE_IRON) + icon('iron') + ' + ' + \
+                         str(wood * WOOD_MINE_DIAMOND) + icon('diamond')
+            iron_mine = '\nРудник: ' + str(iron * IRON_MINE_WOOD) + icon('stone') + ' + ' + \
+                         str(iron * IRON_MINE_WOOD) + icon('wood') + ' + ' + \
+                         str(iron * IRON_MINE_DIAMOND) + icon('diamond')
+            diamond_mine = '\nПрииск: ' + str(diamond * DIAMOND_MINE_STONE) + icon('stone') + ' + ' + \
+                         str(diamond * DIAMOND_MINE_WOOD) + icon('wood') + ' + ' + \
+                         str(diamond * DIAMOND_MINE_IRON) + icon('iron')
+            message += stone_mine + wood_mine + iron_mine + diamond_mine
+
         return message
 
     # Локации

@@ -384,8 +384,21 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button(tower_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "строить башня"})
         keyboard.add_button(wall_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "строить стена"})
+        if player.lvl >= 10:
+            stone_mine = '🔨◾ Каменоломня ' + str(player.build.stone_mine_lvl + 1) + ' ур.'
+            wood_mine = '🔨🌲 Лесопилка ' + str(player.build.wood_mine_lvl + 1) + ' ур.'
+            iron_mine = '🔨◽ Рудник ' + str(player.build.iron_mine_lvl + 1) + ' ур.'
+            diamond_mine = '🔨💎 Прииск ' + str(player.build.diamond_mine_lvl + 1) + ' ур.'
+            keyboard.add_line()
+            keyboard.add_button(stone_mine, color=VkKeyboardColor.POSITIVE, payload={"command": "строить каменоломня"})
+            keyboard.add_line()
+            keyboard.add_button(wood_mine, color=VkKeyboardColor.POSITIVE, payload={"command": "строить лесопилка"})
+            keyboard.add_line()
+            keyboard.add_button(iron_mine, color=VkKeyboardColor.POSITIVE, payload={"command": "строить рудник"})
+            keyboard.add_line()
+            keyboard.add_button(diamond_mine, color=VkKeyboardColor.POSITIVE, payload={"command": "строить прииск"})
 
-    # Подземелье
+        # Подземелье
 
     elif player.place == 'cave':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
