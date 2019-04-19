@@ -129,7 +129,7 @@ class War(models.Model):
             need_diamond = amount * WIZARD_DIAMOND
             if build.stock.iron >= need_iron \
                     and build.stock.wood >= need_wood \
-                    and build.stock.wood >= need_diamond:
+                    and build.stock.diamond >= need_diamond:
                 build.stock.iron = build.stock.iron - need_iron
                 build.stock.wood = build.stock.wood - need_wood
                 build.stock.diamond = build.stock.diamond - need_diamond
@@ -429,7 +429,6 @@ class War(models.Model):
                         send(send_info, message_def)
                     except:
                         pass
-
 
             else:
                 message = 'Найдите противника для нападения!'
