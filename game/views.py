@@ -463,6 +463,9 @@ def action(command, player, action_time, chat_info):
         answer = Report.report(Report, player, command, chat_info)
 
     elif re.match(r'ответ', command) and player.user_id == 55811116:
+        stat['category'] = 'System'
+        stat['action'] = 'Answer_Report'
+        stat['label'] = 'Ответ_Репорт'
         answer = Report.answer_report(Report, command, chat_info)
 
     '''
