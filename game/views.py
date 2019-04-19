@@ -213,6 +213,11 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Menu'
         stat['action'] = 'Build_Land'
         stat['label'] = 'Строить_Земли'
+    elif command == 'здания':
+        stat['category'] = 'War'
+        stat['action'] = 'Builds'
+        stat['label'] = 'Военные_Здания'
+        answer = player.build.build_info()
 
     # Таверна
 
@@ -420,11 +425,6 @@ def action(command, player, action_time, chat_info):
 
     # Война
 
-    elif command == 'здания':
-        stat['category'] = 'War'
-        stat['action'] = 'Builds'
-        stat['label'] = 'Военные_Здания'
-        answer = player.build.war_info()
     elif command == 'щит':
         stat['category'] = 'War'
         stat['action'] = 'Shield'

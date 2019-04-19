@@ -461,11 +461,19 @@ class Build(models.Model):
                               'Железа: ' + str(need_iron) + icon('iron')
         return message
 
-    def war_info(self):
+    def build_info(self):
         message = 'Сначала постройте Цитадель!'
         if self.citadel:
-            message = 'Башня: ' + str(self.tower_lvl) + ' ур. (+' + str(self.tower_lvl) + '%)\n' + \
-                             'Стена: ' + str(self.wall_lvl) + ' ур. (+' + str(self.wall_lvl) + '%)'
+            stone_passive = (GET_PASSIVE_STONE + (GET_PASSIVE_STONE_X * self.stone_mine_lvl)) // 24
+            wood_passive = (GET_PASSIVE_WOOD + (GET_PASSIVE_WOOD_X * self.wood_mine_lvl)) // 24
+            iron_passive = (GET_PASSIVE_IRON + (GET_PASSIVE_IRON_X * self.iron_mine_lvl)) // 24
+            diamond_passive = (GET_PASSIVE_DIAMOND + (GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl)) // 24
+            message = 'Башня ' + str(self.tower_lvl) + ' ур.: +' + str(self.tower_lvl) + '%' + icon('war') + '\n' \
+                      'Стена ' + str(self.wall_lvl) + ' ур.: +' + str(self.wall_lvl) + '%' + icon('shield') + '\n' + \
+                      'Каменоломня ' + str(self.stone_mine_lvl) + ' ур.: ' + str(stone_passive) + icon('stone') + ' в час\n' + \
+                      'Лесопилка ' + str(self.wood_mine_lvl) + ' ур.: ' + str(wood_passive) + icon('wood') + ' в час\n' + \
+                      'Рудник ' + str(self.iron_mine_lvl) + ' ур.: ' + str(iron_passive) + icon('iron') + ' в час\n' + \
+                      'Прииск ' + str(self.diamond_mine_lvl) + ' ур.: ' + str(diamond_passive) + icon('diamond') + ' в час\n'
         return message
 
     def tavern_bones(self, action_time, res, amount):
