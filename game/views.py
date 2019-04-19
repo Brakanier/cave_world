@@ -114,7 +114,6 @@ def enter(chat_info, data):
             print('ветка регистрации')
             nick = data['object']['text']
             player = register(chat_info, nick)
-            print(player)
             if player:
                 player.place = 'cave'
                 player.save()
