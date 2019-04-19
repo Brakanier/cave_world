@@ -464,10 +464,18 @@ class Build(models.Model):
     def build_info(self):
         message = 'Сначала постройте Цитадель!'
         if self.citadel:
-            stone_passive = (GET_PASSIVE_STONE + (GET_PASSIVE_STONE_X * self.stone_mine_lvl)) // 24
-            wood_passive = (GET_PASSIVE_WOOD + (GET_PASSIVE_WOOD_X * self.wood_mine_lvl)) // 24
-            iron_passive = (GET_PASSIVE_IRON + (GET_PASSIVE_IRON_X * self.iron_mine_lvl)) // 24
-            diamond_passive = (GET_PASSIVE_DIAMOND + (GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl)) // 24
+            stone_passive = 0
+            wood_passive = 0
+            iron_passive = 0
+            diamond_passive = 0
+            if self.stone_mine_lvl > 0:
+                stone_passive = (GET_PASSIVE_STONE + (GET_PASSIVE_STONE_X * self.stone_mine_lvl)) // 24
+            if self.wood_mine_lvl > 0:
+                wood_passive = (GET_PASSIVE_WOOD + (GET_PASSIVE_WOOD_X * self.wood_mine_lvl)) // 24
+            if self.iron_mine_lvl > 0:
+                iron_passive = (GET_PASSIVE_IRON + (GET_PASSIVE_IRON_X * self.iron_mine_lvl)) // 24
+            if self.diamond_mine_lvl:
+                diamond_passive = (GET_PASSIVE_DIAMOND + (GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl)) // 24
             message = 'Башня ' + str(self.tower_lvl) + ' ур.: +' + str(self.tower_lvl) + '%' + icon('war') + '\n' \
                       'Стена ' + str(self.wall_lvl) + ' ур.: +' + str(self.wall_lvl) + '%' + icon('shield') + '\n' + \
                       'Каменоломня ' + str(self.stone_mine_lvl) + ' ур.: ' + str(stone_passive) + icon('stone') + ' в час\n' + \
