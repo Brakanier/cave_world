@@ -394,10 +394,10 @@ class War(models.Model):
                     self.shield = 0
                     self.enemy_id = None
                     Stock.objects.filter(user_id=self.user_id).update(stone=player.build.stock.stone,
-                                                                      wood=player.build.stock.stone,
-                                                                      iron=player.build.stock.stone,
-                                                                      diamond=player.build.stock.stone,
-                                                                      skull=player.build.stock.stone)
+                                                                      wood=player.build.stock.wood,
+                                                                      iron=player.build.stock.iron,
+                                                                      diamond=player.build.stock.diamond,
+                                                                      skull=player.build.stock.skull)
                     War.objects.filter(user_id=self.user_id).update(warrior=self.warrior,
                                                                     archer=self.archer,
                                                                     wizard=self.wizard,
@@ -413,17 +413,18 @@ class War(models.Model):
                     defender.war.wizard = defender_after_wizard // 1
                     defender.war.defend_last_time = action_time
                     Stock.objects.filter(user_id=defender.user_id).update(stone=defender.build.stock.stone,
-                                                                          wood=defender.build.stock.stone,
-                                                                          iron=defender.build.stock.stone,
-                                                                          diamond=defender.build.stock.stone,
-                                                                          skull=defender.build.stock.stone)
+                                                                          wood=defender.build.stock.wood,
+                                                                          iron=defender.build.stock.iron,
+                                                                          diamond=defender.build.stock.diamond,
+                                                                          skull=defender.build.stock.skull)
                     War.objects.filter(user_id=defender.user_id).update(warrior=defender.war.warrior,
                                                                         archer=defender.war.archer,
                                                                         wizard=defender.war.wizard,
-                                                                        war_last_time=defender.war.defend_last_time,
+                                                                        defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         enemy_id=defender.war.enemy_id)
                     chat_info['user_id'] = defender.user_id
+                    chat_info['chat_id'] = defender.user_id
                     chat_info['nick'] = defender.nickname
                     send(chat_info, message_def)
                     print(message_def)
