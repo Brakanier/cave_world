@@ -46,6 +46,7 @@ def index(request):
                         'nick': 'Новый игрок',
                     }
                     enter(chat_info, data)
+                    Player.objects.filter(user_id=chat_info['user_id']).update(chat_id=chat_info['peer_id'])
                     if Chat.objects.filter(peer_id=chat_info['peer_id']).exists():
                         try:
                             count = count_users_chat(chat_info)
