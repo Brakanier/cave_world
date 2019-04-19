@@ -79,6 +79,7 @@ def register(chat_info, nick):
                                        build=build,
                                        war=war,
                                        inventory=inventory,
+                                       chat_id=chat_info['peer_id'],
                                        )
         vk = vk_connect()
         user = vk.users.get(user_ids=str(chat_info['user_id']))

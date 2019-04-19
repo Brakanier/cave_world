@@ -421,14 +421,27 @@ class War(models.Model):
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         enemy_id=defender.war.enemy_id)
-                    send_info = {
-                        'user_id': defender.user_id,
-                        'chat_id': defender.user_id,
-                    }
+                    if defender.chat_id:
+                        send_info = {
+                            'user_id': defender.user_id,
+                            'peer_id': defender.chat_id,
+                            'chat_id': defender.chat_id - 2000000000,
+                            'nick': defender.nickname,
+                        }
+                        try:
+                            send(send_info, message_def)
+                        except:
+                            pass
+                    else:
+                        send_info = {
+                            'user_id': defender.user_id,
+                            'chat_id': defender.user_id,
+                        }
                     try:
                         send(send_info, message_def)
                     except:
                         pass
+
 
             else:
                 message = 'Найдите противника для нападения!'

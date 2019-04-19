@@ -15,6 +15,11 @@ class Player(models.Model):
         db_index=True,
         unique=True,
     )
+    chat_id = models.BigIntegerField(
+        db_index=True,
+        default=0,
+        blank=True,
+    )
     first_name = models.CharField(
         max_length=30,
         blank=True,
