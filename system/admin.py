@@ -1,10 +1,11 @@
 from django.contrib import admin
 
-from .models import Registration, Chat
+from .models import Registration, Chat, Report
 
 # Register your models here.
 
 admin.site.register(Registration)
+admin.site.register(Report)
 
 
 @admin.register(Chat)

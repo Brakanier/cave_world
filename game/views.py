@@ -13,7 +13,7 @@ from .models.war import War
 from .models.inventory import Inventory
 from .actions.functions import *
 from .actions.chests import *
-from system.models import Registration, Chat
+from system.models import Registration, Chat, Report
 
 from .actions.statistic import *
 
@@ -455,6 +455,15 @@ def action(command, player, action_time, chat_info):
             answer = open_trophy_chest(player, chest)
         else:
             answer = 'Такого сундука не существует!'
+
+    elif re.match(r'репорт', command):
+        stat['category'] = 'System'
+        stat['action'] = 'Report'
+        stat['label'] = 'Репорт'
+        answer = Report.report(Report, player, command, chat_info)
+
+    elif re.match(r'ответ', command) and player.user_id == 55811116:
+        answer = Report.answer_report(Report, command, chat_info)
 
     '''
     elif re.match(r'дать', command):
