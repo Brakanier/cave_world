@@ -351,8 +351,10 @@ def get_keyboard(player, action_time=0):
             keyboard.add_button('🎯 Нанять', color=VkKeyboardColor.DEFAULT, payload={"command": "нанять"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
         keyboard.add_line()
-        keyboard.add_button('🔨 Здания', color=VkKeyboardColor.DEFAULT, payload={"command": "строить земли"})
+        keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "строить земли"})
         keyboard.add_button('🌲 ⛏ Рубить', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево"})
+        keyboard.add_line()
+        keyboard.add_button('🏰 Здания 🏰', color=VkKeyboardColor.DEFAULT, payload={"command": "здания"})
         keyboard.add_line()
         keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
         keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "!команды"})
@@ -411,7 +413,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "шахта"})
         keyboard.add_line()
-        keyboard.add_button('🔨 Здания', color=VkKeyboardColor.DEFAULT, payload={"command": "строить подземелье"})
+        keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "строить подземелье"})
         if player.build.forge:
             keyboard.add_button('⚒ Кузница', color=VkKeyboardColor.DEFAULT, payload={"command": "кузница"})
         if player.build.tavern:
