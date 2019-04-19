@@ -56,13 +56,20 @@ class Report(models.Model):
 
     def report(self, player, command, chat_info):
         text = command[7:]
-        Report.objects.create(user_id=player.user_id,
-                              chat_id=chat_info['peer_id'],
-                              user_nickname=player.nickname,
-                              text=text,
-                              )
-
-        message = 'Репорт отправлен. Администрация ответит в ближайшее время.'
+        try:
+            count = Report.objects.filter(user_id=player.user_id).count()
+            if count <= 5:
+                Report.objects.create(user_id=player.user_id,
+                                      chat_id=chat_info['peer_id'],
+                                      user_nickname=player.nickname,
+                                      text=text,
+                                      )
+                message = 'Репорт отправлен. Администрация ответит в ближайшее время.'
+            else:
+                message = 'Достигнут лимит отправленных репортов.\n' + \
+                          'Подождите пока ответят на прошлые.'
+        except:
+            message = 'Что-то пошло не так.'
         return message
 
     def answer_report(self, command):
@@ -71,6 +78,7 @@ class Report(models.Model):
         try:
             report = Report.objects.get(id=part[1])
             message = command.replace(part[0] + ' ' + part[1], '')
+            message = 'Ответ на репорт:\n' + message
             if report.user_id == report.chat_id:
                 answer_info['chat_id'] = report.chat_id
             else:
@@ -80,6 +88,7 @@ class Report(models.Model):
             answer_info['nick'] = report.user_nickname
             self.send(self, answer_info, message)
             admin_message = 'Ответ отправлен id-' + str(report.id) + ' | ' + str(report.chat_id) + ' | ' + str(report.user_id)
+            report.delete()
         except Report.DoesNotExist:
             admin_message = 'Репорт не найден'
         return admin_message
