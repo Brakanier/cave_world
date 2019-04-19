@@ -340,10 +340,9 @@ class War(models.Model):
                                   'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
                                   '[Награда]\n' + \
-                                  'Дерево: ' + str(reward) + ' 🌲\n' + \
-                                  'Камень: ' + str(reward) + ' ◾\n' + \
-                                  'Железо: ' + str(reward) + ' ◽\n' + \
-                                  'Золото: ' + str(reward) + ' ✨\n' + \
+                                  'Дерево: ' + str(reward * 4) + ' 🌲\n' + \
+                                  'Камень: ' + str(reward * 4) + ' ◾\n' + \
+                                  'Железо: ' + str(reward * 2) + ' ◽\n' + \
                                   'Алмазы: ' + str(reward) + ' 💎\n' + \
                                   'Черепа: ' + str(reward_skull) + ' 💀\n' + \
                                   'Опыт: ' + str(reward_exp) + ' 📚'
@@ -355,10 +354,9 @@ class War(models.Model):
                                       'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
                                       'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
                                       '[Ресурсов потеряно]\n' + \
-                                      'Дерево: ' + str(cost) + ' 🌲\n' + \
-                                      'Камень: ' + str(cost) + ' ◾\n' + \
-                                      'Железо: ' + str(cost) + ' ◽\n' + \
-                                      'Золото: ' + str(cost) + ' ✨\n' + \
+                                      'Дерево: ' + str(cost * 4) + ' 🌲\n' + \
+                                      'Камень: ' + str(cost * 4) + ' ◾\n' + \
+                                      'Железо: ' + str(cost * 2) + ' ◽\n' + \
                                       'Алмазы: ' + str(cost) + ' 💎\n' + \
                                       '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
                                       'Если вы нападёте, щит пропадёт!'
@@ -423,11 +421,15 @@ class War(models.Model):
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         enemy_id=defender.war.enemy_id)
-                    chat_info['user_id'] = defender.user_id
-                    chat_info['chat_id'] = defender.user_id
-                    chat_info['nick'] = defender.nickname
-                    send(chat_info, message_def)
-                    print(message_def)
+                    send_info = {
+                        'user_id': defender.user_id,
+                        'chat_id': defender.user_id,
+                    }
+                    try:
+                        send(send_info, message_def)
+                    except:
+                        pass
+
 
             else:
                 message = 'Найдите противника для нападения!'
