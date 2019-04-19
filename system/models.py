@@ -65,19 +65,21 @@ class Report(models.Model):
         message = 'Репорт отправлен. Администрация ответит в ближайшее время.'
         return message
 
-    def answer_report(self, command, chat_info):
+    def answer_report(self, command):
         part = command.split()
+        answer_info = {}
         try:
             report = Report.objects.get(id=part[1])
             message = command.replace(part[0] + ' ' + part[1], '')
             if report.user_id == report.chat_id:
-                chat_info['chat_id'] = report.chat_id
+                answer_info['chat_id'] = report.chat_id
             else:
-                chat_info['chat_id'] = report.chat_id - 2000000000
-            chat_info['user_id'] = report.user_id
-            chat_info['peer_id'] = report.chat_id
-            self.send(self, chat_info, message)
-            admin_message = 'Ответ отправлен'
+                answer_info['chat_id'] = report.chat_id - 2000000000
+            answer_info['user_id'] = report.user_id
+            answer_info['peer_id'] = report.chat_id
+            answer_info['nick'] = report.user_nickname
+            self.send(self, answer_info, message)
+            admin_message = 'Ответ отправлен id-' + str(report.id) + ' | ' + str(report.chat_id) + ' | ' + str(report.user_id)
         except Report.DoesNotExist:
             admin_message = 'Репорт не найден'
         return admin_message

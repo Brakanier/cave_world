@@ -466,7 +466,7 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'System'
         stat['action'] = 'Answer_Report'
         stat['label'] = 'Ответ_Репорт'
-        answer = Report.answer_report(Report, command, chat_info)
+        answer = Report.answer_report(Report, command)
 
     '''
     elif re.match(r'дать', command):
