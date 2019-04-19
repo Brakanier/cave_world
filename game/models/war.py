@@ -287,9 +287,9 @@ class War(models.Model):
                     defender_after_archer = 0
                     defender_after_wizard = 0
                     if defender_hp > 0 and defender_after_hp > 0:
-                        defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // WARRIOR_HP
-                        defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // ARCHER_HP
-                        defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // WIZARD_HP
+                        defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // def_warrior_hp
+                        defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // def_archer_hp
+                        defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // def_wizard_hp
                         defender_after_warrior = round(max(defender.war.warrior * 0.6, defender_after_warrior))
                         defender_after_archer = round(max(defender.war.archer * 0.6, defender_after_archer))
                         defender_after_wizard = round(max(defender.war.wizard * 0.6, defender_after_wizard))
