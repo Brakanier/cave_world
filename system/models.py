@@ -42,7 +42,7 @@ class Report(models.Model):
 
     def save(self, *args, **kwargs):
         super(Report, self).save(*args, **kwargs)
-        message = 'ID: ' + str(self.user_id) + \
+        message = 'ID: @id' + str(self.user_id) + \
                   '\nНик: ' + str(self.user_nickname) + \
                   '\nРепорт: ' + 'id-' + str(self.id) + \
                   '\n' + str(self.text)
