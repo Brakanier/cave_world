@@ -81,13 +81,16 @@ def register(chat_info, nick):
             stock = Stock.objects.get(user_id=chat_info['user_id'])
             build = Build.objects.get(user_id=chat_info['user_id'], stock=stock)
             inventory = Inventory.objects.get(user_id=chat_info['user_id'])
-        player = Player.objects.create(user_id=chat_info['user_id'],
-                                       nickname=nick,
-                                       build=build,
-                                       war=war,
-                                       inventory=inventory,
-                                       chat_id=chat_info['peer_id'],
-                                       )
+        try:
+            player = Player.objects.create(user_id=chat_info['user_id'],
+                                           nickname=nick,
+                                           build=build,
+                                           war=war,
+                                           inventory=inventory,
+                                           chat_id=chat_info['peer_id'],
+                                           )
+        except:
+            player = None
         vk = vk_connect()
         user = vk.users.get(user_ids=str(chat_info['user_id']))
         user = user[0]
@@ -129,6 +132,10 @@ def enter(chat_info, data):
                 message = 'Ваш ник - ' + player.nickname
                 print('Новый пользователь - ' + player.nickname)
                 chat_info['nick'] = player.nickname
+                send(chat_info, message, get_keyboard(player))
+            else:
+                chat_info['nick'] = player.nickname
+                message = "Ник слишком длинный!"
                 send(chat_info, message, get_keyboard(player))
         else:
             print('ветка команд')
