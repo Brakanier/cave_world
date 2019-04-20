@@ -364,6 +364,7 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'army':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
+        keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
         if player.build.barracks:
