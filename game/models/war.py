@@ -57,12 +57,31 @@ class War(models.Model):
         verbose_name = 'Война'
         verbose_name_plural = 'Войны'
 
-    def army(self):
+    def army(self, player):
+        warrior_attack = self.warrior * WARRIOR_ATTACK
+        warrior_hp = self.warrior * WARRIOR_HP
+        archer_attack = self.archer * ARCHER_ATTACK
+        archer_hp = self.archer * ARCHER_HP
+        wizard_attack = self.wizard * WIZARD_ATTACK
+        wizard_hp = self.wizard * WIZARD_HP
+        attack = warrior_attack + archer_attack + wizard_attack
+        hp = warrior_hp + archer_hp + wizard_hp
+
+        # TOWER BUFF
+
+        tower_x = player.build.tower_lvl * TOWER_BUFF
+        attack = attack * (1 + tower_x)
+
+        wall_x = player.build.wall_lvl * WALL_BUFF
+        hp = hp * (1 + wall_x)
+        power = attack + hp
+
         message = 'Армия:\n' + \
                   'Воины: ' + str(self.warrior) + icon('sword') + '\n' + \
                   'Лучники: ' + str(self.archer) + icon('bow') + '\n' + \
                   'Маги: ' + str(self.wizard) + icon('orb') + '\n' + \
-                  'Всего: ' + str(self.warrior + self.archer + self.wizard) + icon('war') + '\n'
+                  'Всего: ' + str(self.warrior + self.archer + self.wizard) + icon('war') + '\n' + \
+                  'Мощь: ' + str(power) + ' ⚔\n'
         return message
 
     def shield_info(self, action_time):

@@ -450,7 +450,7 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'War'
         stat['action'] = 'Army'
         stat['label'] = 'Армия'
-        answer = player.war.army()
+        answer = player.war.army(player)
 
     elif re.match(r'открыть', command):
         stat['category'] = 'Chests'
