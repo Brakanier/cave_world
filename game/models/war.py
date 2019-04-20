@@ -272,7 +272,7 @@ class War(models.Model):
                     attack_after_warrior = 0
                     attack_after_archer = 0
                     attack_after_wizard = 0
-                    if attack_hp > 0 and attack_after_hp > 0:
+                    if attack_hp > 0:
                         attack_after_warrior = ((attack_warrior_hp / attack_hp) * attack_after_hp) // WARRIOR_HP
                         attack_after_archer = ((attack_archer_hp / attack_hp) * attack_after_hp) // ARCHER_HP
                         attack_after_wizard = ((attack_wizard_hp / attack_hp) * attack_after_hp) // WIZARD_HP
@@ -286,7 +286,7 @@ class War(models.Model):
                     defender_after_warrior = 0
                     defender_after_archer = 0
                     defender_after_wizard = 0
-                    if defender_hp > 0 and defender_after_hp > 0:
+                    if defender_hp > 0:
                         defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // def_warrior_hp
                         defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // def_archer_hp
                         defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // def_wizard_hp
@@ -421,7 +421,7 @@ class War(models.Model):
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         enemy_id=defender.war.enemy_id)
-                    if defender.chat_id:
+                    if defender.chat_id != defender.user_id:
                         send_info = {
                             'user_id': defender.user_id,
                             'peer_id': defender.chat_id,
@@ -432,11 +432,11 @@ class War(models.Model):
                             send(send_info, message_def)
                         except:
                             pass
-                    else:
-                        send_info = {
-                            'user_id': defender.user_id,
-                            'chat_id': defender.user_id,
-                        }
+
+                    send_info = {
+                        'user_id': defender.user_id,
+                        'chat_id': defender.user_id,
+                    }
                     try:
                         send(send_info, message_def)
                     except:
