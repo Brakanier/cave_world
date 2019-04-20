@@ -374,7 +374,11 @@ class Player(models.Model):
         if not self.place == 'cave_build':
             self.place = 'cave_build'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
-        message_stock = 'Склад' + icon('stock') + ': ' + str(self.build.stock.lvl * STOCK_STONE) + icon('stone') + '\n'
+        if self.build.stock.lvl >= 10:
+            stone_need = self.build.stock.lvl * STOCK_STONE * 2
+        else:
+            stone_need = self.build.stock.lvl * STOCK_STONE
+        message_stock = 'Склад' + icon('stock') + ': ' + str(stone_need) + icon('stone') + '\n'
         message_forge = 'Кузница' + icon('craft') + ': ' + str(FORGE_STONE) + icon('stone') + '\n'
         message_tavern = 'Таверна' + icon('tavern') + ': ' + str(TAVERN_STONE) + icon('stone') + ' + ' + \
                          str(TAVERN_IRON) + icon('iron') + '\n'
