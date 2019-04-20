@@ -91,13 +91,16 @@ def register(chat_info, nick):
                                            )
         except:
             player = None
-        vk = vk_connect()
-        user = vk.users.get(user_ids=str(chat_info['user_id']))
-        user = user[0]
-        if user['first_name']:
-            player.first_name = user['first_name']
-        if user['last_name']:
-            player.last_name = user['last_name']
+
+        if player:
+            vk = vk_connect()
+            user = vk.users.get(user_ids=str(chat_info['user_id']))
+            user = user[0]
+            if user['first_name']:
+                player.first_name = user['first_name']
+            if user['last_name']:
+                player.last_name = user['last_name']
+
         return player
     elif Player.objects.filter(user_id=chat_info['user_id']).exists():
         print('пользователь существует')
@@ -134,9 +137,9 @@ def enter(chat_info, data):
                 chat_info['nick'] = player.nickname
                 send(chat_info, message, get_keyboard(player))
             else:
-                chat_info['nick'] = player.nickname
+                chat_info['nick'] = "Новый игрок"
                 message = "Ник слишком длинный!"
-                send(chat_info, message, get_keyboard(player))
+                send(chat_info, message)
         else:
             print('ветка команд')
             player = Player.objects.get(user_id=chat_info['user_id'])
