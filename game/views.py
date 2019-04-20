@@ -71,10 +71,16 @@ def register(chat_info, nick):
     print('регистрация')
     if not Player.objects.filter(user_id=chat_info['user_id']).exists() and not Player.objects.filter(nickname=nick).exists():
         print('cоздание пользователя')
-        war = War.objects.create(user_id=chat_info['user_id'])
-        stock = Stock.objects.create(user_id=chat_info['user_id'])
-        build = Build.objects.create(user_id=chat_info['user_id'], stock=stock)
-        inventory = Inventory.objects.create(user_id=chat_info['user_id'])
+        try:
+            war = War.objects.create(user_id=chat_info['user_id'])
+            stock = Stock.objects.create(user_id=chat_info['user_id'])
+            build = Build.objects.create(user_id=chat_info['user_id'], stock=stock)
+            inventory = Inventory.objects.create(user_id=chat_info['user_id'])
+        except:
+            war = War.objects.get(user_id=chat_info['user_id'])
+            stock = Stock.objects.get(user_id=chat_info['user_id'])
+            build = Build.objects.get(user_id=chat_info['user_id'], stock=stock)
+            inventory = Inventory.objects.get(user_id=chat_info['user_id'])
         player = Player.objects.create(user_id=chat_info['user_id'],
                                        nickname=nick,
                                        build=build,
