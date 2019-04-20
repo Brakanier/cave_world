@@ -335,10 +335,12 @@ class War(models.Model):
 
                         message = 'Вы напали на ' + defender.nickname + '\n' + \
                                   '⚔ Победа ⚔\n' + \
-                                  '[Ваши потери]\n' + \
+                                  '[Потери]\n' + \
                                   'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
                                   'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
+                                  'Ваша Мощь: ' + str(attack_power) + ' ⚔\n' + \
+                                  'Мощь Противника: ' + str(defender_power) + ' ⚔\n' + \
                                   '[Награда]\n' + \
                                   'Дерево: ' + str(reward * 4) + ' 🌲\n' + \
                                   'Камень: ' + str(reward * 4) + ' ◾\n' + \
@@ -349,10 +351,12 @@ class War(models.Model):
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
                                       '⚔ Вы проиграли ⚔\n' + \
-                                      '[Ваши потери]\n' + \
+                                      '[Потери]\n' + \
                                       'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
                                       'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
                                       'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
+                                      'Ваша Мощь: ' + str(defender_power) + ' ⚔\n' + \
+                                      'Мощь Противника: ' + str(attack_power) + ' ⚔\n' + \
                                       '[Ресурсов потеряно]\n' + \
                                       'Дерево: ' + str(cost * 4) + ' 🌲\n' + \
                                       'Камень: ' + str(cost * 4) + ' ◾\n' + \
@@ -372,16 +376,20 @@ class War(models.Model):
                                   '[Ваши потери]\n' + \
                                   'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
                                   'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
-                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n'
+                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
+                                  'Ваша Мощь: ' + str(attack_power) + ' ⚔\n' + \
+                                  'Мощь Противника: ' + str(defender_power) + ' ⚔\n'
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
-                                      '⚔ Вы победили ⚔\n' + \
-                                      '[Ваши потери]\n' + \
-                                      'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
-                                      'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
-                                      'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
-                                      '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
-                                      'Если вы нападёте, щит пропадёт!'
+                            '⚔ Вы победили ⚔\n' + \
+                            '[Ваши потери]\n' + \
+                            'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
+                            'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
+                            'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
+                            'Ваша Мощь: ' + str(defender_power) + ' ⚔\n' + \
+                            'Мощь Противника: ' + str(attack_power) + ' ⚔\n' + \
+                            '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
+                            'Если вы нападёте, щит пропадёт!'
 
                     # Сохранение
 
