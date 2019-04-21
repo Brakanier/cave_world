@@ -81,7 +81,7 @@ class War(models.Model):
                   'Лучники: ' + str(self.archer) + icon('bow') + '\n' + \
                   'Маги: ' + str(self.wizard) + icon('orb') + '\n' + \
                   'Всего: ' + str(self.warrior + self.archer + self.wizard) + icon('war') + '\n' + \
-                  'Мощь: ' + str(power // 1) + ' ⚔\n'
+                  'Мощь: ' + str(int(power // 1)) + ' ⚔\n'
         return message
 
     def shield_info(self, action_time):
@@ -358,8 +358,8 @@ class War(models.Model):
                                   'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
                                   'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
-                                  'Ваша Мощь: ' + str(attack_power // 1) + ' ⚔\n' + \
-                                  'Мощь Противника: ' + str(defender_power // 1) + ' ⚔\n' + \
+                                  'Ваша Мощь: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
+                                  'Мощь Противника: ' + str(int(defender_power // 1)) + ' ⚔\n' + \
                                   '[Награда]\n' + \
                                   'Дерево: ' + str(reward * 4) + ' 🌲\n' + \
                                   'Камень: ' + str(reward * 4) + ' ◾\n' + \
@@ -374,8 +374,8 @@ class War(models.Model):
                                       'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
                                       'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
                                       'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
-                                      'Ваша Мощь: ' + str(defender_power // 1) + ' ⚔\n' + \
-                                      'Мощь Противника: ' + str(attack_power // 1) + ' ⚔\n' + \
+                                      'Ваша Мощь: ' + str(int(defender_power // 1)) + ' ⚔\n' + \
+                                      'Мощь Противника: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
                                       '[Ресурсов потеряно]\n' + \
                                       'Дерево: ' + str(cost * 4) + ' 🌲\n' + \
                                       'Камень: ' + str(cost * 4) + ' ◾\n' + \
@@ -396,8 +396,8 @@ class War(models.Model):
                                   'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
                                   'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
-                                  'Ваша Мощь: ' + str(attack_power // 1) + ' ⚔\n' + \
-                                  'Мощь Противника: ' + str(defender_power // 1) + ' ⚔\n'
+                                  'Ваша Мощь: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
+                                  'Мощь Противника: ' + str(int(defender_power // 1)) + ' ⚔\n'
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
                             '⚔ Вы победили ⚔\n' + \
@@ -405,8 +405,8 @@ class War(models.Model):
                             'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
                             'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
                             'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
-                            'Ваша Мощь: ' + str(defender_power // 1) + ' ⚔\n' + \
-                            'Мощь Противника: ' + str(attack_power // 1) + ' ⚔\n' + \
+                            'Ваша Мощь: ' + str(int(defender_power // 1)) + ' ⚔\n' + \
+                            'Мощь Противника: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
                             '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
                             'Если вы нападёте, щит пропадёт!'
 
