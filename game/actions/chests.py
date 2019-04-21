@@ -21,7 +21,7 @@ def get_chest_object(command):
 
 
 def get_chest(slug):
-    return Chest.objects.get(slug=slug).first()
+    return Chest.objects.get(slug=slug)
 
 
 def add_chest(player, chest, count=1):
