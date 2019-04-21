@@ -33,14 +33,17 @@ def in_items(items, slug):
 def pickaxe_info(items):
     if not in_items(items, 'stone_pickaxe'):
         message_pickaxe_stone = '◾ Каменная кирка ◾: ' + str(STONE_PICKAXE) + icon('stone') + '\n'
+        message_pickaxe_stone += 'Открывает добычу Железа.\n\n'
     else:
         message_pickaxe_stone = '◾ Каменная кирка ◾: Есть\n'
     if not in_items(items, 'iron_pickaxe'):
         message_pickaxe_iron = '◽ Железная кирка ◽: ' + str(IRON_PICKAXE) + icon('iron') + '\n'
+        message_pickaxe_iron += 'Открывает добычу Кристаллов.\n\n'
     else:
         message_pickaxe_iron = '◽ Железная кирка ◽: Есть\n'
     if not in_items(items, 'diamond_pickaxe'):
         message_pickaxe_diamond = '💎 Алмазная кирка 💎: ' + str(DIAMOND_PICKAXE) + icon('diamond') + '\n'
+        message_pickaxe_diamond += 'Увеличивает добычу в 2 раза.\n\n'
     else:
         message_pickaxe_diamond = '💎 Алмазная кирка 💎: Есть\n'
     message = message_pickaxe_stone + message_pickaxe_iron + message_pickaxe_diamond
@@ -154,8 +157,9 @@ def commands():
               '&#12288;' + icon('diamond') + ' Кристаллы [кол-во] - Добывает кристаллы\n' + \
               '&#12288;' + icon('stock') + ' Склад - Посмотреть склад\n' + \
               '\n' + icon('build') + 'Строительство:\n' + \
-              '&#12288;' + icon('build') + ' Строить подземелье - Меню строительства в подземелье\n' + \
-              '&#12288;' + icon('build') + ' Строить земли - Меню строительства в землях\n' + \
+              '&#12288;' + icon('build') + ' Строить подземелье - Меню строительства в подземелье(кнопки)\n' + \
+              '&#12288;' + icon('build') + ' Строить земли - Меню строительства в землях(кнопки)\n' + \
+              '&#12288;' + icon('build') + ' Строить - Список доступных зданий для постройки\n' + \
               '&#12288;' + icon('build') + ' Строить [здание] - Построить или улучшить здание\n' + \
               '&#12288;' + icon('build') + ' Список зданий:\n' + \
               '&#12288;&#12288;' + icon('stock') + ' Склад\n' + \
@@ -181,6 +185,7 @@ def commands():
               '&#12288;' + icon('war') + ' Атака - Напасть на противника\n' + \
               '\n' + icon('craft') + ' Кузница:\n' + \
               '&#12288;' + icon('craft') + ' Ковать [предмет] - Ковать предметы в кузнице\n' + \
+              '&#12288;' + icon('craft') + ' Кирки - Список всех кирок для крафта\n' + \
               '&#12288;' + icon('craft') + ' Список предметов:\n' + \
               '&#12288;' + icon('get') + icon('stone') + ' Каменная кирка\n' + \
               '&#12288;' + icon('get') + icon('iron') + ' Железная кирка\n' + \
@@ -353,9 +358,10 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
         keyboard.add_line()
         keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "строить земли"})
-        keyboard.add_button('🌲 ⛏ Рубить', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево"})
-        keyboard.add_line()
         keyboard.add_button('🏰 Здания 🏰', color=VkKeyboardColor.DEFAULT, payload={"command": "здания"})
+        keyboard.add_line()
+        keyboard.add_button('🌲 ⛏ Рубить', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево"})
+        keyboard.add_button('🌲 ⛏ х5', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево 5"})
         keyboard.add_line()
         keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
         keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "!команды"})
@@ -374,6 +380,13 @@ def get_keyboard(player, action_time=0):
             keyboard.add_button('🏹 Лучник', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник"})
         if player.build.magic:
             keyboard.add_button('🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": "маг"})
+        keyboard.add_line()
+        if player.build.barracks:
+            keyboard.add_button('🗡 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "воин 5"})
+        if player.build.archery:
+            keyboard.add_button('🏹 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник 5"})
+        if player.build.magic:
+            keyboard.add_button('🔮 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "маг 5"})
 
     # Земли - Строительство
 

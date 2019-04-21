@@ -21,7 +21,7 @@ def get_chest_object(command):
 
 
 def get_chest(slug):
-    return Chest.objects.get(slug=slug)
+    return Chest.objects.get(slug=slug).first()
 
 
 def add_chest(player, chest, count=1):
@@ -85,6 +85,7 @@ def open_trophy_chest(player, chest):
             message = 'Награда с сундука:\n' + message
         else:
             message = 'Сундук оказался пустым!'
+        message = 'Вы открыли - ' + str(chest.title) + '\n' + message
     else:
         message = 'У вас нет такого сундука!'
     return message

@@ -256,6 +256,8 @@ class Player(models.Model):
         return message
 
     def craft_stone_pickaxe(self, action_time):
+        if not self.build.forge:
+            return 'Сначала постройте Кузницу!'
         self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'stone_pickaxe')
         if not item:
@@ -276,6 +278,8 @@ class Player(models.Model):
         return message
 
     def craft_iron_pickaxe(self, action_time):
+        if not self.build.forge:
+            return 'Сначала постройте Кузницу!'
         self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'iron_pickaxe')
         if not item:
@@ -296,6 +300,8 @@ class Player(models.Model):
         return message
 
     def craft_diamond_pickaxe(self, action_time):
+        if not self.build.forge:
+            return 'Сначала постройте Кузницу!'
         self.build.stock = self.build.get_passive(action_time)
         item = in_items(self.inventory.items.all(), 'diamond_pickaxe')
         if not item:
@@ -484,11 +490,16 @@ class Player(models.Model):
 
     def forge(self):
         if self.place == 'forge':
-            message = 'Вы уже в Кузнице'
+            message = 'Вы уже в Кузнице!\n'
         else:
             self.place = 'forge'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
-            message = 'Вы зашли в Кузницу'
+            message = 'Вы зашли в Кузницу!\n'
+        info = 'Кузница открывает доступ к крафту.\n' + \
+               'Команды:\n' + \
+               'Кирки - Список всех кирок для крафта.\n' + \
+               'Ковать [предмет] - Крафтить предмет.\n'
+        message += info
         return message
 
     def forge_pickaxe(self):
@@ -502,16 +513,23 @@ class Player(models.Model):
 
     def tavern(self):
         if self.place == 'tavern':
-            message = 'Вы уже в Таверне'
+            message = 'Вы уже в Таверне!\n'
         else:
             self.place = 'tavern'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
             message = 'Вы зашли в Таверну!\n'
+        info = 'Таверна открывает доступ к игре' + icon('cube') + ' Кости' + icon('cube') + '\n' + \
+               'Чтобы сыграть в' + icon('cube') + ' Кости' + icon('cube') + ' напишите команду:\n' + \
+               'Кости [ресурс] [кол-во]'
+        message += info
         return message
 
     def bones(self):
-        message = icon('cube') + ' Игра Кости' + icon('cube') + '\n' + \
-                  'Чтобы сыграть в "Кости" напишите команду:\n' + 'Кости [ресурс] [кол-во]'
+        if self.build.tavern:
+            message = icon('cube') + ' Игра Кости' + icon('cube') + '\n' + \
+                    'Чтобы сыграть в "Кости" напишите команду:\n' + 'Кости [ресурс] [кол-во]'
+        else:
+            message = "Сначала постройте Таверну!"
         return message
 
     def war_menu(self):

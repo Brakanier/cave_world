@@ -234,6 +234,14 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Builds'
         stat['label'] = 'Военные_Здания'
         answer = player.build.build_info()
+    elif command == 'строить':
+        stat['category'] = 'Text'
+        stat['action'] = 'Build'
+        stat['label'] = 'Строить'
+        answer = 'Здания Подземелья\n'
+        answer += player.cave_build()
+        answer += '\nЗдания Земель\n'
+        answer += player.land_build()
 
     # Таверна
 
