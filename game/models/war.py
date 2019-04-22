@@ -258,7 +258,7 @@ class War(models.Model):
                     attack_attack = attack_attack * (1 + attack_tower_x)
 
                     attack_wall_x = player.build.wall_lvl * WALL_BUFF
-                    attack_wall_power = attack_hp * (1 + attack_wall_x)
+                    attack_wall_power = attack_hp * attack_wall_x
                     attack_power = attack_attack + attack_hp + attack_wall_power
 
                     # Защитник
@@ -280,7 +280,7 @@ class War(models.Model):
                     defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
 
                     defender_tower_x = player.build.tower_lvl * TOWER_BUFF
-                    defender_tower_power = defender_hp * (1 + defender_tower_x)
+                    defender_tower_power = defender_attack * defender_tower_x
                     defender_power = defender_attack + defender_hp + defender_tower_power
 
                     # Остатки армий
