@@ -329,22 +329,22 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Build_Magic'
         stat['label'] = 'Строить_Магия'
         answer = player.build.build_magic(action_time)
-    elif command == 'строить лесопилк':
+    elif re.match(r'строить лесопилк', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Woodmine'
         stat['label'] = 'Строить_Лесопилка'
         answer = player.build.build_wood_mine(action_time, player.lvl)
-    elif command == 'строить каменоломн':
+    elif re.match(r'строить каменоломн', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Stonemine'
         stat['label'] = 'Строить_Каменоломня'
         answer = player.build.build_stone_mine(action_time, player.lvl)
-    elif command == 'строить рудник':
+    elif re.match(r'строить рудник', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Ironmine'
         stat['label'] = 'Строить_Рудник'
         answer = player.build.build_iron_mine(action_time, player.lvl)
-    elif command == 'строить прииск':
+    elif re.match(r'строить прииск', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Diamondmine'
         stat['label'] = 'Строить_Прииск'
