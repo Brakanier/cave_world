@@ -50,7 +50,7 @@ class Stock(models.Model):
                   'Дерево: ' + str(self.wood) + '/' + str(self.max) + icon('wood') + '\n' + \
                   'Железо: ' + str(self.iron) + '/' + str(self.max) + icon('iron') + '\n' + \
                   'Кристаллы: ' + str(self.diamond) + '/' + str(self.max) + icon('diamond') + '\n' + \
-                  'Золото: ' + str(self.gold) + '/' + str(self.max) + icon('gold') + '\n' + \
+                  'Золото: ' + str(self.gold) + icon('gold') + '\n' + \
                   'Черепа: ' + str(self.skull) + icon('skull')
 
         return message
@@ -107,6 +107,7 @@ class Build(models.Model):
         Stock,
         on_delete=models.SET(None),
         null=True,
+        related_name='build',
     )
 
     class Meta:
@@ -162,8 +163,6 @@ class Build(models.Model):
                       'Камня: ' + str(stone_need) + icon('stone')
         return message
 
-    # TODO Проверки на уровень для постройки зданий в соответствии с балансом
-
     def build_forge(self, action_time):
         self.stock = self.get_passive(action_time)
         if not self.forge:
@@ -172,7 +171,9 @@ class Build(models.Model):
                 self.forge = True
                 Build.objects.filter(user_id=self.user_id).update(forge=self.forge)
                 Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone)
-                message = 'Кузница построена'
+                message = 'Кузница построена!\n' + \
+                          'Открыты команды:\n' + \
+                          'Ковать [предмет] - Ковать предметы в кузнице\n'
             else:
                 message = 'Недостаточно ресурсов! \n' + \
                           'Нужно:\n' + \
@@ -192,7 +193,9 @@ class Build(models.Model):
                 Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                                   iron=self.stock.iron)
                 Build.objects.filter(user_id=self.user_id).update(tavern=self.tavern)
-                message = 'Таверна построена'
+                message = 'Таверна построена!\n' + \
+                          'Открыты команды:\n' + \
+                          'Кости [ресурс] [кол-во] - сыграть в кости\n'
             else:
                 message = 'Недостаточно ресурсов! \n' + \
                           'Нужно:\n' + \
@@ -216,7 +219,17 @@ class Build(models.Model):
                 Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                                   iron=self.stock.iron,
                                                                   diamond=self.stock.diamond)
-                message = 'Цитадель построена!'
+                message = 'Цитадель построена!\n' + \
+                          'Открыты команды:\n' + \
+                          'Строить Казармы - открывает найм воинов\n' + \
+                          'Строить Стрельбище - открывает найм лучников\n' + \
+                          'Строить Башня Магов - открывает найм магов\n' + \
+                          'Строить Стена - улучшает защиту\n' + \
+                          'Строить Башня - улучшает атаку\n' + \
+                          'Строить Каменоломня - Добывает камень раз в час\n' + \
+                          'Строить Лесопилка - Добывает дерево раз в час\n' + \
+                          'Строить Рудник - Добывает железо раз в час\n' + \
+                          'Строить Прииск - Добывает кристаллы раз в час\n'
             else:
                 message = 'Недостаточно ресурсов! \n' + \
                           'Нужно:\n' + \

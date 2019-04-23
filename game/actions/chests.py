@@ -49,8 +49,9 @@ def remove_chest(player, chest):
 
 def get_chest_mine(player, message):
     chest_rand = random.randint(0, 100)
-    if chest_rand > 90:
-        add_chest(player, get_chest('mine_chest'))
+    chest = get_chest('mine_chest')
+    if chest_rand >= (100 - chest.chance_for_get):
+        add_chest(player, chest)
         message += '\nВы нашли Шахтерский Сундук!'
     return message
 

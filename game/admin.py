@@ -17,23 +17,44 @@ from .models.inventory import Inventory, InventoryChest, InventoryTrophy
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'nickname', 'lvl', 'first_name', 'last_name')
+    list_display = ('user_id', 'nickname', 'power', 'lvl', 'first_name', 'last_name')
+
+    def power(self, obj):
+        return obj.war.power
 
 
 @admin.register(Stock)
 class StockAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'lvl', 'skull', 'max')
+    list_display = ('user_id', 'nickname', 'lvl', 'skull', 'max')
+
+    def nickname(self, obj):
+        return obj.build.player.nickname
 
 
 @admin.register(Build)
 class BuildAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'forge', 'tavern', 'citadel')
+    list_display = ('user_id', 'nickname', 'forge', 'tavern', 'citadel')
+
+    def nickname(self, obj):
+        return obj.player.nickname
 
 
-admin.site.register(War)
+@admin.register(War)
+class WarAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'nickname', 'power', 'warrior', 'archer', 'wizard')
+
+    def nickname(self, obj):
+        return obj.player.nickname
 
 
-admin.site.register(Inventory)
+@admin.register(Inventory)
+class InventoryAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'nickname')
+
+    def nickname(self, obj):
+        return obj.player.nickname
+
+
 admin.site.register(InventoryChest)
 admin.site.register(InventoryTrophy)
 
@@ -48,7 +69,7 @@ class EffectAdmin(admin.ModelAdmin):
 
 @admin.register(Chest)
 class ChestAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug')
+    list_display = ('title', 'slug', 'chance_for_get')
 
 
 @admin.register(Item)

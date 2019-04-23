@@ -62,16 +62,19 @@ class Player(models.Model):
         'game.Build',
         on_delete=models.SET(None),
         null=True,
+        related_name='player',
     )
     war = models.OneToOneField(
         'game.War',
         on_delete=models.SET(None),
         null=True,
+        related_name='player',
     )
     inventory = models.OneToOneField(
         'game.Inventory',
         on_delete=models.SET(None),
         null=True,
+        related_name='player',
     )
 
     class Meta:
@@ -361,15 +364,27 @@ class Player(models.Model):
     def top(self):
         self.place = 'top'
         Player.objects.filter(user_id=self.user_id).update(place=self.place)
-        message = 'Выберите топ'
+        message = 'Выберите топ:\n' + \
+                  'По уровню 👑 - топ лвл\n' + \
+                  'По черепам 💀 - топ череп\n'
         return message
 
     def top_lvl(self):
-        top = Player.objects.order_by('-lvl').values_list('nickname', 'lvl')[0:9]
+        top = Player.objects.order_by('-lvl').values_list('nickname', 'lvl')[0:10]
         count = 1
-        main_message = 'Топ игроков по уровню 👑\n'
+        main_message = 'Топ игроков по Уровню 👑\n'
         for user in top:
             message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 👑\n'
+            count += 1
+            main_message = main_message + message
+        return main_message
+
+    def top_skull(self):
+        top = Player.objects.order_by('-build__stock__skull').values_list('nickname', 'build__stock__skull')[0:10]
+        count = 1
+        main_message = 'Топ игроков по Черепам 💀\n'
+        for user in top:
+            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 💀\n'
             count += 1
             main_message = main_message + message
         return main_message
@@ -459,11 +474,12 @@ class Player(models.Model):
 
     def cave(self):
         if self.place == 'cave':
-            message = 'Вы уже в Подземелье'
+            message = 'Вы уже в Подземелье\n'
         else:
             self.place = 'cave'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
             message = 'Вы вернулись в Подземелье'
+
         return message
 
     def land(self):
@@ -489,6 +505,8 @@ class Player(models.Model):
         return message
 
     def forge(self):
+        if not self.build.forge:
+            return "Сначала постройте Кузницу!"
         if self.place == 'forge':
             message = 'Вы уже в Кузнице!\n'
         else:
@@ -539,5 +557,8 @@ class Player(models.Model):
             self.place = 'war'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
             message = '⚔ Меню войны ⚔\n' + \
-                      'Найдите противника и разгромите его!'
+                      'Найдите противника и разгромите его!\n' + \
+                      'Команды:\n' + \
+                      'Поиск - Поиск противника для нападения\n' + \
+                      'Атака - Напасть на противника\n'
         return message

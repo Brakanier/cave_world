@@ -52,36 +52,43 @@ class War(models.Model):
     wizard = models.IntegerField(
         default=0,
     )
+    power = models.FloatField(
+        blank=True,
+        default=0,
+    )
 
     class Meta:
         verbose_name = 'Война'
         verbose_name_plural = 'Войны'
 
-    def army(self, player):
+    def update_power(self, build):
+        # Атака
         warrior_attack = self.warrior * WARRIOR_ATTACK
-        warrior_hp = self.warrior * WARRIOR_HP
         archer_attack = self.archer * ARCHER_ATTACK
-        archer_hp = self.archer * ARCHER_HP
         wizard_attack = self.wizard * WIZARD_ATTACK
-        wizard_hp = self.wizard * WIZARD_HP
         attack = warrior_attack + archer_attack + wizard_attack
+        # Хп
+        warrior_hp = self.warrior * WARRIOR_HP
+        archer_hp = self.archer * ARCHER_HP
+        wizard_hp = self.wizard * WIZARD_HP
         hp = warrior_hp + archer_hp + wizard_hp
-
-        # TOWER BUFF
-
-        tower_x = player.build.tower_lvl * TOWER_BUFF
+        # Башня и Стены
+        tower_x = build.tower_lvl * TOWER_BUFF
         attack = attack * (1 + tower_x)
-
-        wall_x = player.build.wall_lvl * WALL_BUFF
+        wall_x = build.wall_lvl * WALL_BUFF
         hp = hp * (1 + wall_x)
-        power = attack + hp
+        self.power = attack + hp
+        return self
 
+    def army(self, player):
+        self.update_power(player.build)
+        self.save(update_fields=['power'])
         message = 'Армия:\n' + \
                   'Воины: ' + str(self.warrior) + icon('sword') + '\n' + \
                   'Лучники: ' + str(self.archer) + icon('bow') + '\n' + \
                   'Маги: ' + str(self.wizard) + icon('orb') + '\n' + \
                   'Всего: ' + str(self.warrior + self.archer + self.wizard) + icon('war') + '\n' + \
-                  'Мощь: ' + str(int(power // 1)) + ' ⚔\n'
+                  'Мощь: ' + str(int(self.power)) + ' ⚔\n'
         return message
 
     def shield_info(self, action_time):
@@ -106,8 +113,10 @@ class War(models.Model):
             if build.stock.iron >= need_iron:
                 build.stock.iron = build.stock.iron - need_iron
                 self.warrior = self.warrior + amount
+                self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron)
-                War.objects.filter(user_id=self.user_id).update(warrior=self.warrior)
+                War.objects.filter(user_id=self.user_id).update(warrior=self.warrior,
+                                                                power=self.power)
                 message = 'Вы наняли ' + str(amount) + icon('sword')
             else:
                 message = 'Недостаточно ресурсов!\n' + \
@@ -127,9 +136,11 @@ class War(models.Model):
                 build.stock.iron = build.stock.iron - need_iron
                 build.stock.wood = build.stock.wood - need_wood
                 self.archer = self.archer + amount
+                self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
                                                                   wood=build.stock.wood)
-                War.objects.filter(user_id=self.user_id).update(archer=self.archer)
+                War.objects.filter(user_id=self.user_id).update(archer=self.archer,
+                                                                power=self.power)
                 message = 'Вы наняли ' + str(amount) + icon('bow')
             else:
                 message = 'Недостаточно ресурсов!\n' + \
@@ -153,10 +164,12 @@ class War(models.Model):
                 build.stock.wood = build.stock.wood - need_wood
                 build.stock.diamond = build.stock.diamond - need_diamond
                 self.wizard = self.wizard + amount
+                self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
                                                                   wood=build.stock.wood,
                                                                   diamond=build.stock.diamond)
-                War.objects.filter(user_id=self.user_id).update(wizard=self.wizard)
+                War.objects.filter(user_id=self.user_id).update(wizard=self.wizard,
+                                                                power=self.power)
                 message = 'Вы наняли ' + str(amount) + icon('orb')
             else:
                 message = 'Недостаточно ресурсов!\n' + \
@@ -252,15 +265,19 @@ class War(models.Model):
                     attack_attack = attack_warrior_attack + attack_archer_attack + attack_wizard_attack
                     attack_hp = attack_warrior_hp + attack_archer_hp + attack_wizard_hp
 
-                    # TOWER BUFF
+                    # Новый расчёт мощи
 
+                    self.update_power(player.build)
+                    attack_power = self.power
+                    # TOWER BUFF
+                    '''
                     attack_tower_x = player.build.tower_lvl * TOWER_BUFF
                     attack_attack = attack_attack * (1 + attack_tower_x)
-
+                    
                     attack_wall_x = player.build.wall_lvl * WALL_BUFF
                     attack_wall_power = attack_hp * attack_wall_x
                     attack_power = attack_attack + attack_hp + attack_wall_power
-
+                    '''
                     # Защитник
 
                     # WALL BUFF
@@ -279,10 +296,15 @@ class War(models.Model):
                     defender_attack = defender_warrior_attack + defender_archer_attack + defender_wizard_attack
                     defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
 
+                    # Новый расчёт мощи
+
+                    defender.war.update_power(defender.build)
+                    defender_power = defender.war.power
+                    '''
                     defender_tower_x = player.build.tower_lvl * TOWER_BUFF
                     defender_tower_power = defender_attack * defender_tower_x
                     defender_power = defender_attack + defender_hp + defender_tower_power
-
+                    '''
                     # Остатки армий
 
                     attack_after_hp = attack_hp - defender_attack
@@ -295,9 +317,9 @@ class War(models.Model):
                         attack_after_warrior = ((attack_warrior_hp / attack_hp) * attack_after_hp) // WARRIOR_HP
                         attack_after_archer = ((attack_archer_hp / attack_hp) * attack_after_hp) // ARCHER_HP
                         attack_after_wizard = ((attack_wizard_hp / attack_hp) * attack_after_hp) // WIZARD_HP
-                        attack_after_warrior = round(max(self.warrior*0.6, attack_after_warrior))
-                        attack_after_archer = round(max(self.archer*0.6, attack_after_archer))
-                        attack_after_wizard = round(max(self.wizard*0.6, attack_after_wizard))
+                        attack_after_warrior = round(max(self.warrior*0.75, attack_after_warrior))
+                        attack_after_archer = round(max(self.archer*0.75, attack_after_archer))
+                        attack_after_wizard = round(max(self.wizard*0.75, attack_after_wizard))
                     attack_lost_warrior = round(self.warrior - attack_after_warrior)
                     attack_lost_archer = round(self.archer - attack_after_archer)
                     attack_lost_wizard = round(self.wizard - attack_after_wizard)
@@ -309,9 +331,9 @@ class War(models.Model):
                         defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // def_warrior_hp
                         defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // def_archer_hp
                         defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // def_wizard_hp
-                        defender_after_warrior = round(max(defender.war.warrior * 0.6, defender_after_warrior))
-                        defender_after_archer = round(max(defender.war.archer * 0.6, defender_after_archer))
-                        defender_after_wizard = round(max(defender.war.wizard * 0.6, defender_after_wizard))
+                        defender_after_warrior = round(max(defender.war.warrior * 0.85, defender_after_warrior))
+                        defender_after_archer = round(max(defender.war.archer * 0.85, defender_after_archer))
+                        defender_after_wizard = round(max(defender.war.wizard * 0.85, defender_after_wizard))
                     defender_lost_warrior = round(defender.war.warrior - defender_after_warrior)
                     defender_lost_archer = round(defender.war.archer - defender_after_archer)
                     defender_lost_wizard = round(defender.war.wizard - defender_after_wizard)
@@ -327,7 +349,7 @@ class War(models.Model):
 
                         # Награда
                         # TODO После резлиза следить за наградой, проверить
-                        cost = round(defender.build.stock.max * 4 * 0.2 / 11)
+                        cost = round(defender.build.stock.max * 4 * 0.1 / 11)
                         reward = round(defender.build.stock.max * 4 * 0.3 / 11)
                         reward_skull = 1
                         reward_exp = 5
@@ -418,6 +440,7 @@ class War(models.Model):
                     self.war_last_time = action_time
                     self.shield = 0
                     self.enemy_id = None
+                    self.update_power(player.build)
                     Stock.objects.filter(user_id=self.user_id).update(stone=player.build.stock.stone,
                                                                       wood=player.build.stock.wood,
                                                                       iron=player.build.stock.iron,
@@ -428,7 +451,8 @@ class War(models.Model):
                                                                     wizard=self.wizard,
                                                                     war_last_time=self.war_last_time,
                                                                     shield=self.shield,
-                                                                    enemy_id=self.enemy_id,)
+                                                                    enemy_id=self.enemy_id,
+                                                                    power=self.power)
                     Player.objects.filter(user_id=self.user_id).update(energy=player.energy,
                                                                        exp=player.exp,
                                                                        lvl=player.lvl)
@@ -437,6 +461,7 @@ class War(models.Model):
                     defender.war.archer = defender_after_archer // 1
                     defender.war.wizard = defender_after_wizard // 1
                     defender.war.defend_last_time = action_time
+                    defender.war.update_power(defender.build)
                     Stock.objects.filter(user_id=defender.user_id).update(stone=defender.build.stock.stone,
                                                                           wood=defender.build.stock.wood,
                                                                           iron=defender.build.stock.iron,
@@ -447,7 +472,8 @@ class War(models.Model):
                                                                         wizard=defender.war.wizard,
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
-                                                                        enemy_id=defender.war.enemy_id)
+                                                                        enemy_id=defender.war.enemy_id,
+                                                                        power=defender.war.power)
                     try:
                         send_info = {
                             'user_id': defender.user_id,

@@ -123,7 +123,7 @@ def keyboard_for_chat():
 
     keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
     keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "!команды"})
-    keyboard.add_button('🎁 Бонус', color=VkKeyboardColor.POSITIVE, payload={"command": "бонус"})
+    keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
 
     return keyboard.get_keyboard()
 
@@ -156,29 +156,29 @@ def commands():
               '&#12288;' + icon('iron') + ' Железо [кол-во] - Добывает железо\n' + \
               '&#12288;' + icon('diamond') + ' Кристаллы [кол-во] - Добывает кристаллы\n' + \
               '&#12288;' + icon('stock') + ' Склад - Посмотреть склад\n' + \
-              '\n' + icon('build') + 'Строительство:\n' + \
-              '&#12288;' + icon('build') + ' Строить подземелье - Меню строительства в подземелье(кнопки)\n' + \
-              '&#12288;' + icon('build') + ' Строить земли - Меню строительства в землях(кнопки)\n' + \
+              '\n' + icon('build') + 'Здания:\n' + \
+              '&#12288;' + icon('citadel') + ' Здания - Информация о ваших зданиях\n' + \
               '&#12288;' + icon('build') + ' Строить - Список доступных зданий для постройки\n' + \
               '&#12288;' + icon('build') + ' Строить [здание] - Построить или улучшить здание\n' + \
               '&#12288;' + icon('build') + ' Список зданий:\n' + \
               '&#12288;&#12288;' + icon('stock') + ' Склад\n' + \
-              '&#12288;&#12288;' + icon('craft') + ' Кузница\n' + \
-              '&#12288;&#12288;' + icon('tavern') + ' Таверна\n' + \
-              '&#12288;&#12288;' + icon('citadel') + ' Цитадель\n' + \
-              '&#12288;&#12288;' + icon('sword') + ' Казармы - открывает найм воинов\n' + \
-              '&#12288;&#12288;' + icon('target') + ' Стрельбище - открывает найм лучников\n' + \
-              '&#12288;&#12288;' + icon('orb') + ' Башня Магов - открывает найм магов\n' + \
-              '&#12288;&#12288;' + icon('build') + ' Башня\n' + \
-              '&#12288;&#12288;' + icon('build') + ' Стена\n' + \
-              '&#12288;&#12288;' + icon('stone') + ' Каменоломня - Добывает камень раз в час\n' + \
-              '&#12288;&#12288;' + icon('wood') + ' Лесопилка - Добывает дерево раз в час\n' + \
-              '&#12288;&#12288;' + icon('iron') + ' Рудник - Добывает железо раз в час\n' + \
-              '&#12288;&#12288;' + icon('diamond') + ' Прииск - Добывает кристаллы раз в час\n' + \
+              '&#12288;&#12288;' + icon('craft') + ' Кузница - позволяет ковать инструменты\n' + \
+              '&#12288;&#12288;' + icon('tavern') + ' Таверна - открывает игру в "Кости"\n' + \
+              '&#12288;&#12288;' + icon('citadel') + ' Цитадель - открывает доступ к новым зданиям\n' + \
+              '&#12288;&#12288;' + icon('sword') + ' Казармы - открывает найм Воинов\n' + \
+              '&#12288;&#12288;' + icon('target') + ' Стрельбище - открывает найм Лучников\n' + \
+              '&#12288;&#12288;' + icon('orb') + ' Башня Магов - открывает найм Магов\n' + \
+              '&#12288;&#12288;' + icon('build') + ' Башня - улучшает атаку\n' + \
+              '&#12288;&#12288;' + icon('build') + ' Стена - улучшает защиту\n' + \
+              '&#12288;&#12288;' + icon('stone') + ' Каменоломня - Добывает Камень раз в час\n' + \
+              '&#12288;&#12288;' + icon('wood') + ' Лесопилка - Добывает Дерево раз в час\n' + \
+              '&#12288;&#12288;' + icon('iron') + ' Рудник - Добывает Железо раз в час\n' + \
+              '&#12288;&#12288;' + icon('diamond') + ' Прииск - Добывает Кристаллы раз в час\n' + \
               '\n' + icon('war') + ' Война:\n' + \
-              '&#12288;' + icon('sword') + ' Воин [кол-во] - Нанимает воинов\n' + \
-              '&#12288;' + icon('bow') + ' Лучник [кол-во] - Нанимает лучников\n' + \
-              '&#12288;' + icon('orb') + ' Маг [кол-во] - Нанимает магов\n' + \
+              '&#12288;' + icon('target') + ' Найм - Показывает стоимость найма армии\n' + \
+              '&#12288;' + icon('sword') + ' Воин [кол-во] - Нанимает Воинов\n' + \
+              '&#12288;' + icon('bow') + ' Лучник [кол-во] - Нанимает Лучников\n' + \
+              '&#12288;' + icon('orb') + ' Маг [кол-во] - Нанимает Магов\n' + \
               '&#12288;' + icon('war') + ' Армия - Посмотреть свою армию\n' + \
               '&#12288;' + icon('shield') + ' Щит - Проверить наличие щита от нападений\n' + \
               '&#12288;' + icon('search') + ' Поиск - Поиск противника для нападения\n' + \
@@ -194,12 +194,13 @@ def commands():
               '&#12288;' + icon('bonus') + icon('cube') + ' Открыть [название сундука] - открывает сундук\n' + \
               '&#12288;' + icon('bonus') + icon('cube') + ' Сундуки - Показывает список ваших сундуков\n' + \
               '\n' + icon('other') + ' Разное:\n' + \
-              '&#12288;' + icon('citadel') + ' Здания - Информация о ваших зданиях\n' + \
               '&#12288;' + icon('bonus') + ' Бонус - получить ежедневный бонус\n' + \
               '&#12288;' + icon('lvl') + ' Топ лвл - посмотреть топ игроков по уровням\n' + \
+              '&#12288;' + icon('skull') + ' Топ череп - посмотреть топ игроков по черепам\n' + \
               '&#12288;' + icon('profile') + ' Профиль - посмотреть профиль\n' + \
               '&#12288;' + icon('cube') + ' Кости [ресурс] [кол-во] - сыграть в кости\n' + \
-              '&#12288;' + icon('other') + ' Репорт [текст] - Написать админам\n'
+              '&#12288;' + icon('other') + ' Репорт [текст] - Написать админам\n' + \
+              '\nЕсли вам что-то непонятно, воспользуйтесь командой "Репорт"'
     return message
 
 
@@ -307,8 +308,8 @@ def get_keyboard(player, action_time=0):
     # Профиль
 
     if player.place == 'profile':
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('Инфо', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
         keyboard.add_button('🔝 Топ 🔝', color=VkKeyboardColor.DEFAULT, payload={"command": "топ"})
@@ -322,15 +323,15 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🎁 Бонус', color=color, payload={"command": "бонус"})
 
     if player.place == 'inventory':
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('🎁 Сундуки 🎁', color=VkKeyboardColor.DEFAULT, payload={"command": "сундуки"})
         # keyboard.add_button('Трофей', color=VkKeyboardColor.DEFAULT, payload={"command": "трофеи"})
 
     if player.place == 'chests':
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
 
         chests = player.inventory.chests.all()
         for chest in chests:
@@ -340,9 +341,12 @@ def get_keyboard(player, action_time=0):
             keyboard.add_button(title, color=VkKeyboardColor.POSITIVE, payload={"command": command})
 
     if player.place == 'top':
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('👑 По уровню 👑', color=VkKeyboardColor.DEFAULT, payload={"command": "топ лвл"})
+        keyboard.add_line()
+        keyboard.add_button('💀 По черепам 💀', color=VkKeyboardColor.DEFAULT, payload={"command": "топ череп"})
         # keyboard.add_line()
         # keyboard.add_button('⚔ По нападениям ⚔', color=VkKeyboardColor.DEFAULT, payload={"command": "top_attack"})
         # keyboard.add_line()
@@ -354,10 +358,10 @@ def get_keyboard(player, action_time=0):
         if player.build.citadel and player.lvl >= 10:
             keyboard.add_button('⚔ Война', color=VkKeyboardColor.DEFAULT, payload={"command": "война"})
         if player.build.barracks or player.build.archery or player.build.magic:
-            keyboard.add_button('🎯 Нанять', color=VkKeyboardColor.DEFAULT, payload={"command": "нанять"})
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+            keyboard.add_button('🎯 Нанять', color=VkKeyboardColor.DEFAULT, payload={"command": "найм"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
-        keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "строить земли"})
+        keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_land"})
         keyboard.add_button('🏰 Здания 🏰', color=VkKeyboardColor.DEFAULT, payload={"command": "здания"})
         keyboard.add_line()
         keyboard.add_button('🌲 ⛏ Рубить', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево"})
@@ -370,7 +374,7 @@ def get_keyboard(player, action_time=0):
     # Найм
 
     elif player.place == 'army':
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
@@ -393,7 +397,7 @@ def get_keyboard(player, action_time=0):
     elif player.place == 'land_build':
         tower_lvl_up = '🔨 Башня ' + str(player.build.tower_lvl + 1) + ' ур.'
         wall_lvl_up = '🔨 Стена ' + str(player.build.wall_lvl + 1) + ' ур.'
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         if player.build.citadel:
             if not player.build.barracks:
@@ -425,10 +429,10 @@ def get_keyboard(player, action_time=0):
     # Подземелье
 
     elif player.place == 'cave':
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
-        keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "шахта"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
         keyboard.add_line()
-        keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "строить подземелье"})
+        keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_cave"})
         if player.build.forge:
             keyboard.add_button('⚒ Кузница', color=VkKeyboardColor.DEFAULT, payload={"command": "кузница"})
         if player.build.tavern:
@@ -442,7 +446,7 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'cave_build':
         stock_lvl_up = '🔨 🏤 Склад ' + str(player.build.stock.lvl + 1) + ' ур.'
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
         keyboard.add_button(stock_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "строить склад"})
@@ -460,7 +464,7 @@ def get_keyboard(player, action_time=0):
     elif player.place == 'mine':
         stone = in_items(player.inventory.items.all(), 'stone_pickaxe')
         iron = in_items(player.inventory.items.all(), 'iron_pickaxe')
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
         keyboard.add_button('◾⛏ Добыть камень', color=VkKeyboardColor.POSITIVE, payload={"command": "камень"})
@@ -477,7 +481,7 @@ def get_keyboard(player, action_time=0):
     # Кузница
 
     elif player.place == 'forge':
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('⚒ ⛏ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "кирки"})
 
@@ -487,7 +491,7 @@ def get_keyboard(player, action_time=0):
         stone = in_items(player.inventory.items.all(), 'stone_pickaxe')
         iron = in_items(player.inventory.items.all(), 'iron_pickaxe')
         diamond = in_items(player.inventory.items.all(), 'diamond_pickaxe')
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('⛏ Кирки', color=VkKeyboardColor.DEFAULT, payload={"command": "кирки"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         if not stone or not iron:
@@ -506,7 +510,7 @@ def get_keyboard(player, action_time=0):
     # Таверна
 
     elif player.place == 'tavern':
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "подземелье"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('🎲 Кости 🎲', color=VkKeyboardColor.POSITIVE, payload={"command": "кости"})
         # keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "stock"})
@@ -515,7 +519,7 @@ def get_keyboard(player, action_time=0):
     # Война
 
     elif player.place == 'war':
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "земли"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
         if player.lvl >= 10:
             keyboard.add_line()

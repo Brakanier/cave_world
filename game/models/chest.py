@@ -16,6 +16,9 @@ class Chest(models.Model):
         blank=True,
         db_index=True,
     )
+    chance_for_get = models.FloatField(
+        default=0,
+    )
 
     trophy_chance = models.ManyToManyField(
         'game.ChestTrophy',

@@ -31,7 +31,9 @@ def index(request):
             if data['type'] == 'message_new':
                 from_id = data['object']['from_id']
                 peer_id = data['object']['peer_id']
-                if from_id == peer_id:
+                if from_id < 0:
+                    return HttpResponse('ok', content_type="text/plain", status=200)
+                elif from_id == peer_id:
                     chat_info = {
                         'user_id': from_id,
                         'peer_id': from_id,
@@ -132,9 +134,14 @@ def enter(chat_info, data):
                 player.place = 'cave'
                 player.save()
                 Registration.objects.filter(user_id=chat_info['user_id']).update(reg=True)
-                message = 'Ваш ник - ' + player.nickname
+                message = 'Ваш ник - ' + player.nickname + '\n'
                 print('Новый пользователь - ' + player.nickname)
                 chat_info['nick'] = player.nickname
+                message += 'Совет:\n' + \
+                           '1) Добудь немного камня' + icon('stone') + '\n' + \
+                           '2) Построй Кузницу' + icon('build') + icon('craft') + '\n' + \
+                           '3) Скрафть Каменную кирку' + icon('get') + '\n' + \
+                           'Напиши "помощь", чтобы увидеть список команд!'
                 send(chat_info, message, get_keyboard(player))
             else:
                 chat_info['nick'] = "Новый игрок"
@@ -189,7 +196,7 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Menu'
         stat['action'] = 'Bonus'
         stat['label'] = 'Бонус'
-    elif command == 'профиль':
+    elif command == 'профиль' or command == 'лорд':
         answer = player.profile(action_time)
         stat['category'] = 'Menu'
         stat['action'] = 'Profile'
@@ -209,22 +216,27 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Menu'
         stat['action'] = 'Top'
         stat['label'] = 'Топ'
-    elif command == 'топ лвл':
+    elif command == 'топ лвл' or command == 'топ уровень':
         answer = player.top_lvl()
         stat['category'] = 'Menu'
         stat['action'] = 'Top_Lvl'
         stat['label'] = 'Топ_Уровень'
-    elif command == 'склад':
+    elif re.match(r'топ череп', command):
+        answer = player.top_skull()
+        stat['category'] = 'Menu'
+        stat['action'] = 'Top_Skull'
+        stat['label'] = 'Топ_Череп'
+    elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
         stat['category'] = 'Menu'
         stat['action'] = 'Stock'
         stat['label'] = 'Склад'
-    elif command == 'строить подземелье':
+    elif command == 'build_cave':
         stat['category'] = 'Menu'
         stat['action'] = 'Build_Cave'
         stat['label'] = 'Строить_Подземелье'
         answer = player.cave_build()
-    elif command == 'строить земли':
+    elif command == 'build_land':
         answer = player.land_build()
         stat['category'] = 'Menu'
         stat['action'] = 'Build_Land'
@@ -238,9 +250,9 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Text'
         stat['action'] = 'Build'
         stat['label'] = 'Строить'
-        answer = 'Здания Подземелья\n'
+        answer = 'Здания Подземелья:\n'
         answer += player.cave_build()
-        answer += '\nЗдания Земель\n'
+        answer += '\nЗдания Земель:\n'
         answer += player.land_build()
 
     # Таверна
@@ -317,12 +329,12 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Build_Magic'
         stat['label'] = 'Строить_Магия'
         answer = player.build.build_magic(action_time)
-    elif command == 'строить лесопилка':
+    elif command == 'строить лесопилк':
         stat['category'] = 'Build'
         stat['action'] = 'Build_Woodmine'
         stat['label'] = 'Строить_Лесопилка'
         answer = player.build.build_wood_mine(action_time, player.lvl)
-    elif command == 'строить каменоломня':
+    elif command == 'строить каменоломн':
         stat['category'] = 'Build'
         stat['action'] = 'Build_Stonemine'
         stat['label'] = 'Строить_Каменоломня'
@@ -367,17 +379,17 @@ def action(command, player, action_time, chat_info):
 
     # Крафт
 
-    elif command == 'ковать каменная кирка':
+    elif 'ковать каменн' in command:
         stat['category'] = 'Craft'
         stat['action'] = 'Craft_Stone_Pickaxe'
         stat['label'] = 'Ковать_Каменная_Кирка'
         answer = player.craft_stone_pickaxe(action_time)
-    elif command == 'ковать железная кирка':
+    elif 'ковать железн' in command:
         stat['category'] = 'Craft'
         stat['action'] = 'Craft_Iron_Pickaxe'
         stat['label'] = 'Ковать_Железная_Кирка'
         answer = player.craft_iron_pickaxe(action_time)
-    elif command == 'ковать кристальная кирка':
+    elif 'ковать кристальн' in command:
         stat['category'] = 'Craft'
         stat['action'] = 'Craft_Diamond_Pickaxe'
         stat['label'] = 'Ковать_Кристальная_Кирка'
@@ -385,12 +397,12 @@ def action(command, player, action_time, chat_info):
 
     # Локацииц
 
-    elif command == 'подземелье':
+    elif command == 'cave':
         stat['category'] = 'Place'
         stat['action'] = 'Cave'
         stat['label'] = 'Подземелье'
         answer = player.cave()
-    elif command == 'шахта':
+    elif command == 'mine':
         stat['category'] = 'Place'
         stat['action'] = 'Mine'
         stat['label'] = 'Шахта'
@@ -410,7 +422,7 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Tavern'
         stat['label'] = 'Таверна'
         answer = player.tavern()
-    elif command == 'земли':
+    elif command == 'land':
         stat['category'] = 'Place'
         stat['action'] = 'Land'
         stat['label'] = 'Земли'
@@ -420,10 +432,10 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'War'
         stat['label'] = 'Война'
         answer = player.war_menu()
-    elif command == 'нанять':
+    elif command == 'найм':
         stat['category'] = 'Place'
         stat['action'] = 'Buy'
-        stat['label'] = 'Нанять'
+        stat['label'] = 'Найм'
         answer = player.buy()
 
     # Армия
@@ -500,6 +512,7 @@ def action(command, player, action_time, chat_info):
         else:
             answer = 'Такого сундука не существует!'
     '''
+
 
     send(chat_info, answer, get_keyboard(player, action_time))
     track(player.user_id, stat)
