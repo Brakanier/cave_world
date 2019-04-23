@@ -521,7 +521,7 @@ class Build(models.Model):
                               'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
                               'Результат соперника: ' + str(enemy_result) + icon('cube')
             else:
-                message = 'Нехватает ресурса для ставки!'
+                message = 'Не хватает ресурса для ставки!'
             Stock.objects.filter(user_id=self.user_id).update(wood=self.stock.wood,
                                                               stone=self.stock.stone,
                                                               iron=self.stock.iron,

@@ -111,7 +111,7 @@ class Player(models.Model):
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.build.stock.stone)
                     message = get_chest_mine(self, message)
                 else:
-                    message = 'Нехватает места!\n'
+                    message = 'Не хватает места!\n'
             else:
                 message = 'Склад заполнен!'
             Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
@@ -143,7 +143,7 @@ class Player(models.Model):
                               'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
                     Stock.objects.filter(user_id=self.user_id).update(wood=self.build.stock.wood)
                 else:
-                    message = 'Нехватает места!\n'
+                    message = 'Не хватает места!\n'
             else:
                 message = 'Склад заполнен!'
             Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
@@ -178,7 +178,7 @@ class Player(models.Model):
                         Stock.objects.filter(user_id=self.user_id).update(iron=self.build.stock.iron)
                         message = get_chest_mine(self, message)
                     else:
-                        message = 'Нехватает места!\n'
+                        message = 'Не хватает места!\n'
                 else:
                     message = 'Склад заполнен!'
                 Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
