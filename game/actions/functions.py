@@ -377,20 +377,21 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
-        keyboard.add_line()
-        if player.build.barracks:
-            keyboard.add_button('🗡 Воин', color=VkKeyboardColor.POSITIVE, payload={"command": "воин"})
-        if player.build.archery:
-            keyboard.add_button('🏹 Лучник', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник"})
-        if player.build.magic:
-            keyboard.add_button('🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": "маг"})
-        keyboard.add_line()
-        if player.build.barracks:
-            keyboard.add_button('🗡 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "воин 5"})
-        if player.build.archery:
-            keyboard.add_button('🏹 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник 5"})
-        if player.build.magic:
-            keyboard.add_button('🔮 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "маг 5"})
+        if player.build.barracks or player.build.archery or player.build.magic:
+            keyboard.add_line()
+            if player.build.barracks:
+                keyboard.add_button('🗡 Воин', color=VkKeyboardColor.POSITIVE, payload={"command": "воин"})
+            if player.build.archery:
+                keyboard.add_button('🏹 Лучник', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник"})
+            if player.build.magic:
+                keyboard.add_button('🔮 Маг', color=VkKeyboardColor.POSITIVE, payload={"command": "маг"})
+            keyboard.add_line()
+            if player.build.barracks:
+                keyboard.add_button('🗡 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "воин 5"})
+            if player.build.archery:
+                keyboard.add_button('🏹 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник 5"})
+            if player.build.magic:
+                keyboard.add_button('🔮 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "маг 5"})
 
     # Земли - Строительство
 
