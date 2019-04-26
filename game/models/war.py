@@ -317,9 +317,9 @@ class War(models.Model):
                         attack_after_warrior = ((attack_warrior_hp / attack_hp) * attack_after_hp) // WARRIOR_HP
                         attack_after_archer = ((attack_archer_hp / attack_hp) * attack_after_hp) // ARCHER_HP
                         attack_after_wizard = ((attack_wizard_hp / attack_hp) * attack_after_hp) // WIZARD_HP
-                        attack_after_warrior = round(max(self.warrior*0.75, attack_after_warrior))
-                        attack_after_archer = round(max(self.archer*0.75, attack_after_archer))
-                        attack_after_wizard = round(max(self.wizard*0.75, attack_after_wizard))
+                        attack_after_warrior = round(max(self.warrior*0.90, attack_after_warrior))
+                        attack_after_archer = round(max(self.archer*0.90, attack_after_archer))
+                        attack_after_wizard = round(max(self.wizard*0.90, attack_after_wizard))
                     attack_lost_warrior = round(self.warrior - attack_after_warrior)
                     attack_lost_archer = round(self.archer - attack_after_archer)
                     attack_lost_wizard = round(self.wizard - attack_after_wizard)
@@ -331,9 +331,9 @@ class War(models.Model):
                         defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // def_warrior_hp
                         defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // def_archer_hp
                         defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // def_wizard_hp
-                        defender_after_warrior = round(max(defender.war.warrior * 0.85, defender_after_warrior))
-                        defender_after_archer = round(max(defender.war.archer * 0.85, defender_after_archer))
-                        defender_after_wizard = round(max(defender.war.wizard * 0.85, defender_after_wizard))
+                        defender_after_warrior = round(max(defender.war.warrior * 0.90, defender_after_warrior))
+                        defender_after_archer = round(max(defender.war.archer * 0.90, defender_after_archer))
+                        defender_after_wizard = round(max(defender.war.wizard * 0.90, defender_after_wizard))
                     defender_lost_warrior = round(defender.war.warrior - defender_after_warrior)
                     defender_lost_archer = round(defender.war.archer - defender_after_archer)
                     defender_lost_wizard = round(defender.war.wizard - defender_after_wizard)
