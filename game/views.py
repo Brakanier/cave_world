@@ -513,6 +513,6 @@ def action(command, player, action_time, chat_info):
             answer = 'Такого сундука не существует!'
     '''
 
-
     send(chat_info, answer, get_keyboard(player, action_time))
-    track(player.user_id, stat)
+
+    # track(player.user_id, stat)
