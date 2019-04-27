@@ -87,17 +87,16 @@ class War(models.Model):
                   'Воины: ' + str(self.warrior) + icon('sword') + '\n' + \
                   'Лучники: ' + str(self.archer) + icon('bow') + '\n' + \
                   'Маги: ' + str(self.wizard) + icon('orb') + '\n' + \
-                  'Всего: ' + str(self.warrior + self.archer + self.wizard) + icon('war') + '\n' + \
-                  'Мощь: ' + str(int(self.power)) + ' ⚔\n'
+                  'Всего: ' + str(self.warrior + self.archer + self.wizard) + icon('war') + '\n'
         return message
 
     def shield_info(self, action_time):
-        shield = self.shield * SHIELD_X
-        time = action_time - self.defend_last_time
-        if time < shield:
-            hour = (shield - time) // 3600
-            minutes = ((shield - time) - (hour * 3600)) // 60
-            sec = (shield - time) - (minutes * 60) - (hour * 3600)
+        time_lost_shield = self.defend_last_time + self.shield
+        shield = time_lost_shield - action_time
+        if action_time < time_lost_shield:
+            hour = shield // 3600
+            minutes = (shield - (hour * 3600)) // 60
+            sec = shield - (minutes * 60) - (hour * 3600)
             message = 'Щит действует еще: ' + \
                       str(hour) + ' ч. ' + \
                       str(minutes) + ' м. ' + \
@@ -183,40 +182,27 @@ class War(models.Model):
 
     def find_enemy(self, lvl, action_time):
         if lvl < 10:
-            message = 'Поиск противника доступен с 10 ур.'
+            message = 'Сражения и поиск противника доступны с 10 ур.'
             return message
         find_time = action_time - self.find_last_time
         if find_time >= FIND_TIME:
-            lvl = max(lvl - 2, 10)
-            defender = Player.objects.filter(build__citadel=True, lvl__gte=lvl).exclude(
-                user_id=self.user_id).order_by('war__defend_last_time').first()
+            defenders = Player.objects.filter(build__citadel=True, lvl__gte=10, war__shield__lte=action_time).exclude(
+                user_id=self.user_id).all()
+            print(defenders)
 
-            def is_shield():
-                if defender:
-                    shield = defender.war.shield * SHIELD_X
-                    shield = shield + defender.war.defend_last_time
-                    if shield >= action_time:
-                        return False
-                    else:
-                        return defender
-                else:
-                    return False
-
-            defender = is_shield()
-
-            if defender:
+            if defenders:
+                defender = random.choice(defenders)
+                print(defender)
                 self.enemy_id = defender.user_id
                 message = 'Найден противник!\n' + \
                           'Ник: ' + defender.nickname + '\n' + \
-                          'Уровень: ' + str(defender.lvl) + icon('lvl') + '\n' + \
                           'Успейте напасть, пока вас не опередили!'
             else:
                 self.enemy_id = None
-                message = 'Противник не найден'
+                message = 'Противник не найден!'
 
             self.find_last_time = action_time
-            War.objects.filter(user_id=self.user_id).update(enemy_id=self.enemy_id,
-                                                            find_last_time=self.find_last_time)
+            War.objects.filter(user_id=self.user_id).update(enemy_id=self.enemy_id)
 
         else:
             minutes = (FIND_TIME - find_time) // 60
@@ -224,6 +210,54 @@ class War(models.Model):
             message = 'Искать противника можно раз в 5 минут\n' + \
                       'До следующего поиска: ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
         return message
+
+    def scouting(self, action_time):
+        if self.enemy_id:
+            defender = Player.objects.get(user_id=self.enemy_id)
+            if defender.war.shield > action_time:
+                message = 'Вы опоздали!\n' + \
+                          'На ' + defender.nickname + ' уже напали!\n' + \
+                          'Найдите нового противника!'
+                self.enemy_id = None
+                War.objects.filter(user_id=self.user_id).update(enemy_id=self.enemy_id)
+            elif self.player.build.stock.diamond >= 10:
+                self.player.build.stock.diamond -= 10
+                self.player.build.stock.save(update_fields=['diamond'])
+                def_army = defender.war.warrior + defender.war.archer + defender.war.wizard
+                def_army_min = max(def_army - random.randint(30, 100), 0)
+                def_army_max = def_army + random.randint(30, 100)
+                message = 'Разведка: ' + defender.nickname + '\n' + \
+                          'Уровень: ' + str(defender.lvl) + icon('lvl') + '\n' + \
+                          'Армия: ' + str(def_army_min) + ' ~ ' + str(def_army_max) + icon('war')
+                rand_scouting = random.randint(0, 100)
+                if rand_scouting > 80:
+                    def_message = 'Вас разведовал: ' + self.player.nickname
+                    self.send_defender(defender, def_message)
+            else:
+                message = "Нужно 10 " + icon('diamond')
+        else:
+            message = "Сначала найдите противника!"
+        return message
+
+    def send_defender(self, defender, message):
+        try:
+            send_info = {
+                'user_id': defender.user_id,
+                'chat_id': defender.user_id,
+            }
+            send(send_info, message)
+        except:
+            if defender.chat_id != defender.user_id:
+                send_info = {
+                    'user_id': defender.user_id,
+                    'peer_id': defender.chat_id,
+                    'chat_id': defender.chat_id - 2000000000,
+                    'nick': defender.nickname,
+                }
+                try:
+                    send(send_info, message)
+                except:
+                    pass
 
     def attack(self, player, action_time, chat_info):
         if player.lvl < 10:
@@ -237,15 +271,7 @@ class War(models.Model):
 
                 defender = Player.objects.get(user_id=self.enemy_id)
 
-                def is_shield():
-                    shield = defender.war.shield * SHIELD_X
-                    shield = shield + defender.war.defend_last_time
-                    if shield >= action_time:
-                        return True
-                    else:
-                        return False
-
-                if is_shield():
+                if defender.war.shield > action_time:
                     message = 'Вы опоздали!\n' + \
                               'На ' + defender.nickname + ' уже напали!\n' + \
                               'Найдите нового противника!'

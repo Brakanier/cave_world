@@ -471,6 +471,8 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Find'
         stat['label'] = 'Поиск'
         answer = player.war.find_enemy(player.lvl, action_time)
+    elif command == 'разведка':
+        answer = player.war.scouting(action_time)
     elif command == 'атака':
         stat['category'] = 'War'
         stat['action'] = 'Attack'
