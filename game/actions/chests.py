@@ -14,7 +14,7 @@ def get_chest_object(command):
     except IndexError:
         return False
     try:
-        chest = Chest.objects.get(title__icontains=name)
+        chest = Chest.objects.filter(title__icontains=name).first()
         return chest
     except Chest.DoesNotExist:
         return False
