@@ -393,7 +393,7 @@ class Player(models.Model):
         return main_message
 
     def top_attack(self):
-        top = Player.objects.order_by('-war__success_attack').values_list('nickname', 'war__success_attack')[0:10]
+        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_attack').values_list('nickname', 'war__success_attack')[0:10]
         count = 1
         main_message = 'Топ игроков по Успешным Атакам ⚔\n'
         for user in top:
@@ -403,7 +403,7 @@ class Player(models.Model):
         return main_message
 
     def top_defend(self):
-        top = Player.objects.order_by('-war__success_defend').values_list('nickname', 'war__success_defend')[0:10]
+        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_defend').values_list('nickname', 'war__success_defend')[0:10]
         count = 1
         main_message = 'Топ игроков по Успешным Защитам 🛡\n'
         for user in top:
