@@ -405,7 +405,7 @@ class Player(models.Model):
     def top_defend(self):
         top = Player.objects.filter(lvl__gte=10).order_by('-war__success_defend').values_list('nickname', 'war__success_defend')[0:10]
         count = 1
-        main_message = 'Топ игроков по Успешным Защитам 🛡\n'
+        main_message = 'Топ игроков по Успешным Оборонам 🛡\n'
         for user in top:
             message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 🛡\n'
             count += 1
