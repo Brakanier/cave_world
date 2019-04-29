@@ -402,7 +402,7 @@ class War(models.Model):
 
                         message = 'Вы напали на ' + defender.nickname + '\n' + \
                                   '⚔ Победа ⚔\n' + \
-                                  '[Выши потери]\n' + \
+                                  '[Ваши потери]\n' + \
                                   'Воины: ' + str(a_war_die) + ' / ' + str(self.warrior) + ' 🗡\n' + \
                                   'Лучники: ' + str(a_arch_die) + ' / ' + str(self.archer) + ' 🏹\n' + \
                                   'Маги: ' + str(a_wiz_die) + ' / ' + str(self.wizard) + ' 🔮\n' + \
@@ -422,7 +422,7 @@ class War(models.Model):
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
                                       '⚔ Вы проиграли ⚔\n' + \
-                                      '[Выши потери]\n' + \
+                                      '[Ваши потери]\n' + \
                                       'Воины: ' + str(d_war_die) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
                                       'Лучники: ' + str(d_arch_die) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
                                       'Маги: ' + str(d_wiz_die) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
