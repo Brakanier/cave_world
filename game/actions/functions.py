@@ -543,11 +543,10 @@ def get_keyboard(player, action_time=0):
             keyboard.add_line()
             keyboard.add_button('🔎 Поиск', color=color, payload={"command": "поиск"})
             war_time = action_time - player.war.war_last_time
+            attack_color = VkKeyboardColor.NEGATIVE
             if war_time >= WAR_TIME:
                 if player.war.enemy_id:
                     attack_color = VkKeyboardColor.POSITIVE
-            else:
-                attack_color = VkKeyboardColor.NEGATIVE
             keyboard.add_button('⚔ Напасть', color=attack_color, payload={"command": "атака"})
             if player.war.enemy_id:
                 keyboard.add_line()
