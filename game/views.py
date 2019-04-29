@@ -226,6 +226,10 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Menu'
         stat['action'] = 'Top_Skull'
         stat['label'] = 'Топ_Череп'
+    elif re.match(r'топ атака', command):
+        answer = player.top_attack()
+    elif re.match(r'топ защита', command):
+        answer = player.top_defend()
     elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
         stat['category'] = 'Menu'

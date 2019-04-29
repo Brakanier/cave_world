@@ -366,7 +366,9 @@ class Player(models.Model):
         Player.objects.filter(user_id=self.user_id).update(place=self.place)
         message = 'Выберите топ:\n' + \
                   'По уровню 👑 - топ лвл\n' + \
-                  'По черепам 💀 - топ череп\n'
+                  'По черепам 💀 - топ череп\n' + \
+                  'По успешным нападениям ⚔ - топ атака\n' + \
+                  'По успешным защитам 🛡 - топ защита\n'
         return message
 
     def top_lvl(self):
@@ -385,6 +387,26 @@ class Player(models.Model):
         main_message = 'Топ игроков по Черепам 💀\n'
         for user in top:
             message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 💀\n'
+            count += 1
+            main_message = main_message + message
+        return main_message
+
+    def top_attack(self):
+        top = Player.objects.order_by('-war__success_attack').values_list('nickname', 'war__success_attack')[0:10]
+        count = 1
+        main_message = 'Топ игроков по Успешным Атакам ⚔\n'
+        for user in top:
+            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' ⚔\n'
+            count += 1
+            main_message = main_message + message
+        return main_message
+
+    def top_defend(self):
+        top = Player.objects.order_by('-war__success_defend').values_list('nickname', 'war__success_defend')[0:10]
+        count = 1
+        main_message = 'Топ игроков по Успешным Защитам 🛡\n'
+        for user in top:
+            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 🛡\n'
             count += 1
             main_message = main_message + message
         return main_message

@@ -198,8 +198,8 @@ class War(models.Model):
                 self.player.build.stock.diamond -= 10
                 self.player.build.stock.save(update_fields=['diamond'])
                 def_army = defender.war.sum_army()
-                def_army_min = max(def_army - random.randint(50, 150), 0)
-                def_army_max = def_army + random.randint(50, 150)
+                def_army_min = max(def_army - random.randint(30, 100), 0)
+                def_army_max = def_army + random.randint(30, 100)
                 message = 'Разведка: ' + defender.nickname + '\n' + \
                           'Уровень: ' + str(defender.lvl) + icon('lvl') + '\n' + \
                           'Армия: ' + str(def_army_min) + ' ~ ' + str(def_army_max) + icon('war')
