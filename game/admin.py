@@ -17,10 +17,7 @@ from .models.inventory import Inventory, InventoryChest, InventoryTrophy
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'nickname', 'power', 'lvl', 'first_name', 'last_name')
-
-    def power(self, obj):
-        return obj.war.power
+    list_display = ('user_id', 'nickname', 'lvl', 'first_name', 'last_name')
 
 
 @admin.register(Stock)
@@ -41,7 +38,7 @@ class BuildAdmin(admin.ModelAdmin):
 
 @admin.register(War)
 class WarAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'nickname', 'power', 'warrior', 'archer', 'wizard')
+    list_display = ('user_id', 'nickname', 'warrior', 'archer', 'wizard')
 
     def nickname(self, obj):
         return obj.player.nickname

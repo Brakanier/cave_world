@@ -144,6 +144,8 @@ class Build(models.Model):
         return self.stock
 
     def build_stock(self, action_time):
+        if self.stock.lvl == 50:
+            return 'Склад максимального уровня!'
         self.stock = self.get_passive(action_time)
         if self.stock.lvl >= 10:
             stone_need = self.stock.lvl * STOCK_STONE * 2
@@ -152,7 +154,10 @@ class Build(models.Model):
         if self.stock.stone >= stone_need:
             self.stock.stone = self.stock.stone - stone_need
             self.stock.lvl = self.stock.lvl + 1
-            self.stock.max = self.stock.lvl * STOCK_MAX_X
+            if self.stock.lvl >= 30:
+                self.stock.max = self.stock.lvl * STOCK_MAX_X30
+            else:
+                self.stock.max = self.stock.lvl * STOCK_MAX_X
             Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                               lvl=self.stock.lvl,
                                                               max=self.stock.max)
@@ -241,6 +246,8 @@ class Build(models.Model):
         return message
 
     def build_tower(self, action_time):
+        if self.tower_lvl == 30:
+            return 'Башня максимального уровня!'
         self.stock = self.get_passive(action_time)
         if self.citadel:
             need_stone = (self.tower_lvl + 1) * TOWER_STONE
@@ -264,6 +271,8 @@ class Build(models.Model):
         return message
 
     def build_wall(self, action_time):
+        if self.wall_lvl == 30:
+            return 'Стены максимального уровня!'
         self.stock = self.get_passive(action_time)
         if self.citadel:
             need_stone = (self.wall_lvl + 1) * WALL_STONE
@@ -366,6 +375,8 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Каменоломни доступно с 10 ур.'
             return message
+        if self.stone_mine_lvl == 50:
+            return 'Башня максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_wood = (self.stone_mine_lvl + 1) * STONE_MINE_WOOD
         need_iron = (self.stone_mine_lvl + 1) * STONE_MINE_IRON

@@ -183,6 +183,7 @@ def commands():
               '&#12288;' + icon('war') + ' Армия - Посмотреть свою армию\n' + \
               '&#12288;' + icon('shield') + ' Щит - Проверить наличие щита от нападений\n' + \
               '&#12288;' + icon('search') + ' Поиск - Поиск противника для нападения\n' + \
+              '&#12288;' + icon('search') + ' Разведка - информация о противнике (10' + icon('diamond') + ')\n' + \
               '&#12288;' + icon('war') + ' Атака - Напасть на противника\n' + \
               '\n' + icon('craft') + ' Кузница:\n' + \
               '&#12288;' + icon('craft') + ' Ковать [предмет] - Ковать предметы в кузнице\n' + \
@@ -326,7 +327,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🔝 Топ 🔝', color=VkKeyboardColor.DEFAULT, payload={"command": "топ"})
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
         keyboard.add_line()
-        keyboard.add_button('Инвентарь', color=VkKeyboardColor.DEFAULT, payload={"command": "инвентарь"})
+        keyboard.add_button('Инвентарь', color=VkKeyboardColor.DEFAULT, payload={"command": "inventory"})
         keyboard.add_line()
         color = VkKeyboardColor.POSITIVE
         if action_time - player.bonus_time <= BONUS_TIME:
@@ -348,8 +349,9 @@ def get_keyboard(player, action_time=0):
         for chest in chests:
             title = str(chest.chest.title) + ' - ' + str(chest.count) + ' шт.'
             command = 'открыть ' + str(chest.chest.title)
-            keyboard.add_line()
-            keyboard.add_button(title, color=VkKeyboardColor.POSITIVE, payload={"command": command})
+            if chest.count > 0:
+                keyboard.add_line()
+                keyboard.add_button(title, color=VkKeyboardColor.POSITIVE, payload={"command": command})
 
     if player.place == 'top':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
@@ -534,9 +536,23 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('⚔👥 Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
         if player.lvl >= 10:
+            find_time = action_time - player.war.find_last_time
+            if find_time >= FIND_TIME:
+                color = VkKeyboardColor.POSITIVE
+            else:
+                color = VkKeyboardColor.NEGATIVE
             keyboard.add_line()
-            keyboard.add_button('🔎 Поиск', color=VkKeyboardColor.POSITIVE, payload={"command": "поиск"})
-            keyboard.add_button('⚔ Напасть', color=VkKeyboardColor.NEGATIVE, payload={"command": "атака"})
+            keyboard.add_button('🔎 Поиск', color=color, payload={"command": "поиск"})
+            war_time = action_time - player.war.war_last_time
+            if war_time >= WAR_TIME:
+                if player.war.enemy_id:
+                    attack_color = VkKeyboardColor.POSITIVE
+            else:
+                attack_color = VkKeyboardColor.NEGATIVE
+            keyboard.add_button('⚔ Напасть', color=attack_color, payload={"command": "атака"})
+            if player.war.enemy_id:
+                keyboard.add_line()
+                keyboard.add_button('🔎 Разведка (10 💎)', color=VkKeyboardColor.POSITIVE, payload={"command": "разведка"})
             keyboard.add_line()
             keyboard.add_button('🛡 Щит ⏳', color=VkKeyboardColor.DEFAULT, payload={"command": "щит"})
 

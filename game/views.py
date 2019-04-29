@@ -201,7 +201,7 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Menu'
         stat['action'] = 'Profile'
         stat['label'] = 'Профиль'
-    elif command == 'инвентарь':
+    elif command == 'inventory':
         answer = player.go_inventory()
         stat['category'] = 'Menu'
         stat['action'] = 'Inventory'
@@ -466,7 +466,7 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Shield'
         stat['label'] = 'Щит'
         answer = player.war.shield_info(action_time)
-    elif command == 'поиск':
+    elif command == ('поиск' or 'искать'):
         stat['category'] = 'War'
         stat['action'] = 'Find'
         stat['label'] = 'Поиск'
@@ -482,7 +482,7 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'War'
         stat['action'] = 'Army'
         stat['label'] = 'Армия'
-        answer = player.war.army(player)
+        answer = player.war.army()
 
     elif re.match(r'открыть', command):
         stat['category'] = 'Chests'

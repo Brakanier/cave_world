@@ -14,7 +14,13 @@ class War(models.Model):
         null=True,
         blank=True,
     )
-    shield = models.IntegerField(
+    shield = models.BigIntegerField(
+        default=0,
+    )
+    success_attack = models.IntegerField(
+        default=0,
+    )
+    success_defend = models.IntegerField(
         default=0,
     )
     find_last_time = models.BigIntegerField(
@@ -52,48 +58,22 @@ class War(models.Model):
     wizard = models.IntegerField(
         default=0,
     )
-    power = models.FloatField(
-        blank=True,
-        default=0,
-    )
 
     class Meta:
         verbose_name = 'Война'
         verbose_name_plural = 'Войны'
 
-    def update_power(self, build):
-        # Атака
-        warrior_attack = self.warrior * WARRIOR_ATTACK
-        archer_attack = self.archer * ARCHER_ATTACK
-        wizard_attack = self.wizard * WIZARD_ATTACK
-        attack = warrior_attack + archer_attack + wizard_attack
-        # Хп
-        warrior_hp = self.warrior * WARRIOR_HP
-        archer_hp = self.archer * ARCHER_HP
-        wizard_hp = self.wizard * WIZARD_HP
-        hp = warrior_hp + archer_hp + wizard_hp
-        # Башня и Стены
-        tower_x = build.tower_lvl * TOWER_BUFF
-        attack = attack * (1 + tower_x)
-        wall_x = build.wall_lvl * WALL_BUFF
-        hp = hp * (1 + wall_x)
-        self.power = attack + hp
-        return self
-
-    def army(self, player):
-        self.update_power(player.build)
-        self.save(update_fields=['power'])
+    def army(self):
         message = 'Армия:\n' + \
                   'Воины: ' + str(self.warrior) + icon('sword') + '\n' + \
                   'Лучники: ' + str(self.archer) + icon('bow') + '\n' + \
                   'Маги: ' + str(self.wizard) + icon('orb') + '\n' + \
-                  'Всего: ' + str(self.warrior + self.archer + self.wizard) + icon('war') + '\n'
+                  'Всего: ' + str(self.sum_army()) + icon('war') + '\n'
         return message
 
     def shield_info(self, action_time):
-        time_lost_shield = self.defend_last_time + self.shield
-        shield = time_lost_shield - action_time
-        if action_time < time_lost_shield:
+        if self.shield > action_time:
+            shield = self.shield - action_time
             hour = shield // 3600
             minutes = (shield - (hour * 3600)) // 60
             sec = shield - (minutes * 60) - (hour * 3600)
@@ -114,8 +94,7 @@ class War(models.Model):
                 self.warrior = self.warrior + amount
                 self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron)
-                War.objects.filter(user_id=self.user_id).update(warrior=self.warrior,
-                                                                power=self.power)
+                War.objects.filter(user_id=self.user_id).update(warrior=self.warrior)
                 message = 'Вы наняли ' + str(amount) + icon('sword')
             else:
                 message = 'Недостаточно ресурсов!\n' + \
@@ -138,8 +117,7 @@ class War(models.Model):
                 self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
                                                                   wood=build.stock.wood)
-                War.objects.filter(user_id=self.user_id).update(archer=self.archer,
-                                                                power=self.power)
+                War.objects.filter(user_id=self.user_id).update(archer=self.archer)
                 message = 'Вы наняли ' + str(amount) + icon('bow')
             else:
                 message = 'Недостаточно ресурсов!\n' + \
@@ -167,8 +145,7 @@ class War(models.Model):
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
                                                                   wood=build.stock.wood,
                                                                   diamond=build.stock.diamond)
-                War.objects.filter(user_id=self.user_id).update(wizard=self.wizard,
-                                                                power=self.power)
+                War.objects.filter(user_id=self.user_id).update(wizard=self.wizard)
                 message = 'Вы наняли ' + str(amount) + icon('orb')
             else:
                 message = 'Недостаточно ресурсов!\n' + \
@@ -188,21 +165,21 @@ class War(models.Model):
         if find_time >= FIND_TIME:
             defenders = Player.objects.filter(build__citadel=True, lvl__gte=10, war__shield__lte=action_time).exclude(
                 user_id=self.user_id).all()
-            print(defenders)
 
             if defenders:
                 defender = random.choice(defenders)
-                print(defender)
                 self.enemy_id = defender.user_id
                 message = 'Найден противник!\n' + \
                           'Ник: ' + defender.nickname + '\n' + \
-                          'Успейте напасть, пока вас не опередили!'
+                          'Вы можете разведывать противника:\n' + \
+                          'Разведка - информация о противнике (10' + icon('diamond') + ')'
             else:
                 self.enemy_id = None
                 message = 'Противник не найден!'
 
             self.find_last_time = action_time
-            War.objects.filter(user_id=self.user_id).update(enemy_id=self.enemy_id)
+            War.objects.filter(user_id=self.user_id).update(enemy_id=self.enemy_id,
+                                                            find_last_time=self.find_last_time)
 
         else:
             minutes = (FIND_TIME - find_time) // 60
@@ -223,41 +200,134 @@ class War(models.Model):
             elif self.player.build.stock.diamond >= 10:
                 self.player.build.stock.diamond -= 10
                 self.player.build.stock.save(update_fields=['diamond'])
-                def_army = defender.war.warrior + defender.war.archer + defender.war.wizard
-                def_army_min = max(def_army - random.randint(30, 100), 0)
-                def_army_max = def_army + random.randint(30, 100)
+                def_army = defender.war.sum_army()
+                def_army_min = max(def_army - random.randint(50, 150), 0)
+                def_army_max = def_army + random.randint(50, 150)
                 message = 'Разведка: ' + defender.nickname + '\n' + \
                           'Уровень: ' + str(defender.lvl) + icon('lvl') + '\n' + \
                           'Армия: ' + str(def_army_min) + ' ~ ' + str(def_army_max) + icon('war')
                 rand_scouting = random.randint(0, 100)
-                if rand_scouting > 80:
+                if rand_scouting >= 0:
                     def_message = 'Вас разведовал: ' + self.player.nickname
-                    self.send_defender(defender, def_message)
+                    defender.war.send_defender(def_message)
             else:
                 message = "Нужно 10 " + icon('diamond')
         else:
             message = "Сначала найдите противника!"
         return message
 
-    def send_defender(self, defender, message):
+    def send_defender(self, message):
         try:
             send_info = {
-                'user_id': defender.user_id,
-                'chat_id': defender.user_id,
+                'user_id': self.player.user_id,
+                'chat_id': self.player.user_id,
             }
             send(send_info, message)
         except:
-            if defender.chat_id != defender.user_id:
+            if self.player.chat_id != self.player.user_id:
                 send_info = {
-                    'user_id': defender.user_id,
-                    'peer_id': defender.chat_id,
-                    'chat_id': defender.chat_id - 2000000000,
-                    'nick': defender.nickname,
+                    'user_id': self.player.user_id,
+                    'peer_id': self.player.chat_id,
+                    'chat_id': self.player.chat_id - 2000000000,
+                    'nick': self.player.nickname,
                 }
                 try:
                     send(send_info, message)
                 except:
                     pass
+
+    def sum_army(self):
+        sum_army = self.warrior + self.archer + self.wizard
+        return sum_army
+
+    def sum_attack(self, enemy):
+        on_war, on_arch, on_wiz = self.get_attack()
+        if enemy.war.warrior <= 0:
+            on_war = 0
+        if enemy.war.archer <= 0:
+            on_arch = 0
+        if enemy.war.wizard <= 0:
+            on_wiz = 0
+        sum_attack = on_war + on_arch + on_wiz
+        return sum_attack
+
+    def get_modify(self, count):
+        if count > 0:
+            sum_army = self.sum_army()
+            average = sum_army / 3
+            diff = min(abs(count - average) / sum_army, 0.3)
+            modify = 1 - diff
+        else:
+            modify = 0
+        return modify
+
+    def get_attack(self):
+        mod_war = self.get_modify(self.warrior)
+        mod_arch = self.get_modify(self.archer)
+        mod_wiz = self.get_modify(self.wizard)
+        tower_buff = 1 + (self.player.build.tower_lvl * TOWER_BUFF)
+        war_war = tower_buff * WARRIOR_ATTACK * self.warrior * mod_war / 3
+        war_arch = tower_buff * WARRIOR_ATTACK * self.warrior * mod_war * 2 / 3
+        war_wiz = tower_buff * WARRIOR_ATTACK * self.warrior * mod_war * 0.5 / 3
+        arch_arch = tower_buff * ARCHER_ATTACK * self.archer * mod_arch / 3
+        arch_war = tower_buff * ARCHER_ATTACK * self.archer * mod_arch * 0.5 / 3
+        arch_wiz = tower_buff * ARCHER_ATTACK * self.archer * mod_arch * 2 / 3
+        wiz_wiz = tower_buff * WIZARD_ATTACK * self.wizard * mod_wiz / 3
+        wiz_war = tower_buff * WIZARD_ATTACK * self.wizard * mod_wiz * 2 / 3
+        wiz_arch = tower_buff * WIZARD_ATTACK * self.wizard * mod_wiz * 0.5 / 3
+        on_war = war_war + arch_war + wiz_war
+        on_arch = war_arch + arch_arch + wiz_arch
+        on_wiz = war_wiz + arch_wiz + wiz_wiz
+        return on_war, on_arch, on_wiz
+
+    def get_alive(self, enemy):
+        mod_war = self.get_modify(self.warrior)
+        mod_arch = self.get_modify(self.archer)
+        mod_wiz = self.get_modify(self.wizard)
+        on_war, on_arch, on_wiz = enemy.war.get_attack()
+        wall_buff = 1 + (self.player.build.wall_lvl * WALL_BUFF)
+        if mod_war > 0:
+            war_hp_one = WARRIOR_HP * wall_buff * mod_war
+            war_hp = self.warrior * war_hp_one
+            war_hp_after = war_hp - on_war
+            war_alive = war_hp_after / war_hp_one
+        else:
+            war_alive = 0
+        if mod_arch > 0:
+            arch_hp_one = ARCHER_HP * wall_buff * mod_arch
+            arch_hp = self.archer * arch_hp_one
+            arch_hp_after = arch_hp - on_arch
+            arch_alive = arch_hp_after / arch_hp_one
+        else:
+            arch_alive = 0
+        if mod_wiz > 0:
+            wiz_hp_one = WIZARD_HP * wall_buff * mod_wiz
+            wiz_hp = self.wizard * wiz_hp_one
+            wiz_hp_after = wiz_hp - on_wiz
+            wiz_alive = wiz_hp_after / wiz_hp_one
+        else:
+            wiz_alive = 0
+        return war_alive, arch_alive, wiz_alive
+
+    def get_die(self, enemy, die_x=0.4):
+        war_alive, arch_alive, wiz_alive = self.get_alive(enemy)
+        war_die = min(round(self.warrior - war_alive), round(self.warrior * die_x))
+        arch_die = min(round(self.archer - arch_alive), round(self.archer * die_x))
+        wiz_die = min(round(self.wizard - wiz_alive), round(self.wizard * die_x))
+        return war_die, arch_die, wiz_die
+
+    def get_reward(self, enemy):
+        war_die, arch_die, wiz_die = self.get_die(enemy)
+        iron_war = war_die * WARRIOR_IRON
+        iron_arch = arch_die * ARCHER_IRON
+        iron_wiz = wiz_die * WIZARD_IRON
+        wood_arch = arch_die * ARCHER_WOOD
+        wood_wiz = wiz_die * WIZARD_WOOD
+        diamond = wiz_die * WIZARD_DIAMOND
+        iron = iron_war + iron_arch + iron_wiz
+        wood = wood_arch + wood_wiz
+        stone = int((iron + wood + diamond) / 3)
+        return stone, wood, iron, diamond
 
     def attack(self, player, action_time, chat_info):
         if player.lvl < 10:
@@ -276,95 +346,26 @@ class War(models.Model):
                               'На ' + defender.nickname + ' уже напали!\n' + \
                               'Найдите нового противника!'
                     self.enemy_id = None
-                    War.objects.filter(user_id=self.user_id).update(enemy_id=self.enemy_id)
+                    self.save(update_fields=['enemy_id'])
 
                 else:
+
                     # Сражение
 
-                    # Атакующий
-                    attack_warrior_attack = self.warrior * WARRIOR_ATTACK
-                    attack_warrior_hp = self.warrior * WARRIOR_HP
-                    attack_archer_attack = self.archer * ARCHER_ATTACK
-                    attack_archer_hp = self.archer * ARCHER_HP
-                    attack_wizard_attack = self.wizard * WIZARD_ATTACK
-                    attack_wizard_hp = self.wizard * WIZARD_HP
-                    attack_attack = attack_warrior_attack + attack_archer_attack + attack_wizard_attack
-                    attack_hp = attack_warrior_hp + attack_archer_hp + attack_wizard_hp
+                    # Атакующий - a
+                    a_attack = self.sum_attack(defender)
+                    a_war_die, a_arch_die, a_wiz_die = self.get_die(defender)
+                    a_sum_die = a_war_die + a_arch_die + a_wiz_die
 
-                    # Новый расчёт мощи
+                    # Защитник - d
+                    d_attack = defender.war.sum_attack(player)
 
-                    self.update_power(player.build)
-                    attack_power = self.power
-                    # TOWER BUFF
-                    '''
-                    attack_tower_x = player.build.tower_lvl * TOWER_BUFF
-                    attack_attack = attack_attack * (1 + attack_tower_x)
-                    
-                    attack_wall_x = player.build.wall_lvl * WALL_BUFF
-                    attack_wall_power = attack_hp * attack_wall_x
-                    attack_power = attack_attack + attack_hp + attack_wall_power
-                    '''
-                    # Защитник
+                    print(a_attack)
+                    print(d_attack)
 
-                    # WALL BUFF
+                    if a_attack >= d_attack:
 
-                    defender_wall_x = 1 + (WALL_BUFF * defender.build.wall_lvl)
-                    def_warrior_hp = WARRIOR_HP * defender_wall_x
-                    def_archer_hp = ARCHER_HP * defender_wall_x
-                    def_wizard_hp = WIZARD_HP * defender_wall_x
-
-                    defender_warrior_attack = defender.war.warrior * WARRIOR_ATTACK
-                    defender_warrior_hp = defender.war.warrior * def_warrior_hp
-                    defender_archer_attack = defender.war.archer * ARCHER_ATTACK
-                    defender_archer_hp = defender.war.archer * def_archer_hp
-                    defender_wizard_attack = defender.war.wizard * WIZARD_ATTACK
-                    defender_wizard_hp = defender.war.wizard * def_wizard_hp
-                    defender_attack = defender_warrior_attack + defender_archer_attack + defender_wizard_attack
-                    defender_hp = defender_warrior_hp + defender_archer_hp + defender_wizard_hp
-
-                    # Новый расчёт мощи
-
-                    defender.war.update_power(defender.build)
-                    defender_power = defender.war.power
-                    '''
-                    defender_tower_x = player.build.tower_lvl * TOWER_BUFF
-                    defender_tower_power = defender_attack * defender_tower_x
-                    defender_power = defender_attack + defender_hp + defender_tower_power
-                    '''
-                    # Остатки армий
-
-                    attack_after_hp = attack_hp - defender_attack
-                    defender_after_hp = defender_hp - attack_attack
-
-                    attack_after_warrior = 0
-                    attack_after_archer = 0
-                    attack_after_wizard = 0
-                    if attack_hp > 0:
-                        attack_after_warrior = ((attack_warrior_hp / attack_hp) * attack_after_hp) // WARRIOR_HP
-                        attack_after_archer = ((attack_archer_hp / attack_hp) * attack_after_hp) // ARCHER_HP
-                        attack_after_wizard = ((attack_wizard_hp / attack_hp) * attack_after_hp) // WIZARD_HP
-                        attack_after_warrior = round(max(self.warrior*0.90, attack_after_warrior))
-                        attack_after_archer = round(max(self.archer*0.90, attack_after_archer))
-                        attack_after_wizard = round(max(self.wizard*0.90, attack_after_wizard))
-                    attack_lost_warrior = round(self.warrior - attack_after_warrior)
-                    attack_lost_archer = round(self.archer - attack_after_archer)
-                    attack_lost_wizard = round(self.wizard - attack_after_wizard)
-
-                    defender_after_warrior = 0
-                    defender_after_archer = 0
-                    defender_after_wizard = 0
-                    if defender_hp > 0:
-                        defender_after_warrior = ((defender_warrior_hp / defender_hp) * defender_after_hp) // def_warrior_hp
-                        defender_after_archer = ((defender_archer_hp / defender_hp) * defender_after_hp) // def_archer_hp
-                        defender_after_wizard = ((defender_wizard_hp / defender_hp) * defender_after_hp) // def_wizard_hp
-                        defender_after_warrior = round(max(defender.war.warrior * 0.90, defender_after_warrior))
-                        defender_after_archer = round(max(defender.war.archer * 0.90, defender_after_archer))
-                        defender_after_wizard = round(max(defender.war.wizard * 0.90, defender_after_wizard))
-                    defender_lost_warrior = round(defender.war.warrior - defender_after_warrior)
-                    defender_lost_archer = round(defender.war.archer - defender_after_archer)
-                    defender_lost_wizard = round(defender.war.wizard - defender_after_wizard)
-
-                    if attack_power >= defender_power:
+                        self.success_attack += 1
 
                         # Обновляем склады
 
@@ -374,61 +375,71 @@ class War(models.Model):
                         # Победа нападавшего
 
                         # Награда
-                        # TODO После резлиза следить за наградой, проверить
-                        cost = round(defender.build.stock.max * 4 * 0.1 / 11)
-                        reward = round(defender.build.stock.max * 4 * 0.3 / 11)
+                        stone, wood, iron, diamond = self.get_reward(defender)
                         reward_skull = 1
                         reward_exp = 5
                         player = exp(player, chat_info, reward_exp)
-                        print('Забрали - ' + str(cost))
-                        print('Награда - ' + str(reward))
 
                         # Проигравший
+                        cost_stone = int(defender.build.stock.stone / 10)
+                        cost_wood = int(defender.build.stock.wood / 10)
+                        cost_iron = int(defender.build.stock.stone / 10)
+                        cost_diamond = int(defender.build.stock.stone / 10)
+                        defender.build.stock.stone -= cost_stone
+                        defender.build.stock.wood -= cost_wood
+                        defender.build.stock.iron -= cost_iron
+                        defender.build.stock.diamond -= cost_diamond
 
-                        defender.build.stock.stone -= min(cost * 4, defender.build.stock.stone)
-                        defender.build.stock.wood -= min(cost * 4, defender.build.stock.wood)
-                        defender.build.stock.iron -= min(cost * 2, defender.build.stock.iron)
-                        defender.build.stock.diamond -= min(cost, defender.build.stock.diamond)
-
-                        defender.war.shield = 8
+                        defender.war.shield = action_time + (8 * 3600)
 
                         # Выдаём победителю
 
-                        player.build.stock.stone += min(reward * 4, (player.build.stock.max - player.build.stock.stone))
-                        player.build.stock.wood += min(reward * 4, (player.build.stock.max - player.build.stock.wood))
-                        player.build.stock.iron += min(reward * 2, (player.build.stock.max - player.build.stock.iron))
-                        player.build.stock.diamond += min(reward, (player.build.stock.max - player.build.stock.diamond))
+                        player.build.stock.stone += min(stone, (player.build.stock.max - player.build.stock.stone))
+                        player.build.stock.wood += min(wood * 4, (player.build.stock.max - player.build.stock.wood))
+                        player.build.stock.iron += min(iron * 2, (player.build.stock.max - player.build.stock.iron))
+                        player.build.stock.diamond += min(diamond, (player.build.stock.max - player.build.stock.diamond))
                         player.build.stock.skull += reward_skull
+
+                        d_war_die, d_arch_die, d_wiz_die = defender.war.get_die(player, 0.2)
+                        d_sum_die = d_war_die + d_arch_die + d_wiz_die
 
                         message = 'Вы напали на ' + defender.nickname + '\n' + \
                                   '⚔ Победа ⚔\n' + \
-                                  '[Потери]\n' + \
-                                  'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
-                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
-                                  'Ваша Мощь: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
-                                  'Мощь Противника: ' + str(int(defender_power // 1)) + ' ⚔\n' + \
+                                  '[Выши потери]\n' + \
+                                  'Воины: ' + str(a_war_die) + ' / ' + str(self.warrior) + ' 🗡\n' + \
+                                  'Лучники: ' + str(a_arch_die) + ' / ' + str(self.archer) + ' 🏹\n' + \
+                                  'Маги: ' + str(a_wiz_die) + ' / ' + str(self.wizard) + ' 🔮\n' + \
+                                  'Всего: ' + str(a_sum_die) + ' / ' + str(self.sum_army()) + ' ⚔\n' + \
+                                  '[Потери противника]\n' + \
+                                  'Воины: ' + str(d_war_die) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
+                                  'Лучники: ' + str(d_arch_die) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
+                                  'Маги: ' + str(d_wiz_die) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
+                                  'Всего: ' + str(d_sum_die) + ' / ' + str(defender.war.sum_army()) + ' ⚔\n' + \
                                   '[Награда]\n' + \
-                                  'Дерево: ' + str(reward * 4) + ' 🌲\n' + \
-                                  'Камень: ' + str(reward * 4) + ' ◾\n' + \
-                                  'Железо: ' + str(reward * 2) + ' ◽\n' + \
-                                  'Алмазы: ' + str(reward) + ' 💎\n' + \
+                                  'Дерево: ' + str(wood) + ' 🌲\n' + \
+                                  'Камень: ' + str(stone) + ' ◾\n' + \
+                                  'Железо: ' + str(iron) + ' ◽\n' + \
+                                  'Алмазы: ' + str(diamond) + ' 💎\n' + \
                                   'Черепа: ' + str(reward_skull) + ' 💀\n' + \
                                   'Опыт: ' + str(reward_exp) + ' 📚'
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
                                       '⚔ Вы проиграли ⚔\n' + \
-                                      '[Потери]\n' + \
-                                      'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
-                                      'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
-                                      'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
-                                      'Ваша Мощь: ' + str(int(defender_power // 1)) + ' ⚔\n' + \
-                                      'Мощь Противника: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
+                                      '[Выши потери]\n' + \
+                                      'Воины: ' + str(d_war_die) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
+                                      'Лучники: ' + str(d_arch_die) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
+                                      'Маги: ' + str(d_wiz_die) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
+                                      'Всего: ' + str(d_sum_die) + ' / ' + str(defender.war.sum_army()) + ' ⚔\n' + \
+                                      '[Потери противника]\n' + \
+                                      'Воины: ' + str(a_war_die) + ' / ' + str(self.warrior) + ' 🗡\n' + \
+                                      'Лучники: ' + str(a_arch_die) + ' / ' + str(self.archer) + ' 🏹\n' + \
+                                      'Маги: ' + str(a_wiz_die) + ' / ' + str(self.wizard) + ' 🔮\n' + \
+                                      'Всего: ' + str(a_sum_die) + ' / ' + str(self.sum_army()) + ' ⚔\n' + \
                                       '[Ресурсов потеряно]\n' + \
-                                      'Дерево: ' + str(cost * 4) + ' 🌲\n' + \
-                                      'Камень: ' + str(cost * 4) + ' ◾\n' + \
-                                      'Железо: ' + str(cost * 2) + ' ◽\n' + \
-                                      'Алмазы: ' + str(cost) + ' 💎\n' + \
+                                      'Дерево: ' + str(cost_wood) + ' 🌲\n' + \
+                                      'Камень: ' + str(cost_stone) + ' ◾\n' + \
+                                      'Железо: ' + str(cost_iron) + ' ◽\n' + \
+                                      'Алмазы: ' + str(cost_diamond) + ' 💎\n' + \
                                       '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
                                       'Если вы нападёте, щит пропадёт!'
 
@@ -436,37 +447,43 @@ class War(models.Model):
 
                         # Поражение нападавшего
 
-                        defender.war.shield = 8
+                        defender.war.success_defend += 1
+                        defender.war.shield = action_time + (2 * 3600)
+
+                        d_war_die, d_arch_die, d_wiz_die = defender.war.get_die(player)
+                        d_sum_die = d_war_die + d_arch_die + d_wiz_die
 
                         message = 'Вы напали на ' + defender.nickname + '\n' + \
                                   '⚔ Поражение ⚔\n' + \
                                   '[Ваши потери]\n' + \
-                                  'Воины: ' + str(attack_lost_warrior) + ' / ' + str(self.warrior) + ' 🗡\n' + \
-                                  'Лучники: ' + str(attack_lost_archer) + ' / ' + str(self.archer) + ' 🏹\n' + \
-                                  'Маги: ' + str(attack_lost_wizard) + ' / ' + str(self.wizard) + ' 🔮\n' + \
-                                  'Ваша Мощь: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
-                                  'Мощь Противника: ' + str(int(defender_power // 1)) + ' ⚔\n'
+                                  'Воины: ' + str(a_war_die) + ' / ' + str(self.warrior) + ' 🗡\n' + \
+                                  'Лучники: ' + str(a_arch_die) + ' / ' + str(self.archer) + ' 🏹\n' + \
+                                  'Маги: ' + str(a_wiz_die) + ' / ' + str(self.wizard) + ' 🔮\n' + \
+                                  'Всего: ' + str(a_sum_die) + ' / ' + str(self.sum_army()) + ' ⚔\n'
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
-                            '⚔ Вы победили ⚔\n' + \
-                            '[Ваши потери]\n' + \
-                            'Воины: ' + str(defender_lost_warrior) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
-                            'Лучники: ' + str(defender_lost_archer) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
-                            'Маги: ' + str(defender_lost_wizard) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
-                            'Ваша Мощь: ' + str(int(defender_power // 1)) + ' ⚔\n' + \
-                            'Мощь Противника: ' + str(int(attack_power // 1)) + ' ⚔\n' + \
-                            '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
-                            'Если вы нападёте, щит пропадёт!'
+                                      '⚔ Вы победили ⚔\n' + \
+                                      '[Ваши потери]\n' + \
+                                      'Воины: ' + str(d_war_die) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
+                                      'Лучники: ' + str(d_arch_die) + ' / ' + str(defender.war.archer) + ' 🏹\n' + \
+                                      'Маги: ' + str(d_wiz_die) + ' / ' + str(defender.war.wizard) + ' 🔮\n' + \
+                                      'Всего: ' + str(d_sum_die) + ' / ' + str(defender.war.sum_army()) + ' ⚔\n' + \
+                                      '[Потери Противника]\n' + \
+                                      'Воины: ' + str(a_war_die) + ' / ' + str(self.warrior) + ' 🗡\n' + \
+                                      'Лучники: ' + str(a_arch_die) + ' / ' + str(self.archer) + ' 🏹\n' + \
+                                      'Маги: ' + str(a_wiz_die) + ' / ' + str(self.wizard) + ' 🔮\n' + \
+                                      'Всего: ' + str(a_sum_die) + ' / ' + str(self.sum_army()) + ' ⚔\n' + \
+                                      '🛡 Вам выдан щит от нападений на 2 часа 🛡\n' + \
+                                      'Если вы нападёте, щит пропадёт!'
 
                     # Сохранение
 
-                    self.warrior = attack_after_warrior // 1
-                    self.archer = attack_after_archer // 1
-                    self.wizard = attack_after_wizard // 1
+                    self.warrior -= a_war_die
+                    self.archer -= a_arch_die
+                    self.wizard -= a_wiz_die
                     self.war_last_time = action_time
-                    self.shield = 0
+                    self.shield = action_time
                     self.enemy_id = None
-                    self.update_power(player.build)
                     Stock.objects.filter(user_id=self.user_id).update(stone=player.build.stock.stone,
                                                                       wood=player.build.stock.wood,
                                                                       iron=player.build.stock.iron,
@@ -478,46 +495,26 @@ class War(models.Model):
                                                                     war_last_time=self.war_last_time,
                                                                     shield=self.shield,
                                                                     enemy_id=self.enemy_id,
-                                                                    power=self.power)
-                    Player.objects.filter(user_id=self.user_id).update(energy=player.energy,
-                                                                       exp=player.exp,
+                                                                    success_attack=self.success_attack)
+                    Player.objects.filter(user_id=self.user_id).update(exp=player.exp,
                                                                        lvl=player.lvl)
 
-                    defender.war.warrior = defender_after_warrior // 1
-                    defender.war.archer = defender_after_archer // 1
-                    defender.war.wizard = defender_after_wizard // 1
+                    defender.war.warrior -= d_war_die
+                    defender.war.archer -= d_arch_die
+                    defender.war.wizard -= d_wiz_die
                     defender.war.defend_last_time = action_time
-                    defender.war.update_power(defender.build)
                     Stock.objects.filter(user_id=defender.user_id).update(stone=defender.build.stock.stone,
                                                                           wood=defender.build.stock.wood,
                                                                           iron=defender.build.stock.iron,
-                                                                          diamond=defender.build.stock.diamond,
-                                                                          skull=defender.build.stock.skull)
+                                                                          diamond=defender.build.stock.diamond)
                     War.objects.filter(user_id=defender.user_id).update(warrior=defender.war.warrior,
                                                                         archer=defender.war.archer,
                                                                         wizard=defender.war.wizard,
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
-                                                                        enemy_id=defender.war.enemy_id,
-                                                                        power=defender.war.power)
-                    try:
-                        send_info = {
-                            'user_id': defender.user_id,
-                            'chat_id': defender.user_id,
-                        }
-                        send(send_info, message_def)
-                    except:
-                        if defender.chat_id != defender.user_id:
-                            send_info = {
-                                'user_id': defender.user_id,
-                                'peer_id': defender.chat_id,
-                                'chat_id': defender.chat_id - 2000000000,
-                                'nick': defender.nickname,
-                            }
-                            try:
-                                send(send_info, message_def)
-                            except:
-                                pass
+                                                                        success_defend=defender.war.success_defend)
+
+                    defender.war.send_defender(message_def)
             else:
                 message = 'Найдите противника для нападения!'
         else:

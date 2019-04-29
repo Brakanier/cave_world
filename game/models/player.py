@@ -40,10 +40,10 @@ class Player(models.Model):
         default=0,
     )
     energy = models.IntegerField(
-        default=20,
+        default=30,
     )
     max_energy = models.IntegerField(
-        default=20,
+        default=30,
     )
     last_energy_action = models.BigIntegerField(
         default=0,
@@ -560,5 +560,6 @@ class Player(models.Model):
                       'Найдите противника и разгромите его!\n' + \
                       'Команды:\n' + \
                       'Поиск - Поиск противника для нападения\n' + \
+                      'Разведка - информация о противнике (10' + icon('diamond') + ')\n' + \
                       'Атака - Напасть на противника\n'
         return message
