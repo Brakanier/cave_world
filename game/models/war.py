@@ -92,7 +92,6 @@ class War(models.Model):
             if build.stock.iron >= need_iron:
                 build.stock.iron = build.stock.iron - need_iron
                 self.warrior = self.warrior + amount
-                self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron)
                 War.objects.filter(user_id=self.user_id).update(warrior=self.warrior)
                 message = 'Вы наняли ' + str(amount) + icon('sword')
@@ -114,7 +113,6 @@ class War(models.Model):
                 build.stock.iron = build.stock.iron - need_iron
                 build.stock.wood = build.stock.wood - need_wood
                 self.archer = self.archer + amount
-                self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
                                                                   wood=build.stock.wood)
                 War.objects.filter(user_id=self.user_id).update(archer=self.archer)
@@ -141,7 +139,6 @@ class War(models.Model):
                 build.stock.wood = build.stock.wood - need_wood
                 build.stock.diamond = build.stock.diamond - need_diamond
                 self.wizard = self.wizard + amount
-                self.update_power(build)
                 Stock.objects.filter(user_id=self.user_id).update(iron=build.stock.iron,
                                                                   wood=build.stock.wood,
                                                                   diamond=build.stock.diamond)
