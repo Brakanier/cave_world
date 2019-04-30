@@ -293,12 +293,12 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Build_Stock'
         stat['label'] = 'Строить_Склад'
         answer = player.build.build_stock(action_time)
-    elif command == 'строить кузница':
+    elif re.match(r'строить кузниц', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Forge'
         stat['label'] = 'Строить_Кузница'
         answer = player.build.build_forge(action_time)
-    elif command == 'строить таверна':
+    elif re.match(r'строить таверн', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Tavern'
         stat['label'] = 'Строить_Таверна'
@@ -308,12 +308,12 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Build_Citadel'
         stat['label'] = 'Строить_Цитадель'
         answer = player.build.build_citadel(action_time)
-    elif command == 'строить башня':
+    elif re.match(r'строить башн', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Tower'
         stat['label'] = 'Строить_Башня'
         answer = player.build.build_tower(action_time)
-    elif command == 'строить стена':
+    elif re.match(r'строить стен', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Wall'
         stat['label'] = 'Строить_Стена'
