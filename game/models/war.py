@@ -205,7 +205,7 @@ class War(models.Model):
                           'Армия: ' + str(def_army_min) + ' ~ ' + str(def_army_max) + icon('war')
                 rand_scouting = random.randint(0, 100)
                 if rand_scouting >= 0:
-                    def_message = 'Вас разведовал: ' + self.player.nickname
+                    def_message = 'Вас разведывал: ' + self.player.nickname
                     defender.war.send_defender(def_message)
             else:
                 message = "Нужно 10 " + icon('diamond')
