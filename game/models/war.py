@@ -494,6 +494,7 @@ class War(models.Model):
                                                                     enemy_id=self.enemy_id,
                                                                     success_attack=self.success_attack)
                     Player.objects.filter(user_id=self.user_id).update(exp=player.exp,
+                                                                       energy=player.energy,
                                                                        lvl=player.lvl)
 
                     defender.war.warrior -= d_war_die
