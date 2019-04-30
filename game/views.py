@@ -154,13 +154,11 @@ def enter(chat_info, data):
             if 'payload' in data['object']:
                 print('payload')
                 payload = json.loads(data['object']['payload'])
-                log(player, payload['command'], action_time)
                 action(payload['command'], player, action_time, chat_info)
             else:
                 text = data['object']['text']
                 if text:
                     print('текст')
-                    log(player, text, action_time)
                     action(text.lower(), player, action_time, chat_info)
 
 
