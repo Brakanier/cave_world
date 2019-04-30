@@ -436,7 +436,7 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'War'
         stat['label'] = 'Война'
         answer = player.war_menu()
-    elif command == 'найм':
+    elif command == ('найм' or 'нанять'):
         stat['category'] = 'Place'
         stat['action'] = 'Buy'
         stat['label'] = 'Найм'
