@@ -380,8 +380,8 @@ class War(models.Model):
                         # Проигравший
                         cost_stone = int(defender.build.stock.stone / 10)
                         cost_wood = int(defender.build.stock.wood / 10)
-                        cost_iron = int(defender.build.stock.stone / 10)
-                        cost_diamond = int(defender.build.stock.stone / 10)
+                        cost_iron = int(defender.build.stock.iron / 10)
+                        cost_diamond = int(defender.build.stock.diamond / 10)
                         defender.build.stock.stone -= cost_stone
                         defender.build.stock.wood -= cost_wood
                         defender.build.stock.iron -= cost_iron
