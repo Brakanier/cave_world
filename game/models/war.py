@@ -321,9 +321,9 @@ class War(models.Model):
         iron_wiz = wiz_die * WIZARD_IRON
         wood_arch = arch_die * ARCHER_WOOD
         wood_wiz = wiz_die * WIZARD_WOOD
-        diamond = wiz_die * WIZARD_DIAMOND
-        iron = iron_war + iron_arch + iron_wiz
-        wood = wood_arch + wood_wiz
+        diamond = int(wiz_die * WIZARD_DIAMOND * 0.8)
+        iron = int((iron_war + iron_arch + iron_wiz) * 0.8)
+        wood = int((wood_arch + wood_wiz) * 0.8)
         stone = int((iron + wood + diamond) / 3)
         return stone, wood, iron, diamond
 
