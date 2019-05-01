@@ -306,16 +306,6 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Build_Citadel'
         stat['label'] = 'Строить_Цитадель'
         answer = player.build.build_citadel(action_time)
-    elif re.match(r'строить башн', command):
-        stat['category'] = 'Build'
-        stat['action'] = 'Build_Tower'
-        stat['label'] = 'Строить_Башня'
-        answer = player.build.build_tower(action_time)
-    elif re.match(r'строить стен', command):
-        stat['category'] = 'Build'
-        stat['action'] = 'Build_Wall'
-        stat['label'] = 'Строить_Стена'
-        answer = player.build.build_wall(action_time)
     elif re.match(r'строить казарм', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Barracks'
@@ -331,6 +321,16 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Build_Magic'
         stat['label'] = 'Строить_Магия'
         answer = player.build.build_magic(action_time)
+    elif re.match(r'строить башн', command):
+        stat['category'] = 'Build'
+        stat['action'] = 'Build_Tower'
+        stat['label'] = 'Строить_Башня'
+        answer = player.build.build_tower(action_time)
+    elif re.match(r'строить стен', command):
+        stat['category'] = 'Build'
+        stat['action'] = 'Build_Wall'
+        stat['label'] = 'Строить_Стена'
+        answer = player.build.build_wall(action_time)
     elif re.match(r'строить лесопилк', command):
         stat['category'] = 'Build'
         stat['action'] = 'Build_Woodmine'
