@@ -44,7 +44,7 @@ class Product(models.Model):
             }
             send(send_info, message)
         except:
-            if self.player.chat_id != self.seller.user_id:
+            if self.seller.chat_id != self.seller.user_id:
                 send_info = {
                     'user_id': self.seller.user_id,
                     'peer_id': self.seller.chat_id,
