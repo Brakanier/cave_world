@@ -9,6 +9,7 @@ from .models.items import Item
 from .models.trophy import Trophy
 from .models.chest import Chest, ChestItem, ChestTrophy
 from .models.inventory import Inventory, InventoryChest, InventoryTrophy
+from .models.market import Product
 
 
 # Register your models here.
@@ -77,3 +78,8 @@ class ItemAdmin(admin.ModelAdmin):
 @admin.register(Trophy)
 class TrophyAdmin(admin.ModelAdmin):
     list_display = ('title', 'value')
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('seller', 'type', 'unit_price')

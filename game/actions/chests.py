@@ -21,15 +21,17 @@ def get_chest_object(command):
 
 
 def get_chest(slug):
-    return Chest.objects.get(slug=slug)
+    try:
+        chest = Chest.objects.get(slug=slug)
+    except Chest.DoesNotExist:
+        chest = False
+    return chest
 
 
 def add_chest(player, chest, count=1):
     try:
         inventory_chest = player.inventory.chests.get(chest=chest)
-        print(inventory_chest)
         player.inventory.chests.filter(chest=chest).update(count=inventory_chest.count + count)
-        print('Сундук добавлен: ' + str(inventory_chest) + ' +1')
     except InventoryChest.DoesNotExist:
         player.inventory.chests.create(chest=chest, inventory=player.inventory, count=count)
 

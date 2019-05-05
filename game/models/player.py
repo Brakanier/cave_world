@@ -81,6 +81,9 @@ class Player(models.Model):
         verbose_name = 'Игрок'
         verbose_name_plural = 'Игроки'
 
+    def __str__(self):
+        return self.nickname
+
     def create(self, user_id, build, war):
         self.build = build
         self.war = war
@@ -111,9 +114,9 @@ class Player(models.Model):
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.build.stock.stone)
                     message = get_chest_mine(self, message)
                 else:
-                    message = 'Не хватает места!\n'
+                    message = 'Не хватает места! (Постройте склад)\n'
             else:
-                message = 'Склад заполнен!'
+                message = 'Склад заполнен! (Постройте склад)'
             Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
                                                                last_energy_action=self.last_energy_action,
                                                                exp=self.exp,
@@ -143,9 +146,9 @@ class Player(models.Model):
                               'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
                     Stock.objects.filter(user_id=self.user_id).update(wood=self.build.stock.wood)
                 else:
-                    message = 'Не хватает места!\n'
+                    message = 'Не хватает места! (Постройте склад)\n'
             else:
-                message = 'Склад заполнен!'
+                message = 'Склад заполнен! (Постройте склад)'
             Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
                                                                last_energy_action=self.last_energy_action,
                                                                exp=self.exp,
@@ -178,9 +181,9 @@ class Player(models.Model):
                         Stock.objects.filter(user_id=self.user_id).update(iron=self.build.stock.iron)
                         message = get_chest_mine(self, message)
                     else:
-                        message = 'Не хватает места!\n'
+                        message = 'Не хватает места! (Постройте склад)\n'
                 else:
-                    message = 'Склад заполнен!'
+                    message = 'Склад заполнен! (Постройте склад)'
                 Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
                                                                    last_energy_action=self.last_energy_action,
                                                                    exp=self.exp,
@@ -216,9 +219,9 @@ class Player(models.Model):
                         Stock.objects.filter(user_id=self.user_id).update(diamond=self.build.stock.diamond)
                         message = get_chest_mine(self, message)
                     else:
-                        message = 'Не хватает места!\n'
+                        message = 'Не хватает места! (Постройте склад)\n'
                 else:
-                    message = 'Склад заполнен!'
+                    message = 'Склад заполнен! (Постройте склад)'
                 Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
                                                                    last_energy_action=self.last_energy_action,
                                                                    exp=self.exp,
@@ -336,6 +339,7 @@ class Player(models.Model):
                                                            last_energy_action=self.last_energy_action,
                                                            place=self.place)
         message = 'Ник: ' + self.nickname + '\n' + \
+                  'ID: ' + str(self.user_id) + '\n' + \
                   'Имя: ' + self.first_name + '\n' + \
                   'Фамилия: ' + self.last_name + '\n' + \
                   'Уровень: ' + str(self.lvl) + icon('lvl') + '\n' + \
@@ -368,7 +372,8 @@ class Player(models.Model):
                   'По уровню 👑 - топ лвл\n' + \
                   'По успешным нападениям ⚔ - топ атака\n' + \
                   'По успешным оборонам 🛡 - топ защита\n' + \
-                  'По черепам 💀 - топ череп\n'
+                  'По черепам 💀 - топ череп\n' + \
+                  'По золоту ✨ - топ золото\n'
 
         return message
 
@@ -412,6 +417,16 @@ class Player(models.Model):
             main_message = main_message + message
         return main_message
 
+    def top_gold(self):
+        top = Player.objects.order_by('-build__stock__gold').values_list('nickname', 'build__stock__gold')[0:10]
+        count = 1
+        main_message = 'Топ Богачей ✨\n'
+        for user in top:
+            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' ✨\n'
+            count += 1
+            main_message = main_message + message
+        return main_message
+
     # Строительство
 
     def cave_build(self):
@@ -430,6 +445,15 @@ class Player(models.Model):
                           str(CITADEL_STONE) + icon('stone') + ' + ' + \
                           str(CITADEL_IRON) + icon('iron') + ' + ' + \
                           str(CITADEL_DIAMOND) + icon('diamond') + '\n'
+        market_stone = self.build.market_lvl * MARKET_STONE
+        market_wood = self.build.market_lvl * MARKET_WOOD
+        market_iron = self.build.market_lvl * MARKET_IRON
+        market_diamond = self.build.market_lvl * MARKET_DIAMOND
+        message_market = 'Торговый пост: ' + \
+                         str(market_stone) + icon('stone') + ' + ' + \
+                         str(market_wood) + icon('wood') + ' + ' + \
+                         str(market_iron) + icon('iron') + ' + ' + \
+                         str(market_diamond) + icon('diamond')
         message = 'Стоимость:' + '\n'
         message = message + message_stock
         if not self.build.forge:
@@ -438,6 +462,8 @@ class Player(models.Model):
             message = message + message_tavern
         if not self.build.citadel:
             message = message + message_citadel
+        if self.build.market_lvl < 10:
+            message = message + message_market
         return message
 
     def land_build(self):
@@ -586,3 +612,92 @@ class Player(models.Model):
                       'Разведка - информация о противнике (10' + icon('diamond') + ')\n' + \
                       'Атака - Напасть на противника\n'
         return message
+
+    def send_mess(self, message):
+        try:
+            send_info = {
+                'user_id': self.user_id,
+                'chat_id': self.user_id,
+            }
+            send(send_info, message)
+        except:
+            if self.chat_id != self.user_id:
+                send_info = {
+                    'user_id': self.user_id,
+                    'peer_id': self.chat_id,
+                    'chat_id': self.chat_id - 2000000000,
+                    'nick': self.nickname,
+                }
+                try:
+                    send(send_info, message)
+                except:
+                    pass
+
+    def send_res(self, command, action_time):
+        if self.build.market_lvl == 0:
+            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+        time = action_time - self.build.market_send_time
+        if time >= MARKET_SEND_TIME:
+            part = command.split()
+            res = {
+                'дерево': 'wood',
+                'камень': 'stone',
+                'железо': 'iron',
+                'кристаллы': 'diamond',
+            }
+            if len(part) == 4 and res[part[1]] and part[2].isdigit() and part[3].isdigit():
+                type = res[part[1]]
+                amount = int(part[2])
+                id = int(part[3])
+                if amount > self.build.market_lvl * 50:
+                    return 'Вы пытаетесь отправить слишком много ресурсов!\n' + \
+                           'Торговый пост ' + str(self.build.market_lvl) + ' ур. - ' + \
+                           str(self.build.market_lvl * 50) + ' ресурса макс. за раз.'
+                if self.build.stock.res_check(type, amount):
+                    try:
+                        addr = Player.objects.get(user_id=id)
+                        self.build.stock.res_remove(type, amount)
+                        value = min(addr.build.stock.__getattribute__(type) + amount, addr.build.stock.max)
+                        addr.build.stock.__setattr__(type, value)
+                        self.build.market_send_time = action_time
+                        self.build.save(update_fields=['market_send_time'])
+                        addr.build.stock.save(update_fields=[type])
+                        self.build.stock.save(update_fields=[type])
+
+                        addr_mess = self.nickname + ' прислал вам ' + str(amount) + icon(type)
+                        addr.send_mess(addr_mess)
+                        message = 'Отправлено ' + str(amount) + icon(type) + ' - ' + addr.nickname
+                    except Player.DoesNotExist:
+                        message = 'Получатель не найден!'
+                else:
+                    message = 'Недостаточно ресурса!'
+            else:
+                message = 'Ошибка.\n' + \
+                          'Отправить [ресурс] [кол-во] [ID-игрока]'
+        else:
+            hour = (MARKET_SEND_TIME - time) // 3600
+            minutes = (MARKET_SEND_TIME - time - (hour * 3600)) // 60
+            sec = (MARKET_SEND_TIME - time) - (minutes * 60) - (hour * 3600)
+            message = 'Отправлять ресурсы можно раз в 4 часа.\n' + \
+                      'До следующей отправки: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
+
+        return message
+
+    @staticmethod
+    def give_chests(command):
+        part = command.split()
+        if len(part) == 4 and part[2].isdigit() and part[3].isdigit():
+            slug = part[1]
+            id = int(part[2])
+            amount = int(part[3])
+            try:
+                addr = Player.objects.get(user_id=id)
+                chest = Chest.objects.get(slug=slug)
+                add_chest(addr, chest, amount)
+                return 'Выдано: ' + str(amount) + ' ' + chest.title + ' для ' + addr.nickname
+            except Player.DoesNotExist:
+                return "Игрок не найден!"
+            except Chest.DoesNotExist:
+                return "Сундук не найден!"
+        return "Ошибка"
+

@@ -160,7 +160,7 @@ class War(models.Model):
             return message
         find_time = action_time - self.find_last_time
         if find_time >= FIND_TIME:
-            lvl = max(lvl - 10, 12)
+            lvl = max(lvl - 10, 15)
             defenders = Player.objects.filter(build__citadel=True, lvl__gte=lvl, war__shield__lte=action_time).exclude(
                 user_id=self.user_id).all()
 
@@ -253,7 +253,7 @@ class War(models.Model):
         if count > 0:
             sum_army = self.sum_army()
             average = sum_army / 3
-            diff = min(abs(count - average) / sum_army, 0.3)
+            diff = min(abs(count - average) / sum_army, 0.5)
             modify = 1 - diff
         else:
             modify = 0
@@ -321,9 +321,9 @@ class War(models.Model):
         iron_wiz = wiz_die * WIZARD_IRON
         wood_arch = arch_die * ARCHER_WOOD
         wood_wiz = wiz_die * WIZARD_WOOD
-        diamond = int(wiz_die * WIZARD_DIAMOND * 0.85)
-        iron = int((iron_war + iron_arch + iron_wiz) * 0.85)
-        wood = int((wood_arch + wood_wiz) * 0.85)
+        diamond = int(wiz_die * WIZARD_DIAMOND * 0.9)
+        iron = int((iron_war + iron_arch + iron_wiz) * 0.9)
+        wood = int((wood_arch + wood_wiz) * 0.9)
         stone = int((iron + wood + diamond) / 3)
         return stone, wood, iron, diamond
 
@@ -417,7 +417,7 @@ class War(models.Model):
                                   'Дерево: ' + str(wood) + ' 🌲\n' + \
                                   'Камень: ' + str(stone) + ' ◾\n' + \
                                   'Железо: ' + str(iron) + ' ◽\n' + \
-                                  'Алмазы: ' + str(diamond) + ' 💎\n' + \
+                                  'Кристаллы: ' + str(diamond) + ' 💎\n' + \
                                   'Черепа: ' + str(reward_skull) + ' 💀\n' + \
                                   'Опыт: ' + str(reward_exp) + ' 📚'
 
@@ -437,7 +437,7 @@ class War(models.Model):
                                       'Дерево: ' + str(cost_wood) + ' 🌲\n' + \
                                       'Камень: ' + str(cost_stone) + ' ◾\n' + \
                                       'Железо: ' + str(cost_iron) + ' ◽\n' + \
-                                      'Алмазы: ' + str(cost_diamond) + ' 💎\n' + \
+                                      'Кристаллы: ' + str(cost_diamond) + ' 💎\n' + \
                                       '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
                                       'Если вы нападёте, щит пропадёт!'
 
@@ -446,7 +446,7 @@ class War(models.Model):
                         # Поражение нападавшего
 
                         defender.war.success_defend += 1
-                        defender.war.shield = action_time + (2 * 3600)
+                        defender.war.shield = action_time + (1.5 * 3600)
 
                         d_war_die, d_arch_die, d_wiz_die = defender.war.get_die(player)
                         d_sum_die = d_war_die + d_arch_die + d_wiz_die
@@ -471,7 +471,7 @@ class War(models.Model):
                                       'Лучники: ' + str(a_arch_die) + ' / ' + str(self.archer) + ' 🏹\n' + \
                                       'Маги: ' + str(a_wiz_die) + ' / ' + str(self.wizard) + ' 🔮\n' + \
                                       'Всего: ' + str(a_sum_die) + ' / ' + str(self.sum_army()) + ' ⚔\n' + \
-                                      '🛡 Вам выдан щит от нападений на 2 часа 🛡\n' + \
+                                      '🛡 Вам выдан щит от нападений на 1,5 часа 🛡\n' + \
                                       'Если вы нападёте, щит пропадёт!'
 
                     # Сохранение
@@ -482,6 +482,7 @@ class War(models.Model):
                     self.war_last_time = action_time
                     self.shield = action_time
                     self.enemy_id = None
+
                     Stock.objects.filter(user_id=self.user_id).update(stone=player.build.stock.stone,
                                                                       wood=player.build.stock.wood,
                                                                       iron=player.build.stock.iron,
@@ -497,7 +498,7 @@ class War(models.Model):
                     Player.objects.filter(user_id=self.user_id).update(exp=player.exp,
                                                                        energy=player.energy,
                                                                        lvl=player.lvl)
-
+                    
                     defender.war.warrior -= d_war_die
                     defender.war.archer -= d_arch_die
                     defender.war.wizard -= d_wiz_die
@@ -513,7 +514,7 @@ class War(models.Model):
                                                                         shield=defender.war.shield,
                                                                         success_defend=defender.war.success_defend)
 
-                    defender.war.send_defender(message_def)
+                    self.send_defender(message_def)
             else:
                 message = 'Найдите противника для нападения!'
         else:

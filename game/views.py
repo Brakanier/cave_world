@@ -11,6 +11,7 @@ from .models.build import Build, Stock
 from .models.player import Player
 from .models.war import War
 from .models.inventory import Inventory
+from .models.market import Product
 from .actions.functions import *
 from .actions.chests import *
 from system.models import Registration, Chat, Report
@@ -148,28 +149,16 @@ def enter(chat_info, data):
                 message = "Ник слишком длинный!"
                 send(chat_info, message)
         else:
-            print('ветка команд')
             player = Player.objects.get(user_id=chat_info['user_id'])
             action_time = data['object']['date']
             if 'payload' in data['object']:
-                print('payload')
                 payload = json.loads(data['object']['payload'])
-                action(payload['command'], player, action_time, chat_info)
+                if payload['command']:
+                    action(payload['command'], player, action_time, chat_info)
             else:
                 text = data['object']['text']
                 if text:
-                    print('текст')
                     action(text.lower(), player, action_time, chat_info)
-
-
-def log(player, command, action_time):
-    time = datetime.fromtimestamp(int(action_time + (3600 * 3)))
-    info = time.strftime('%Y-%m-%d %H:%M:%S') + ' | ' + \
-           str(player.user_id) + ' | ' + \
-           command + ' | ' + \
-           player.nickname + ' | ' + \
-           player.last_name + ' ' + player.first_name
-    print(info)
 
 
 def action(command, player, action_time, chat_info):
@@ -228,6 +217,8 @@ def action(command, player, action_time, chat_info):
         answer = player.top_attack()
     elif re.match(r'топ защита', command):
         answer = player.top_defend()
+    elif re.match(r'топ золото', command):
+        answer = player.top_gold()
     elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
         stat['category'] = 'Menu'
@@ -248,14 +239,15 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Builds'
         stat['label'] = 'Военные_Здания'
         answer = player.build.build_info()
-    elif command == 'строить':
+    elif command == 'строить' or command == 'построить':
         stat['category'] = 'Text'
         stat['action'] = 'Build'
         stat['label'] = 'Строить'
         answer = 'Здания Подземелья:\n'
         answer += player.cave_build()
-        answer += '\nЗдания Земель:\n'
-        answer += player.land_build()
+        if player.build.citadel:
+            answer += '\nЗдания Земель:\n'
+            answer += player.land_build()
 
     # Таверна
 
@@ -286,7 +278,7 @@ def action(command, player, action_time, chat_info):
 
     # Строительство
 
-    elif command == 'строить склад':
+    elif command == 'строить склад' or command == 'улучшить склад':
         stat['category'] = 'Build'
         stat['action'] = 'Build_Stock'
         stat['label'] = 'Строить_Склад'
@@ -316,7 +308,7 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Build_Archery'
         stat['label'] = 'Строить_Стрельбище'
         answer = player.build.build_archery(action_time)
-    elif re.match(r'строить башня маг', command):
+    elif command == 'строить башня магов' or command == 'строить башню магов':
         stat['category'] = 'Build'
         stat['action'] = 'Build_Magic'
         stat['label'] = 'Строить_Магия'
@@ -508,13 +500,74 @@ def action(command, player, action_time, chat_info):
         stat['label'] = 'Ответ_Репорт'
         answer = Report.answer_report(Report, command)
 
-    '''
-    elif re.match(r'дать', command):
-        chest = get_chest_name(command)
-        if chest:
-            add_chest(player, chest)
+    # Рынок
+
+    # Отправка ресурсов
+    elif command == ("строить рынок" or "строить торговый пост" or "улучшить рынок" or "улучшить торговый пост"):
+        answer = player.build.build_market(action_time)
+
+    elif re.match(r'отправить', command):
+        answer = player.send_res(command, action_time)
+
+    # Торговля
+
+    elif command == ("рынок" or "продать" or "купить"):
+        answer = Product.info(player)
+    elif command == "рынок дерево":
+        answer = Product.get_products(player, 'wood')
+    elif command == "рынок камень":
+        answer = Product.get_products(player, 'stone')
+    elif command == "рынок железо":
+        answer = Product.get_products(player, 'iron')
+    elif command == "рынок кристаллы":
+        answer = Product.get_products(player, 'diamond')
+    elif command == "мои лоты":
+        answer = Product.my_lots(player)
+    elif re.match(r'снять', command):
+        id = Product.get_param(command)
+        if id:
+            answer = Product.del_lot(player, id)
         else:
-            answer = 'Такого сундука не существует!'
+            answer = "Неверный ID лота!"
+    elif re.match(r'продать дерево', command):
+        price = Product.get_param(command)
+        if price:
+            answer = Product.sell(player, 'wood', price)
+        else:
+            answer = "Укажите цену лота!"
+    elif re.match(r'продать камень', command):
+        price = Product.get_param(command)
+        if price:
+            answer = Product.sell(player, 'stone', price)
+        else:
+            answer = "Укажите цену лота!"
+    elif re.match(r'продать железо', command):
+        price = Product.get_param(command)
+        if price:
+            answer = Product.sell(player, 'iron', price)
+        else:
+            answer = "Укажите цену лота!"
+    elif re.match(r'продать кристаллы', command):
+        price = Product.get_param(command)
+        if price:
+            answer = Product.sell(player, 'diamond', price)
+        else:
+            answer = "Укажите цену лота!"
+    elif re.match(r'купить', command):
+        id = Product.get_param(command)
+        if id:
+            answer = Product.buy(player, id)
+        else:
+            answer = "Неверный ID лота!"
+
+    # Админ
+
+    elif re.match(r'дать', command) and player.user_id == 55811116:
+        answer = Player.give_chests(command)
+    '''
+    elif command == "тест":
+        wood = player.build.stock.__getattribute__('wood')
+        print(wood)
     '''
 
     send(chat_info, answer, get_keyboard(player, action_time))

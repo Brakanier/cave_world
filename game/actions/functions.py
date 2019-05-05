@@ -175,6 +175,7 @@ def commands():
               '&#12288;&#12288;' + icon('wood') + ' Лесопилка - Добывает Дерево раз в час\n' + \
               '&#12288;&#12288;' + icon('iron') + ' Рудник - Добывает Железо раз в час\n' + \
               '&#12288;&#12288;' + icon('diamond') + ' Прииск - Добывает Кристаллы раз в час\n' + \
+              '&#12288;&#12288;' + icon('gold') + ' Торговый пост - купить/продать/отправить ресурсы\n' + \
               '\n' + icon('war') + ' Война:\n' + \
               '&#12288;' + icon('target') + ' Найм - Показывает стоимость найма армии\n' + \
               '&#12288;' + icon('sword') + ' Воин [кол-во] - Нанимает Воинов\n' + \
@@ -196,6 +197,7 @@ def commands():
               '&#12288;' + icon('bonus') + icon('cube') + ' Открыть [название сундука] - открывает сундук\n' + \
               '&#12288;' + icon('bonus') + icon('cube') + ' Сундуки - Показывает список ваших сундуков\n' + \
               '\n' + icon('other') + ' Разное:\n' + \
+              '&#12288;' + icon('gold') + ' Рынок - купить/продать ресурсы\n' + \
               '&#12288;' + icon('bonus') + ' Бонус - получить ежедневный бонус\n' + \
               '&#12288;' + icon('lvl') + ' Топ - посмотреть топ игроков\n' + \
               '&#12288;' + icon('profile') + ' Профиль - посмотреть профиль\n' + \
@@ -363,6 +365,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🛡 По оборонам 🛡', color=VkKeyboardColor.DEFAULT, payload={"command": "топ защита"})
         keyboard.add_line()
         keyboard.add_button('💀 По черепам 💀', color=VkKeyboardColor.DEFAULT, payload={"command": "топ череп"})
+        keyboard.add_line()
+        keyboard.add_button('✨ По золоту ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "топ золото"})
 
     # Земли
 
@@ -372,9 +376,10 @@ def get_keyboard(player, action_time=0):
         if player.build.barracks or player.build.archery or player.build.magic:
             keyboard.add_button('🎯 Нанять', color=VkKeyboardColor.DEFAULT, payload={"command": "найм"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
-        keyboard.add_line()
-        keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_land"})
-        keyboard.add_button('🏰 Здания 🏰', color=VkKeyboardColor.DEFAULT, payload={"command": "здания"})
+        if player.build.citadel:
+            keyboard.add_line()
+            keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_land"})
+            keyboard.add_button('🏰 Здания 🏰', color=VkKeyboardColor.DEFAULT, payload={"command": "здания"})
         keyboard.add_line()
         keyboard.add_button('🌲 ⛏ Рубить', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево"})
         keyboard.add_button('🌲 ⛏ х5', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево 5"})
@@ -444,6 +449,9 @@ def get_keyboard(player, action_time=0):
     elif player.place == 'cave':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
+        if player.build.market_lvl > 0:
+            keyboard.add_line()
+            keyboard.add_button('✨ Торговля ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "market"})
         keyboard.add_line()
         keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_cave"})
         if player.build.forge:
@@ -459,6 +467,7 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'cave_build':
         stock_lvl_up = '🔨 🏤 Склад ' + str(player.build.stock.lvl + 1) + ' ур.'
+        market_lvl_up = '🔨 ✨ Торговый Пост ' + str(player.build.market_lvl + 1) + ' ур.'
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
@@ -471,6 +480,8 @@ def get_keyboard(player, action_time=0):
             keyboard.add_button('🔨 ⚒ Кузница', color=VkKeyboardColor.POSITIVE, payload={"command": "строить кузница"})
         if not player.build.tavern:
             keyboard.add_button('🔨 🍺 Таверна', color=VkKeyboardColor.POSITIVE, payload={"command": "строить таверна"})
+        keyboard.add_line()
+        keyboard.add_button(market_lvl_up, color=VkKeyboardColor.POSITIVE, payload={"command": "строить рынок"})
 
     # Шахта
 
@@ -553,5 +564,18 @@ def get_keyboard(player, action_time=0):
                 keyboard.add_button('🔎 Разведка (10 💎)', color=VkKeyboardColor.POSITIVE, payload={"command": "разведка"})
             keyboard.add_line()
             keyboard.add_button('🛡 Щит ⏳', color=VkKeyboardColor.DEFAULT, payload={"command": "щит"})
+
+    # Рынок
+
+    elif player.place == 'market':
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_line()
+        keyboard.add_button('◾ Камень ◾', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок камень"})
+        keyboard.add_button('🌲 Дерево 🌲', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок дерево"})
+        keyboard.add_line()
+        keyboard.add_button('◽ Железо ◽', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок железо"})
+        keyboard.add_button('💎 Кристаллы 💎', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок кристаллы"})
+        keyboard.add_line()
+        keyboard.add_button('✨ Мои лоты ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "мои лоты"})
 
     return keyboard.get_keyboard()
