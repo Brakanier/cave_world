@@ -514,7 +514,7 @@ class War(models.Model):
                                                                         shield=defender.war.shield,
                                                                         success_defend=defender.war.success_defend)
 
-                    self.send_defender(message_def)
+                    defender.war.send_defender(message_def)
             else:
                 message = 'Найдите противника для нападения!'
         else:
