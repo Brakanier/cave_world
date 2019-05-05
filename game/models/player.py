@@ -445,10 +445,10 @@ class Player(models.Model):
                           str(CITADEL_STONE) + icon('stone') + ' + ' + \
                           str(CITADEL_IRON) + icon('iron') + ' + ' + \
                           str(CITADEL_DIAMOND) + icon('diamond') + '\n'
-        market_stone = self.build.market_lvl * MARKET_STONE
-        market_wood = self.build.market_lvl * MARKET_WOOD
-        market_iron = self.build.market_lvl * MARKET_IRON
-        market_diamond = self.build.market_lvl * MARKET_DIAMOND
+        market_stone = (self.build.market_lvl + 1) * MARKET_STONE
+        market_wood = (self.build.market_lvl + 1) * MARKET_WOOD
+        market_iron = (self.build.market_lvl + 1) * MARKET_IRON
+        market_diamond = (self.build.market_lvl + 1) * MARKET_DIAMOND
         message_market = 'Торговый пост: ' + \
                          str(market_stone) + icon('stone') + ' + ' + \
                          str(market_wood) + icon('wood') + ' + ' + \
