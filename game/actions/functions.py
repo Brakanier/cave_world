@@ -451,7 +451,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
         if player.build.market_lvl > 0:
             keyboard.add_line()
-            keyboard.add_button('✨ Торговля ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "market"})
+            keyboard.add_button('✨ Торговля ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "рынок"})
         keyboard.add_line()
         keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_cave"})
         if player.build.forge:
