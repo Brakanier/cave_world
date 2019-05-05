@@ -132,7 +132,7 @@ class Product(models.Model):
         if player.build.market_lvl == 0:
             return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
         try:
-            item = Product.objects.get(id=id)
+            item = player.products.get(id=id)
         except Product.DoesNotExist:
             return "Лот не найден!"
         if item.type == 'wood':
