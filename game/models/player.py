@@ -645,8 +645,13 @@ class Player(models.Model):
                 'железо': 'iron',
                 'кристаллы': 'diamond',
             }
-            if len(part) == 4 and res[part[1]] and part[2].isdigit() and part[3].isdigit():
-                type = res[part[1]]
+            try:
+                res = res[part[1]]
+            except:
+                return 'Ошибка.\n' + \
+                       'Отправить [ресурс] [кол-во] [ID-игрока]'
+            if len(part) == 4 and res and part[2].isdigit() and part[3].isdigit():
+                type = res
                 amount = int(part[2])
                 id = int(part[3])
                 if amount > self.build.market_lvl * 50:
