@@ -361,7 +361,9 @@ class War(models.Model):
                     print(a_attack)
                     print(d_attack)
 
-                    if a_attack >= d_attack:
+                    a_sum_army = self.sum_army()
+
+                    if a_attack >= d_attack and a_sum_army > 0:
 
                         self.success_attack += 1
 
@@ -475,7 +477,7 @@ class War(models.Model):
                                       'Если вы нападёте, щит пропадёт!'
 
                     # Сохранение
-
+                    '''
                     self.warrior -= a_war_die
                     self.archer -= a_arch_die
                     self.wizard -= a_wiz_die
@@ -513,8 +515,8 @@ class War(models.Model):
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         success_defend=defender.war.success_defend)
-
-                    defender.war.send_defender(message_def)
+                    '''
+                    player.war.send_defender(message_def)
             else:
                 message = 'Найдите противника для нападения!'
         else:
