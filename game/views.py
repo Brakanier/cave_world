@@ -503,7 +503,10 @@ def action(command, player, action_time, chat_info):
     # Рынок
 
     # Отправка ресурсов
-    elif command == ("строить рынок" or "строить торговый пост" or "улучшить рынок" or "улучшить торговый пост"):
+    elif command == "строить рынок"\
+            or command == "строить торговый пост"\
+            or command == "улучшить рынок"\
+            or command == "улучшить рынок":
         answer = player.build.build_market(action_time)
 
     elif re.match(r'отправить', command):

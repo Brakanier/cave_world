@@ -477,7 +477,7 @@ class War(models.Model):
                                       'Если вы нападёте, щит пропадёт!'
 
                     # Сохранение
-                    '''
+
                     self.warrior -= a_war_die
                     self.archer -= a_arch_die
                     self.wizard -= a_wiz_die
@@ -515,8 +515,8 @@ class War(models.Model):
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         success_defend=defender.war.success_defend)
-                    '''
-                    player.war.send_defender(message_def)
+
+                    defender.war.send_defender(message_def)
             else:
                 message = 'Найдите противника для нападения!'
         else:
