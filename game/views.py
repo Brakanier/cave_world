@@ -188,7 +188,7 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Help'
         stat['label'] = 'Помощь'
     elif command == 'помощь' or command == '!помощь':
-        answer = "https://vk.com/@cave_world_bot-cave-world-opisanie-komand"
+        answer = "Описание всех команд:\n" + "https://vk.com/@cave_world_bot-cave-world-opisanie-komand"
     elif command == 'бонус':
         answer = player.bonus(action_time)
         stat['category'] = 'Menu'
