@@ -158,7 +158,7 @@ def enter(chat_info, data):
             else:
                 text = data['object']['text']
                 if text:
-                    action(text.lower(), player, action_time, chat_info)
+                    action(text, player, action_time, chat_info)
 
 
 def action(command, player, action_time, chat_info):
@@ -171,13 +171,24 @@ def action(command, player, action_time, chat_info):
         'value': 1,
     }
 
+    if re.match(r'ник', command.lower()):
+        part = command.split()
+        if len(part) >= 2:
+            answer = player.change_nickname(part[1], action_time)
+        else:
+            answer = "Вы не указали ник!\nНик [новый ник]"
+    command = command.lower()
     # Меню
+    if re.match(r'донат', command):
+        answer = 'Вы можете поддержать проект по ссылке:\n' + 'https://vk.com/cave_world_bot?w=app6359087_-176853872'
 
-    if command == '!команды' or command == 'команды' or command == 'помощь' or command == '!помощь':
+    if command == '!команды' or command == 'команды':
         answer = commands()
         stat['category'] = 'Menu'
         stat['action'] = 'Help'
         stat['label'] = 'Помощь'
+    elif command == 'помощь' or command == '!помощь':
+        answer = "https://vk.com/@cave_world_bot-cave-world-opisanie-komand"
     elif command == 'бонус':
         answer = player.bonus(action_time)
         stat['category'] = 'Menu'
@@ -364,7 +375,7 @@ def action(command, player, action_time, chat_info):
         stat['label'] = 'Добыть_Железо'
         stat['value'] = amount(command)
         answer = player.get_iron(action_time, chat_info, amount(command))
-    elif re.match(r'кристаллы', command):
+    elif re.match(r'кристал', command):
         stat['category'] = 'Get'
         stat['action'] = 'Get_Diamond'
         stat['label'] = 'Добыть_Кристалы'

@@ -6,6 +6,7 @@ from ..actions.functions import *
 from ..actions.chests import *
 
 import random
+import time
 
 # Create your models here.
 
@@ -32,6 +33,9 @@ class Player(models.Model):
         max_length=30,
         db_index=True,
         unique=True,
+    )
+    change_nickname_time = models.BigIntegerField(
+        default=0,
     )
     lvl = models.IntegerField(
         default=1,
@@ -706,3 +710,25 @@ class Player(models.Model):
                 return "Сундук не найден!"
         return "Ошибка"
 
+    def change_nickname(self, nick, action_time):
+        if action_time < self.change_nickname_time:
+            nick_time = self.change_nickname_time - action_time
+            sec = nick_time
+            minutes = sec // 60
+            hour = minutes // 60
+            day = hour // 24
+            message = 'Изменять ник можно раз в 10 дней.\n' + \
+                      'До следующего раза: ' + str(day) + ' дней ' + \
+                      str(hour % 24) + ' ч. ' + \
+                      str(minutes % 60) + ' м. ' + \
+                      str(sec % 60) + ' сек. ⏳'
+            return message
+        if Player.objects.filter(nickname=nick).exists():
+            return "Ник занят!"
+        elif len(nick) > 30:
+            return "Ник слишком длинный!"
+        else:
+            self.change_nickname_time = action_time + NICKNAME_TIME
+            self.nickname = nick
+            self.save(update_fields=['nickname', 'change_nickname_time'])
+            return 'Ваш ник - ' + self.nickname
