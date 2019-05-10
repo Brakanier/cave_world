@@ -23,6 +23,10 @@ class Chat(models.Model):
     )
 
 
+class Message(models.Model):
+    text = models.TextField()
+
+
 class Report(models.Model):
     user_id = models.BigIntegerField(
         db_index=True,
