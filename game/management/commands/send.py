@@ -18,29 +18,9 @@ class Command(BaseCommand):
             message = Message.objects.get(pk=options['id'])
         except Message.DoesNotExist:
             raise CommandError('Message "%s" does not exist' % options['id'])
-        players = Player.objects.values_list('user_id').all()
         chats = Chat.objects.values_list('peer_id').all()
-        peers = []
-        for id in players:
-            peers.append(id[0])
-        peers = self.explode(peers, 100)
-        user_errors = 0
         chat_errors = 0
         vk = self.vk_connect()
-        print(len(peers))
-        for peer in peers:
-            print(len(peer))
-            try:
-                vk.messages.send(
-                    access_token=self.token(),
-                    user_ids=peer,
-                    message=message.text,
-                    random_id=0
-                )
-            except:
-                user_errors += 1
-            time.sleep(1)
-
         for chat_peer in chats:
             try:
                 vk.messages.send(
@@ -55,7 +35,7 @@ class Command(BaseCommand):
                 self.stdout.write('FAIL - ' + str(chat_peer[0]))
             time.sleep(1)
 
-        self.stdout.write('User Errors - ' + str(user_errors))
+        # self.stdout.write('User Errors - ' + str(user_errors))
         self.stdout.write('Chat Errors - ' + str(chat_errors))
         self.stdout.write('End sending')
 
