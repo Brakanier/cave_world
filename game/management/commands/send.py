@@ -47,10 +47,10 @@ class Command(BaseCommand):
                     message=message.text,
                     random_id=0
                 )
-                self.stdout.write('OK - ' + chat_peer[0])
+                self.stdout.write('OK - ' + str(chat_peer[0]))
             except:
                 chat_errors += 1
-                self.stdout.write('FAIL - ' + chat_peer[0])
+                self.stdout.write('FAIL - ' + str(chat_peer[0]))
             time.sleep(1)
 
         print(peers)
