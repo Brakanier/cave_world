@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
+import threading
 import re
 import json
 import logging
@@ -586,4 +587,4 @@ def action(command, player, action_time, chat_info):
 
     send(chat_info, answer, get_keyboard(player, action_time))
 
-    # track(player.user_id, stat)
+    threading.Thread(target=track, args=(player.user_id, stat)).start()

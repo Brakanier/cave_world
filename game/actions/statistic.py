@@ -4,7 +4,6 @@ TRACK_URL = 'https://www.google-analytics.com/collect'
 
 
 def track(user_id, stat):
-
     r = requests.post(
         TRACK_URL,
         params={
@@ -19,5 +18,3 @@ def track(user_id, stat):
         },
         headers={'Content-type': 'application/json'},
     )
-    print(r)
-    # print(json.loads(r.text))
