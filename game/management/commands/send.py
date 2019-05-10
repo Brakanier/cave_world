@@ -27,7 +27,9 @@ class Command(BaseCommand):
         user_errors = 0
         chat_errors = 0
         vk = self.vk_connect()
+        print(len(peers))
         for peer in peers:
+            print(len(peer))
             try:
                 vk.messages.send(
                     access_token=self.token(),
@@ -53,7 +55,6 @@ class Command(BaseCommand):
                 self.stdout.write('FAIL - ' + str(chat_peer[0]))
             time.sleep(1)
 
-        print(peers)
         self.stdout.write('User Errors - ' + str(user_errors))
         self.stdout.write('Chat Errors - ' + str(chat_errors))
         self.stdout.write('End sending')
