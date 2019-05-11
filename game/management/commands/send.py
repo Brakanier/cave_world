@@ -35,9 +35,28 @@ class Command(BaseCommand):
                 self.stdout.write('FAIL - ' + str(chat_peer[0]))
             time.sleep(1)
 
-        # self.stdout.write('User Errors - ' + str(user_errors))
         self.stdout.write('Chat Errors - ' + str(chat_errors))
+
+        players = Player.objects.filter(lvl__gt=1).values_list('user_id').all()
+        parts = self.explode(players, 100)
+        for part in parts:
+            peer_ids = "1"
+            for user in part:
+                peer_ids += ',' + str(user[0])
+            try:
+                vk.messages.send(
+                    access_token=self.token(),
+                    peer_ids=peer_ids,
+                    message=message.text,
+                    random_id=0
+                )
+                self.stdout.write('OK')
+            except:
+                self.stdout.write('FAIL')
+            time.sleep(1)
+            self.stdout.write('Users Send - ' + str(len(part) / len(players) * 100) + ' %')
         self.stdout.write('End sending')
+
 
     @staticmethod
     def explode(lst, n):
