@@ -38,7 +38,7 @@ class Command(BaseCommand):
         self.stdout.write('Chat Errors - ' + str(chat_errors))
 
         players = Player.objects.filter(lvl__gt=1).values_list('user_id').all()
-        parts = self.explode(players, 100)
+        parts = self.explode(players, 90)
         for part in parts:
             peer_ids = "1"
             for user in part:
@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 self.stdout.write('OK')
             except:
                 self.stdout.write('FAIL')
-            self.stdout.write('Users Send - ' + str(len(part) / len(players) * 100) + ' %')
+            self.stdout.write('Users Send - ' + str(len(part)))
             time.sleep(1)
 
         self.stdout.write('End sending')
