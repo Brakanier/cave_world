@@ -53,8 +53,9 @@ class Command(BaseCommand):
                 self.stdout.write('OK')
             except:
                 self.stdout.write('FAIL')
-            time.sleep(1)
             self.stdout.write('Users Send - ' + str(len(part) / len(players) * 100) + ' %')
+            time.sleep(1)
+
         self.stdout.write('End sending')
 
 
