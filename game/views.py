@@ -181,7 +181,7 @@ def action(command, player, action_time, chat_info):
     command = command.lower()
     # Меню
     if re.match(r'донат', command):
-        answer = 'Вы можете поддержать проект по ссылке:\n' + 'https://vk.com/app6359087_-176853872#snippet_id=2&owner_id=-176853872&project_id=44667'
+        answer = 'Вы можете поддержать проект по ссылке:\n' + 'https://vk.com/cave_world_bot?w=app5727453_-176853872'
 
     if command == '!команды' or command == 'команды':
         answer = commands()
