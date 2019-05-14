@@ -172,7 +172,7 @@ def action(command, player, action_time, chat_info):
         'value': 1,
     }
 
-    if re.match(r'ник', command.lower()):
+    if re.match(r'ник ', command.lower()):
         part = command.split()
         if len(part) >= 2:
             answer = player.change_nickname(part[1], action_time)
@@ -384,7 +384,11 @@ def action(command, player, action_time, chat_info):
         answer = player.get_diamond(action_time, chat_info, amount(command))
 
     # Крафт
-
+    elif command == 'ковать':
+        if player.build.forge:
+            answer = "Укажите предмет для ковки!\nКирки - посмотреть доступные кирки для ковки."
+        else:
+            answer = "Сначала постройте Кузницу!"
     elif 'ковать каменн' in command:
         stat['category'] = 'Craft'
         stat['action'] = 'Craft_Stone_Pickaxe'

@@ -583,6 +583,8 @@ class Player(models.Model):
         return message
 
     def tavern(self):
+        if not self.build.tavern:
+            return "Сначала постройте Таверну!"
         if self.place == 'tavern':
             message = 'Вы уже в Таверне!\n'
         else:
