@@ -100,6 +100,10 @@ class Product(models.Model):
                 player.build.stock.diamond = min(player.build.stock.diamond + item.amount, player.build.stock.max)
                 player.build.stock.res_remove('gold', item.price)
                 player.build.stock.save(update_fields=['diamond', 'gold'])
+            elif item.type == 'skull':
+                player.build.stock.skull += item.amount
+                player.build.stock.res_remove('gold', item.price)
+                player.build.stock.save(update_fields=['skull', 'gold'])
             item.seller.build.stock.gold += item.price
             item.seller.build.stock.save(update_fields=['gold'])
             sell_mess = 'У вас купили ' + str(item.amount) + icon(item.type) + ' за ' + str(item.price) + icon('gold')
@@ -150,6 +154,9 @@ class Product(models.Model):
         elif item.type == 'diamond':
             player.build.stock.diamond = min(player.build.stock.diamond + item.amount, player.build.stock.max)
             player.build.stock.save(update_fields=['diamond'])
+        elif item.type == 'skull':
+            player.build.stock.skull += item.amount
+            player.build.stock.save(update_fields=['skull'])
         message = 'Вы сняли с продажи:\n' + \
                   'ID: ' + str(item.id) + ' | ' + str(item.amount) + icon(item.type) + ' | ' + str(item.price) + icon('gold')
         item.delete()
