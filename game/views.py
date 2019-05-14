@@ -175,7 +175,8 @@ def action(command, player, action_time, chat_info):
     if re.match(r'ник ', command.lower()):
         part = command.split()
         if len(part) >= 2:
-            answer = player.change_nickname(part[1], action_time)
+            nick = command[4:]
+            answer = player.change_nickname(nick, action_time)
         else:
             answer = "Вы не указали ник!\nНик [новый ник]"
     command = command.lower()
@@ -538,8 +539,10 @@ def action(command, player, action_time, chat_info):
         answer = Product.get_products(player, 'stone')
     elif command == "рынок железо":
         answer = Product.get_products(player, 'iron')
-    elif command == "рынок кристаллы":
+    elif re.match(r'рынок кристал', command):
         answer = Product.get_products(player, 'diamond')
+    elif re.match(r'рынок череп', command):
+        answer = Product.get_products(player, 'skull')
     elif command == "мои лоты":
         answer = Product.my_lots(player)
     elif re.match(r'снять', command):
@@ -549,27 +552,33 @@ def action(command, player, action_time, chat_info):
         else:
             answer = "Неверный ID лота!"
     elif re.match(r'продать дерево', command):
-        price = Product.get_param(command)
-        if price:
-            answer = Product.sell(player, 'wood', price)
+        count, price = Product.get_param(command)
+        if count and price:
+            answer = Product.sell(player, 'wood', count, price)
         else:
             answer = "Укажите цену лота!"
-    elif re.match(r'продать камень', command):
-        price = Product.get_param(command)
-        if price:
-            answer = Product.sell(player, 'stone', price)
+    elif re.match(r'продать камен', command):
+        count, price = Product.get_param(command)
+        if count and price:
+            answer = Product.sell(player, 'stone', count, price)
         else:
             answer = "Укажите цену лота!"
     elif re.match(r'продать железо', command):
-        price = Product.get_param(command)
-        if price:
-            answer = Product.sell(player, 'iron', price)
+        count, price = Product.get_param(command)
+        if count and price:
+            answer = Product.sell(player, 'iron', count, price)
         else:
             answer = "Укажите цену лота!"
-    elif re.match(r'продать кристаллы', command):
-        price = Product.get_param(command)
-        if price:
-            answer = Product.sell(player, 'diamond', price)
+    elif re.match(r'продать кристал', command):
+        count, price = Product.get_param(command)
+        if count and price:
+            answer = Product.sell(player, 'diamond', count, price)
+        else:
+            answer = "Укажите цену лота!"
+    elif re.match(r'продать череп', command):
+        count, price = Product.get_param(command)
+        if count and price:
+            answer = Product.sell(player, 'skull', count, price)
         else:
             answer = "Укажите цену лота!"
     elif re.match(r'купить', command):

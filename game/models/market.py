@@ -61,7 +61,7 @@ class Product(models.Model):
         if player.build.market_lvl == 0:
             return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
         try:
-            products = Product.objects.filter(type=type).order_by('unit_price')[0:5]
+            products = Product.objects.filter(type=type).order_by('unit_price')[0:10]
         except Product.DoesNotExist:
             return "Товаров не найдено"
         head = "ID | Кол-во | Цена\n"
@@ -111,14 +111,17 @@ class Product(models.Model):
         return message
 
     @staticmethod
-    def sell(player, type, price):
+    def sell(player, type, amount, price):
         if player.build.market_lvl == 0:
             return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
         lots = player.products.count()
-        if player.build.stock.res_check(type, 50) and lots < 10:
-            item = Product.objects.create(seller=player, type=type, price=price, amount=50)
+        max_amount = player.build.market_lvl * 50
+        if amount > max_amount:
+            amount = max_amount
+        if player.build.stock.res_check(type, amount) and lots < 10:
+            item = Product.objects.create(seller=player, type=type, price=price, amount=amount)
             item.save()
-            player.build.stock.res_remove(type, 50)
+            player.build.stock.res_remove(type, amount)
             player.build.stock.save(update_fields=[type])
             message = 'Лот выставлен!\n' + \
                       'ID | Кол-во | Цена\n' + \
@@ -155,12 +158,14 @@ class Product(models.Model):
     @staticmethod
     def get_param(command):
         part = command.split()
-        if len(part) == 3 and part[2].isdigit():
-            return int(part[2])
+        if len(part) == 4 and part[2].isdigit() and part[3].isdigit():
+            count = int(part[2])
+            price = int(part[3])
+            return count, price
         elif len(part) == 2 and part[1].isdigit():
             return int(part[1])
         else:
-            return None
+            return None, None
 
     @staticmethod
     def my_lots(player):
@@ -185,7 +190,7 @@ class Product(models.Model):
                   'Снять [ID] - снимает с продажи ваш лот номер [ID].\n' + \
                   'Купить [ID] - купить лот номер [ID].\n' + \
                   'Рынок [ресурс] - список лотов для покупки.\n' + \
-                  'Продать [ресурс] [цена] - выставить на продажу 50 ресурса.\n' + \
+                  'Продать [ресурс] [кол-во] [цена] - выставить на продажу ресурс.\n' + \
                   'Отправить [ресурс] [кол-во] [ID-игрока] - отправить ресурсы.\n'
 
         return message

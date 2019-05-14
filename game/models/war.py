@@ -321,9 +321,9 @@ class War(models.Model):
         iron_wiz = wiz_die * WIZARD_IRON
         wood_arch = arch_die * ARCHER_WOOD
         wood_wiz = wiz_die * WIZARD_WOOD
-        diamond = int(wiz_die * WIZARD_DIAMOND * 0.9)
-        iron = int((iron_war + iron_arch + iron_wiz) * 0.9)
-        wood = int((wood_arch + wood_wiz) * 0.9)
+        diamond = int(wiz_die * WIZARD_DIAMOND * 1.2)
+        iron = int((iron_war + iron_arch + iron_wiz) * 1.2)
+        wood = int((wood_arch + wood_wiz) * 1.2)
         stone = int((iron + wood + diamond) / 3)
         return stone, wood, iron, diamond
 
@@ -362,6 +362,7 @@ class War(models.Model):
                     print(d_attack)
 
                     a_sum_army = self.sum_army()
+                    d_sum_army = defender.war.sum_army()
 
                     if a_attack >= d_attack and a_sum_army > 0:
 
@@ -378,6 +379,21 @@ class War(models.Model):
                         stone, wood, iron, diamond = self.get_reward(defender)
                         reward_skull = 1
                         reward_exp = 5
+                        low = False
+
+                        if d_sum_army == 0:
+                            stone, wood, iron, diamond = (0, 0, 0, 0)
+                            reward_skull = 0
+                            reward_exp = 1
+                            low = True
+                        elif a_sum_army / d_sum_army > 2:
+                            stone = stone // 2
+                            wood = wood // 2
+                            iron = iron // 2
+                            diamond = diamond // 2
+                            reward_exp = 2
+                            low = True
+
                         player = exp(player, chat_info, reward_exp)
 
                         # Проигравший
@@ -421,7 +437,12 @@ class War(models.Model):
                                   'Железо: ' + str(iron) + ' ◽\n' + \
                                   'Кристаллы: ' + str(diamond) + ' 💎\n' + \
                                   'Черепа: ' + str(reward_skull) + ' 💀\n' + \
-                                  'Опыт: ' + str(reward_exp) + ' 📚'
+                                  'Опыт: ' + str(reward_exp) + ' 📚\n'
+                        low_mess = ""
+                        if low:
+                            low_mess = "Вы напали на слишком слабого противника!\n(Награда снижена)"
+
+                        message += low_mess
 
                         message_def = 'На вас напал ' + player.nickname + '\n' + \
                                       '⚔ Вы проиграли ⚔\n' + \
