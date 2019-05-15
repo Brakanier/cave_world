@@ -578,6 +578,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('◽ Железо ◽', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок железо"})
         keyboard.add_button('💎 Кристаллы 💎', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок кристаллы"})
         keyboard.add_line()
+        keyboard.add_line()
+        keyboard.add_button('💀 Черепа 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок череп"})
         keyboard.add_button('✨ Мои лоты ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "мои лоты"})
 
     return keyboard.get_keyboard()
