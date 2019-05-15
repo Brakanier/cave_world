@@ -531,7 +531,7 @@ def action(command, player, action_time, chat_info):
 
     # Торговля
 
-    elif command == "рынок" or command == "купить" or command == "продать":
+    elif command == "рынок" or command == "купить" or command == "продать" or "торговый пост":
         answer = Product.info(player)
     elif command == "рынок дерево":
         answer = Product.get_products(player, 'wood')
