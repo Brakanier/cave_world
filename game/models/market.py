@@ -169,10 +169,16 @@ class Product(models.Model):
             count = int(part[2])
             price = int(part[3])
             return count, price
-        elif len(part) == 2 and part[1].isdigit():
-            return int(part[1])
         else:
             return None, None
+
+    @staticmethod
+    def get_id(command):
+        part = command.split()
+        if len(part) == 2 and part[1].isdigit():
+            return int(part[1])
+        else:
+            return None
 
     @staticmethod
     def my_lots(player):

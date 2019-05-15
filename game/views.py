@@ -546,7 +546,7 @@ def action(command, player, action_time, chat_info):
     elif command == "мои лоты":
         answer = Product.my_lots(player)
     elif re.match(r'снять', command):
-        id = Product.get_param(command)
+        id = Product.get_id(command)
         if id:
             answer = Product.del_lot(player, id)
         else:
@@ -582,7 +582,7 @@ def action(command, player, action_time, chat_info):
         else:
             answer = "Укажите цену лота!"
     elif re.match(r'купить', command):
-        id = Product.get_param(command)
+        id = Product.get_id(command)
         if id:
             answer = Product.buy(player, id)
         else:
