@@ -381,11 +381,23 @@ class War(models.Model):
                         reward_exp = 5
                         low = False
 
+                        # Потери ресурсов
+                        cost_stone = int(defender.build.stock.stone / 10)
+                        cost_wood = int(defender.build.stock.wood / 10)
+                        cost_iron = int(defender.build.stock.iron / 10)
+                        cost_diamond = int(defender.build.stock.diamond / 10)
+
+                        # Переопределения, если бьёшь слабого
+
                         if d_sum_army == 0:
                             stone, wood, iron, diamond = (0, 0, 0, 0)
                             reward_skull = 0
                             reward_exp = 1
                             low = True
+                            cost_stone = 0
+                            cost_wood = 0
+                            cost_iron = 0
+                            cost_diamond = 0
                         elif a_sum_army / d_sum_army > 2:
                             stone = stone // 2
                             wood = wood // 2
@@ -393,14 +405,15 @@ class War(models.Model):
                             diamond = diamond // 2
                             reward_exp = 2
                             low = True
+                            cost_stone = 0
+                            cost_wood = 0
+                            cost_iron = 0
+                            cost_diamond = 0
 
                         player = exp(player, chat_info, reward_exp)
 
                         # Проигравший
-                        cost_stone = int(defender.build.stock.stone / 10)
-                        cost_wood = int(defender.build.stock.wood / 10)
-                        cost_iron = int(defender.build.stock.iron / 10)
-                        cost_diamond = int(defender.build.stock.diamond / 10)
+
                         defender.build.stock.stone -= cost_stone
                         defender.build.stock.wood -= cost_wood
                         defender.build.stock.iron -= cost_iron
@@ -417,6 +430,12 @@ class War(models.Model):
                         player.build.stock.skull += reward_skull
 
                         d_war_die, d_arch_die, d_wiz_die = defender.war.get_die(player, 0.2)
+
+                        if low:
+                            d_war_die = d_war_die // 2
+                            d_arch_die = d_arch_die // 2
+                            d_wiz_die = d_wiz_die // 2
+
                         d_sum_die = d_war_die + d_arch_die + d_wiz_die
 
                         message = 'Вы напали на ' + defender.nickname + '\n' + \
@@ -462,7 +481,13 @@ class War(models.Model):
                                       'Железо: ' + str(cost_iron) + ' ◽\n' + \
                                       'Кристаллы: ' + str(cost_diamond) + ' 💎\n' + \
                                       '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
-                                      'Если вы нападёте, щит пропадёт!'
+                                      'Если вы нападёте, щит пропадёт!\n'
+
+                        low_def_mess = ""
+                        if low:
+                            low_def_mess = "На вас напал слишком сильный противник!\n(Потери снижены)"
+
+                        message_def += low_def_mess
 
                     else:
 
