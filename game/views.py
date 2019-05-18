@@ -606,7 +606,7 @@ def action(command, player, action_time, chat_info):
             chest = get_chest('present_chest')
             add_chest(player, chest, 3)
             answer = 'Код активирован!\n' + \
-                     'Получено 3 подарочный сундука!\n'
+                     'Получено 3 подарочных сундука!\n'
 
     '''
     elif command == "gencave":
