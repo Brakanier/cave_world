@@ -80,6 +80,12 @@ class Player(models.Model):
         null=True,
         related_name='player',
     )
+    cave_progress = models.OneToOneField(
+        'game.CaveProgress',
+        on_delete=models.SET(None),
+        null=True,
+        related_name='player',
+    )
 
     class Meta:
         verbose_name = 'Игрок'

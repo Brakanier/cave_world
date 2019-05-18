@@ -10,6 +10,8 @@ from .models.trophy import Trophy
 from .models.chest import Chest, ChestItem, ChestTrophy
 from .models.inventory import Inventory, InventoryChest, InventoryTrophy
 from .models.market import Product
+from .models.cave import CaveMap, CaveProgress
+from .models.promocode import PromoCode
 
 
 # Register your models here.
@@ -83,3 +85,9 @@ class TrophyAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('seller', 'type', 'unit_price')
+
+
+admin.site.register(PromoCode)
+
+admin.site.register(CaveMap)
+admin.site.register(CaveProgress)

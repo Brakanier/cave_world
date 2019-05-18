@@ -13,6 +13,9 @@ from .models.player import Player
 from .models.war import War
 from .models.inventory import Inventory
 from .models.market import Product
+from .models.cave import CaveMap, CaveProgress
+from .models.promocode import PromoCode
+
 from .actions.functions import *
 from .actions.chests import *
 from system.models import Registration, Chat, Report
@@ -592,10 +595,34 @@ def action(command, player, action_time, chat_info):
 
     elif re.match(r'дать', command) and player.user_id == 55811116:
         answer = Player.give_chests(command)
+
+    elif command == 'код месяц':
+        try:
+            code = PromoCode.objects.get(user_id=player.user_id, code='месяц')
+            answer = 'Вы уже использовали этот код!'
+        except PromoCode.DoesNotExist:
+            code = PromoCode.objects.create(user_id=player.user_id, code='месяц')
+            code.save()
+            chest = get_chest('present_chest')
+            add_chest(player, chest)
+            answer = 'Код активирован!\n' + \
+                     'Получен 1 подарочный сундук!\n'
+
     '''
+    elif command == "gencave":
+        cave = CaveMap.objects.create()
+        cave.cave_map = cave.generate()
+        cave.save()
     elif command == "тест":
-        wood = player.build.stock.__getattribute__('wood')
-        print(wood)
+        if not player.cave_progress:
+            cave = CaveMap.objects.get()
+            print(cave)
+            cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
+            player.cave_progress = cave_progress
+            player.save()
+        else:
+            player.cave_progress.go_right()
+            print('Прогресс есть')
     '''
 
     send(chat_info, answer, get_keyboard(player, action_time))
