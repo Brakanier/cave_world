@@ -604,9 +604,9 @@ def action(command, player, action_time, chat_info):
             code = PromoCode.objects.create(user_id=player.user_id, code='месяц')
             code.save()
             chest = get_chest('present_chest')
-            add_chest(player, chest)
+            add_chest(player, chest, 3)
             answer = 'Код активирован!\n' + \
-                     'Получен 1 подарочный сундук!\n'
+                     'Получено 3 подарочный сундука!\n'
 
     '''
     elif command == "gencave":
