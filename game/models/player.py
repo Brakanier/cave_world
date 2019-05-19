@@ -84,6 +84,7 @@ class Player(models.Model):
         'game.CaveProgress',
         on_delete=models.SET(None),
         null=True,
+        blank=True,
         related_name='player',
     )
 
