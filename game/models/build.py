@@ -395,8 +395,8 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Каменоломни доступно с 10 ур.'
             return message
-        if self.stone_mine_lvl == 50:
-            return 'Башня максимального уровня!'
+        if self.stone_mine_lvl >= 30:
+            return 'Каменоломня максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_wood = (self.stone_mine_lvl + 1) * STONE_MINE_WOOD
         need_iron = (self.stone_mine_lvl + 1) * STONE_MINE_IRON
@@ -425,6 +425,8 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Лесопилки доступно с 10 ур.'
             return message
+        if self.wood_mine_lvl >= 30:
+            return 'Лесопилка максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_stone = (self.wood_mine_lvl + 1) * WOOD_MINE_STONE
         need_iron = (self.wood_mine_lvl + 1) * WOOD_MINE_IRON
@@ -453,6 +455,8 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Рудника доступно с 10 ур.'
             return message
+        if self.iron_mine_lvl >= 30:
+            return 'Рудник максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_stone = (self.iron_mine_lvl + 1) * IRON_MINE_STONE
         need_wood = (self.iron_mine_lvl + 1) * IRON_MINE_WOOD
@@ -481,6 +485,8 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Прииска доступно с 10 ур.'
             return message
+        if self.diamond_mine_lvl >= 30:
+            return 'Прииск максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_stone = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_STONE
         need_wood = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_WOOD

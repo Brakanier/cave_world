@@ -671,6 +671,8 @@ class Player(models.Model):
                            'Торговый пост ' + str(self.build.market_lvl) + ' ур. - ' + \
                            str(self.build.market_lvl * 50) + ' ресурса макс. за раз.'
                 if self.build.stock.res_check(type, amount):
+                    if self.user_id == id:
+                        return "Вы пытаетесь отправить ресурсы себе."
                     try:
                         addr = Player.objects.get(user_id=id)
                         self.build.stock.res_remove(type, amount)
