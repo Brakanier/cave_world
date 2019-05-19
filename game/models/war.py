@@ -424,8 +424,8 @@ class War(models.Model):
                         # Выдаём победителю
 
                         player.build.stock.stone += min(stone, (player.build.stock.max - player.build.stock.stone))
-                        player.build.stock.wood += min(wood * 4, (player.build.stock.max - player.build.stock.wood))
-                        player.build.stock.iron += min(iron * 2, (player.build.stock.max - player.build.stock.iron))
+                        player.build.stock.wood += min(wood, (player.build.stock.max - player.build.stock.wood))
+                        player.build.stock.iron += min(iron, (player.build.stock.max - player.build.stock.iron))
                         player.build.stock.diamond += min(diamond, (player.build.stock.max - player.build.stock.diamond))
                         player.build.stock.skull += reward_skull
 

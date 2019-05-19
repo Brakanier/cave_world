@@ -13,10 +13,6 @@ class CaveMap(models.Model):
         blank=True,
     )
 
-    success = models.IntegerField(
-        default=0,
-    )
-
     @staticmethod
     def generate():
         cave_map = {}
@@ -72,6 +68,10 @@ class CaveMap(models.Model):
                 1: one,
                 2: two,
             }
+        cave_map[30] = {
+            1: 7,
+            2: 7,
+        }
 
         for lvl in cave_map:
             print(str(lvl) + ' Право: ' + str(cave_map[lvl][1]) + ' | Лево: ' + str(cave_map[lvl][2]))
@@ -106,32 +106,84 @@ class CaveProgress(models.Model):
     max_level = models.IntegerField(
         default=0,
     )
+    success = models.IntegerField(
+        default=0,
+    )
+
+    def info(self):
+        mess = 'Вы сейчас на ' + str(self.level) + ' ур. пещер.\n' + \
+               'Вы доходили максимум до ' + str(self.max_level) + ' ур. этой пещеры.\n' + \
+               'Сокровищ найдено: ' + str(self.success)
+        return mess
+
+    def start(self):
+        if self.player.war.sum_army() < 10:
+            return "Для исследования пещер вам нужно минимум 10 ⚔ !"
+        if not self.cave:
+            self.cave = CaveMap.objects.get()
+        self.level = 1
+        self.max_level = 1
+        self.save(update_fields=['max_level', 'level', 'cave'])
+        self.player.place = 'cave_go'
+        self.player.save(update_fields=['place'])
+        mess = 'Вы зашли в пещеры!\n' + \
+               'Вы сейчас на ' + str(self.level) + ' ур. пещер.\n' + \
+               'Выберите в какую сторону идти:\n' + \
+               '- Пещеры налево\n' + \
+               '- Пещеры направо\n'
+        return mess
 
     def go(self, way):
-        cave_lvl = self.level + 1
+        if self.player.place != 'cave_go':
+            return "Вы не в пещерах!\n- Пещеры войти"
+        if not self.cave:
+            return 'Кто-то нашёл сокровища...\n' + \
+                   'Произошёл обвал...\n' + \
+                   'Пути в пещерах изменились, начните исследование заново!\n' + \
+                   '- Пещеры войти\n'
+        cave_lvl = self.level
         cave_map = json.loads(self.cave.cave_map)
         bonus = cave_map[str(cave_lvl)][str(way)]
-        print(cave_map[str(cave_lvl)])
 
-        bonus_mess = self.cave_bonus(bonus)
+        bonus_mess = self.cave_bonus(bonus, cave_lvl + 1)
         end_mess = ""
-
+        start_mess = 'Вы сейчас на ' + str(self.level) + ' ур.\n'
+        if way == 1:
+            start_mess += 'Вы пошли налево...\n'
+        elif way == 2:
+            start_mess += 'Вы пошли направо...\n'
         if bonus == 0:
             end_mess = 'Вы вернулись домой!'
         elif bonus in (3, 4, 5, 6):
-            self.level = cave_lvl
-            end_mess = 'Пещера раздваивается, выберите путь:\n' + \
-                       'Пещера Налево\n' + \
-                       'Пещера Направо\n'
+            self.level = cave_lvl + 1
+            if cave_lvl < 30:
+                end_mess = '\nПещера раздваивается, выберите путь:\n' + \
+                           '- Пещеры налево\n' + \
+                           '- Пещеры направо\n'
         if self.max_level < self.level:
             self.max_level = self.level
-        message = bonus_mess + end_mess
+        if bonus in (0, 1, 2):
+            # TODO REMOVE COMMENT
+            # self.level = 0
+            pass
 
-    def go_left(self):
-        level = self.level + 1
-        pass
+        if bonus == 7:
+            self.max_level = 0
 
-    def cave_bonus(self, number):
+        if bonus == 7:
+            start_mess += 'Впереди какое-то свечение...\n Вы подходите ближе...\n'
+            self.success += 1
+            CaveMap.objects.filter(pk=self.cave.pk).delete()
+            cave = CaveMap.objects.create()
+            cave.cave_map = cave.generate()
+            cave.save()
+
+        self.save(update_fields=['level', 'max_level', 'success'])
+
+        message = start_mess + bonus_mess + end_mess
+        return message
+
+    def cave_bonus(self, number, lvl):
         bonus_mess = ""
         if number == 0:
             lost_part = 20
@@ -153,11 +205,11 @@ class CaveProgress(models.Model):
 
         elif number == 1:
             rand = random.randint(1, 3)
-            lost_part = 100
+            lost_part = 20
             if rand == 1:
                 lost = self.player.war.warrior // lost_part
                 self.player.war.warrior -= lost
-                bonus_mess = 'Ваши воины не поделили найденный самородок золота!\nНачалась драка...\n'
+                bonus_mess = 'Ваши 🗡 воины 🗡 не поделили найденный самородок золота!\nНачалась драка...\n'
                 if lost > 0:
                     self.player.war.save(update_fields=['warrior'])
                     bonus_mess += str(lost) + ' 🗡 сорвалось в пропасть!\nВы приказали возвращаться.\n'
@@ -166,7 +218,7 @@ class CaveProgress(models.Model):
             if rand == 2:
                 lost = self.player.war.archer // lost_part
                 self.player.war.archer -= lost
-                bonus_mess = 'Ваши лучники не поделили найденный самородок золота!\nНачалась драка...\n'
+                bonus_mess = 'Ваши 🏹 лучники 🏹 не поделили найденный самородок золота!\nНачалась драка...\n'
                 if lost > 0:
                     self.player.war.save(update_fields=['archer'])
                     bonus_mess += str(lost) + ' 🏹 сорвалось в пропасть!\nВы приказали возвращаться.\n'
@@ -175,7 +227,7 @@ class CaveProgress(models.Model):
             if rand == 3:
                 lost = self.player.war.wizard // lost_part
                 self.player.war.wizard -= lost
-                bonus_mess = 'Ваши маги не поделили найденный самородок золота!\nНачалась драка...\n'
+                bonus_mess = 'Ваши 🔮 маги 🔮 не поделили найденный самородок золота!\nНачалась драка...\n'
                 if lost > 0:
                     self.player.war.save(update_fields=['wizard'])
                     bonus_mess += str(lost) + ' 🔮 сорвалось в пропасть!\nВы приказали возвращаться.\n'
@@ -184,26 +236,36 @@ class CaveProgress(models.Model):
         elif number == 2:
             bonus_mess = 'Вы долго шли по пещере и забрели в тупик!\nПровизия на исходе, вы приказали возвращаться!\n'
         elif number == 3:
-            bonus_mess = 'Вы нашли проход на следующий уровень пещер!\n'
+            bonus_mess = 'Вы нашли проход на ' + str(lvl) + ' ур. пещер!\n'
         elif number == 4:
             self.player.energy += 2
-            bonus_mess = 'Вы нашли Цветок Жизни! +2' + icon('energy')
+            bonus_mess = 'Вы нашли Цветок Жизни! +2' + icon('energy') + '\n' + \
+                         'Вы нашли проход на ' + str(lvl) + ' ур. пещер!\n'
             self.player.save(update_fields=['energy'])
         elif number == 5:
             chest = get_chest('cave_chest')
             add_chest(self.player, chest)
-            bonus_mess = 'Вы нашли Пещерный Сундук!'
+            bonus_mess = 'Вы нашли 🎁 Пещерный Сундук 🎁!\n' + \
+                         'Вы нашли проход на ' + str(lvl) + ' ур. пещер!\n'
         elif number == 6:
             chest = get_chest('cave_chest')
             add_chest(self.player, chest, 5)
-            bonus_mess = 'Вы нашли 5 Пещерных Сундуков!'
+            bonus_mess = 'Вы нашли 5 🎁 Пещерных Сундуков 🎁!\n' + \
+                         'Вы нашли проход на ' + str(lvl) + ' ур. пещер!\n'
         elif number == 7:
             chest = get_chest('cave_chest')
             add_chest(self.player, chest, 10)
-            bonus_mess = 'ВЫ НАШЛИ СОКРОВИЩА!!!\n' + \
-                         '10 Пещерных сундуков\n' + \
+            self.player.build.stock.res_add('diamond', 100)
+            self.player.build.stock.res_add('gold', 200)
+            self.player.build.stock.res_add('iron', 200)
+            self.player.build.stock.save(update_fields=['diamond', 'gold', 'iron'])
+            bonus_mess = 'Поздравляю, вы нашли сокровища!!!\n' + \
+                         '+10 Пещерных сундуков 🎁\n' + \
+                         '+200' + icon('iron') + '\n' + \
+                         '+100' + icon('diamond') + '\n' + \
+                         '+200' + icon('gold') + '\n' + \
+                         '+10' + icon('skull') + '\n' + \
                          '+5' + icon('exp') + '\n' + \
-                         '+5' + icon('skull') + '\n' + \
                          '+20' + icon('energy')
 
         return bonus_mess
