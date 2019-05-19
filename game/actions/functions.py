@@ -452,9 +452,8 @@ def get_keyboard(player, action_time=0):
     elif player.place == 'cave':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
-        keyboard.add_line()
-        keyboard.add_button('🕸 Пещеры 🕸', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры войти"})
         if player.build.market_lvl > 0:
+            keyboard.add_line()
             keyboard.add_button('✨ Торговля ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "рынок"})
         keyboard.add_line()
         keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_cave"})
