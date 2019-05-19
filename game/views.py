@@ -367,7 +367,9 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Get_Stone'
         stat['label'] = 'Добыть_Камень'
         stat['value'] = amount(command)
-        answer = player.get_stone(action_time, chat_info, amount(command))
+        count = amount(command)
+        if count > 0:
+            answer = player.get_stone(action_time, chat_info, count)
     elif re.match(r'дерево', command):
         stat['category'] = 'Get'
         stat['action'] = 'Get_Wood'
@@ -379,13 +381,17 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Get_Iron'
         stat['label'] = 'Добыть_Железо'
         stat['value'] = amount(command)
-        answer = player.get_iron(action_time, chat_info, amount(command))
+        count = amount(command)
+        if count > 0:
+            answer = player.get_iron(action_time, chat_info, count)
     elif re.match(r'кристал', command):
         stat['category'] = 'Get'
         stat['action'] = 'Get_Diamond'
         stat['label'] = 'Добыть_Кристалы'
         stat['value'] = amount(command)
-        answer = player.get_diamond(action_time, chat_info, amount(command))
+        count = amount(command)
+        if count > 0:
+            answer = player.get_diamond(action_time, chat_info, count)
 
     # Крафт
     elif command == 'ковать':
