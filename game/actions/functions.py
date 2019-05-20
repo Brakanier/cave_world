@@ -56,7 +56,8 @@ def energy(player, action_time):
     if delta >= 6:
         energy_new = (delta // 6) * player.energy_regen
         energy_sum = energy_new + player.energy
-        player.energy = min(energy_sum, player.max_energy)
+        if player.energy < player.max_energy:
+            player.energy = min(energy_sum, player.max_energy)
         player.last_energy_action = player.last_energy_action + (energy_new * 360)
     return player
 
