@@ -529,6 +529,7 @@ def action(command, player, action_time, chat_info):
     # Рынок
 
     # Отправка ресурсов
+
     elif command == "строить рынок"\
             or command == "строить торговый пост"\
             or command == "улучшить рынок"\
@@ -599,32 +600,6 @@ def action(command, player, action_time, chat_info):
 
     # Пещеры
 
-    # Админ
-
-    elif re.match(r'дать', command) and player.user_id == 55811116:
-        answer = Player.give_chests(command)
-    elif command == 'gencave' and player.user_id == 55811116:
-        try:
-            CaveMap.objects.get().delete()
-        except:
-            pass
-        cave = CaveMap.objects.create()
-        cave.cave_map = cave.generate()
-        cave.save()
-
-    elif command == 'код месяц':
-        try:
-            code = PromoCode.objects.get(user_id=player.user_id, code='месяц')
-            answer = 'Вы уже использовали этот код!'
-        except PromoCode.DoesNotExist:
-            code = PromoCode.objects.create(user_id=player.user_id, code='месяц')
-            code.save()
-            chest = get_chest('present_chest')
-            add_chest(player, chest, 3)
-            answer = 'Код активирован!\n' + \
-                     'Получено 3 подарочных сундука!\n'
-
-    '''
     elif command == 'пещеры':
         answer = '🕸 Пещеры 🕸 - представляют собой лабиринт.\n' + \
                  'На каждом из уровней вы можете найти хорошее, плохое или проход на уровень дальше.\n' + \
@@ -652,7 +627,7 @@ def action(command, player, action_time, chat_info):
         if player.place == 'cave_go':
             answer = 'Вы уже в пещерах!'
         else:
-            answer = player.cave_progress.start()
+            answer = player.cave_progress.start(action_time)
     elif command == 'пещеры налево':
         if not player.cave_progress:
             cave = CaveMap.objects.get()
@@ -667,7 +642,31 @@ def action(command, player, action_time, chat_info):
             player.cave_progress = cave_progress
             player.save(update_fields=['cave_progress'])
         answer = player.cave_progress.go(2)
-    '''
+
+    # Админ
+
+    elif re.match(r'дать', command) and player.user_id == 55811116:
+        answer = Player.give_chests(command)
+    elif command == 'gencave' and player.user_id == 55811116:
+        try:
+            CaveMap.objects.get().delete()
+        except:
+            pass
+        cave = CaveMap.objects.create()
+        cave.cave_map = cave.generate()
+        cave.save()
+
+    elif command == 'код месяц':
+        try:
+            code = PromoCode.objects.get(user_id=player.user_id, code='месяц')
+            answer = 'Вы уже использовали этот код!'
+        except PromoCode.DoesNotExist:
+            code = PromoCode.objects.create(user_id=player.user_id, code='месяц')
+            code.save()
+            chest = get_chest('present_chest')
+            add_chest(player, chest, 3)
+            answer = 'Код активирован!\n' + \
+                     'Получено 3 подарочных сундука!\n'
 
     send(chat_info, answer, get_keyboard(player, action_time))
 

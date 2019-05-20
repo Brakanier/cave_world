@@ -109,6 +109,9 @@ class CaveProgress(models.Model):
     success = models.IntegerField(
         default=0,
     )
+    time = models.BigIntegerField(
+        default=0,
+    )
 
     def info(self):
         mess = 'Вы сейчас на ' + str(self.level) + ' ур. пещер.\n' + \
@@ -116,14 +119,26 @@ class CaveProgress(models.Model):
                'Сокровищ найдено: ' + str(self.success)
         return mess
 
-    def start(self):
-        if self.player.war.sum_army() < 10:
-            return "Для исследования пещер вам нужно минимум 10 ⚔ !"
+    def start(self, action_time):
+        if action_time < self.time:
+            cave_time = self.time - action_time
+            sec = cave_time
+            minutes = sec // 60
+            hour = minutes // 60
+            time_mess = 'В пещеры можно отправиться раз в час.\n' + \
+                        'До следующего раза: ' + \
+                        str(hour % 24) + ' ч. ' + \
+                        str(minutes % 60) + ' м. ' + \
+                        str(sec % 60) + ' сек. ⏳'
+            return time_mess
+        if self.player.war.sum_army() < 30:
+            return "Для исследования пещер вам нужно минимум 30 ⚔ !"
         if not self.cave:
             self.cave = CaveMap.objects.get()
         self.level = 1
         self.max_level = 1
-        self.save(update_fields=['max_level', 'level', 'cave'])
+        self.time = action_time + 3600
+        self.save(update_fields=['max_level', 'level', 'cave', 'time'])
         self.player.place = 'cave_go'
         self.player.save(update_fields=['place'])
         mess = 'Вы зашли в пещеры!\n' + \
@@ -163,9 +178,8 @@ class CaveProgress(models.Model):
         if self.max_level < self.level:
             self.max_level = self.level
         if bonus in (0, 1, 2):
-            # TODO REMOVE COMMENT
-            # self.level = 0
-            pass
+            self.player.place = 'cave'
+            self.player.save(update_fields=['place'])
 
         if bonus == 7:
             self.max_level = 0

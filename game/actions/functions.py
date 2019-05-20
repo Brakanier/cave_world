@@ -197,6 +197,7 @@ def commands():
               '&#12288;' + icon('bonus') + icon('cube') + ' Открыть [название сундука] - открывает сундук\n' + \
               '&#12288;' + icon('bonus') + icon('cube') + ' Сундуки - Показывает список ваших сундуков\n' + \
               '\n' + icon('other') + ' Разное:\n' + \
+              '&#12288;' + icon('web') + ' Пещеры - Исследование пещер\n' + \
               '&#12288;' + icon('gold') + ' Рынок - купить/продать ресурсы\n' + \
               '&#12288;' + icon('bonus') + ' Бонус - получить ежедневный бонус\n' + \
               '&#12288;' + icon('lvl') + ' Топ - посмотреть топ игроков\n' + \
@@ -452,8 +453,9 @@ def get_keyboard(player, action_time=0):
     elif player.place == 'cave':
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
+        keyboard.add_line()
+        keyboard.add_button('🕸 Пещеры 🕸', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры войти"})
         if player.build.market_lvl > 0:
-            keyboard.add_line()
             keyboard.add_button('✨ Торговля ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "рынок"})
         keyboard.add_line()
         keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_cave"})
