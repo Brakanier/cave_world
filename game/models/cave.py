@@ -114,9 +114,13 @@ class CaveProgress(models.Model):
     )
 
     def info(self):
-        mess = 'Вы сейчас на ' + str(self.level) + ' ур. пещер.\n' + \
-               'Вы доходили максимум до ' + str(self.max_level) + ' ур. этой пещеры.\n' + \
-               'Сокровищ найдено: ' + str(self.success)
+        start_mess = ''
+        if self.player.place == 'cave_go':
+            start_mess = 'Вы сейчас на ' + str(self.level) + ' ур. пещер.\n'
+
+        mess = start_mess
+        mess += 'Вы доходили максимум до ' + str(self.max_level) + ' ур. этой пещеры.\n' + \
+                'Сокровищ найдено: ' + str(self.success)
         return mess
 
     def start(self, action_time):
