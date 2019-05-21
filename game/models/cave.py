@@ -186,9 +186,7 @@ class CaveProgress(models.Model):
             self.player.save(update_fields=['place'])
 
         if bonus == 7:
-            self.max_level = 0
-
-        if bonus == 7:
+            self.max_level = 1
             start_mess += 'Впереди какое-то свечение...\n Вы подходите ближе...\n'
             self.success += 1
             CaveMap.objects.filter(pk=self.cave.pk).delete()

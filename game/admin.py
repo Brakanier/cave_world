@@ -90,4 +90,8 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(PromoCode)
 
 admin.site.register(CaveMap)
-admin.site.register(CaveProgress)
+
+
+@admin.register(CaveProgress)
+class CaveProgressAdmin(admin.ModelAdmin):
+    list_display = ('user_id', 'max_level', 'level')
