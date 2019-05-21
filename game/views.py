@@ -240,12 +240,12 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Menu'
         stat['action'] = 'Stock'
         stat['label'] = 'Склад'
-    elif command == 'build_cave' or command == 'подземелье':
+    elif command == 'build_cave':
         stat['category'] = 'Menu'
         stat['action'] = 'Build_Cave'
         stat['label'] = 'Строить_Подземелье'
         answer = player.cave_build()
-    elif command == 'build_land' or command == 'земли':
+    elif command == 'build_land':
         answer = player.land_build()
         stat['category'] = 'Menu'
         stat['action'] = 'Build_Land'
