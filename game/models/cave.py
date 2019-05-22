@@ -137,19 +137,21 @@ class CaveProgress(models.Model):
             return time_mess
         if self.player.war.sum_army() < 30:
             return "Для исследования пещер вам нужно минимум 30 ⚔ !"
+        mess = ''
         if not self.cave:
             self.cave = CaveMap.objects.get()
+            mess = 'Пещеры изменились!\n'
         self.level = 1
         self.max_level = 1
         self.time = action_time + 3600
         self.save(update_fields=['max_level', 'level', 'cave', 'time'])
         self.player.place = 'cave_go'
         self.player.save(update_fields=['place'])
-        mess = 'Вы зашли в пещеры!\n' + \
-               'Вы сейчас на ' + str(self.level) + ' ур. пещер.\n' + \
-               'Выберите в какую сторону идти:\n' + \
-               '- Пещеры налево\n' + \
-               '- Пещеры направо\n'
+        mess += 'Вы зашли в пещеры!\n' + \
+                'Вы сейчас на ' + str(self.level) + ' ур. пещер.\n' + \
+                'Выберите в какую сторону идти:\n' + \
+                '- Пещеры налево\n' + \
+                '- Пещеры направо\n'
         return mess
 
     def go(self, way):
@@ -274,14 +276,16 @@ class CaveProgress(models.Model):
             self.player.build.stock.res_add('diamond', 100)
             self.player.build.stock.res_add('gold', 200)
             self.player.build.stock.res_add('iron', 200)
-            self.player.build.stock.save(update_fields=['diamond', 'gold', 'iron'])
+            self.player.build.stock.skill += 10
+            self.player.build.stock.save(update_fields=['diamond', 'gold', 'iron', 'skull'])
+            self.player.energy += 20
+            self.player.save(update_fields=['energy'])
             bonus_mess = 'Поздравляю, вы нашли сокровища!!!\n' + \
                          '+10 Пещерных сундуков 🎁\n' + \
                          '+200' + icon('iron') + '\n' + \
                          '+100' + icon('diamond') + '\n' + \
                          '+200' + icon('gold') + '\n' + \
                          '+10' + icon('skull') + '\n' + \
-                         '+5' + icon('exp') + '\n' + \
                          '+20' + icon('energy')
 
         return bonus_mess
