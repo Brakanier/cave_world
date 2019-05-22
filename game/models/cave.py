@@ -279,7 +279,8 @@ class CaveProgress(models.Model):
             self.player.build.stock.skull += 10
             self.player.build.stock.save(update_fields=['diamond', 'gold', 'iron', 'skull'])
             self.player.energy += 20
-            self.player.save(update_fields=['energy'])
+            self.player.place = 'cave'
+            self.player.save(update_fields=['energy', 'place'])
             bonus_mess = 'Поздравляю, вы нашли сокровища!!!\n' + \
                          '+10 Пещерных сундуков 🎁\n' + \
                          '+200' + icon('iron') + '\n' + \
