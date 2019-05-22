@@ -94,4 +94,4 @@ admin.site.register(CaveMap)
 
 @admin.register(CaveProgress)
 class CaveProgressAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'max_level', 'level')
+    list_display = ('user_id', 'max_level', 'success')
