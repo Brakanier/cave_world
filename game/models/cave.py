@@ -276,7 +276,7 @@ class CaveProgress(models.Model):
             self.player.build.stock.res_add('diamond', 100)
             self.player.build.stock.res_add('gold', 200)
             self.player.build.stock.res_add('iron', 200)
-            self.player.build.stock.skill += 10
+            self.player.build.stock.skull += 10
             self.player.build.stock.save(update_fields=['diamond', 'gold', 'iron', 'skull'])
             self.player.energy += 20
             self.player.save(update_fields=['energy'])
