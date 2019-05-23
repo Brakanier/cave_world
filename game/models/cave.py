@@ -158,6 +158,8 @@ class CaveProgress(models.Model):
         if self.player.place != 'cave_go':
             return "Вы не в пещерах!\n- Пещеры войти"
         if not self.cave:
+            self.player.place = 'cave'
+            self.player.save(update_fields=['place'])
             return 'Кто-то нашёл сокровища...\n' + \
                    'Произошёл обвал...\n' + \
                    'Пути в пещерах изменились, начните исследование заново!\n' + \
