@@ -40,7 +40,7 @@ class CaveMap(models.Model):
             if one in (1, 2):
                 two = random.randint(3, 5)
             else:
-                two = random.randint(2, 3)
+                two = random.randint(1, 3)
             one, two = CaveMap.change(one, two)
             cave_map[level] = {
                 1: one,
@@ -51,7 +51,7 @@ class CaveMap(models.Model):
             if one in (0, 1, 2):
                 two = random.randint(3, 6)
             else:
-                two = random.randint(2, 3)
+                two = random.randint(0, 3)
             one, two = CaveMap.change(one, two)
             cave_map[level] = {
                 1: one,
@@ -108,6 +108,7 @@ class CaveProgress(models.Model):
     )
     success = models.IntegerField(
         default=0,
+        db_index=True,
     )
     time = models.BigIntegerField(
         default=0,

@@ -235,6 +235,8 @@ def action(command, player, action_time, chat_info):
         answer = player.top_defend()
     elif re.match(r'топ золото', command):
         answer = player.top_gold()
+    elif re.match(r'топ пещеры', command):
+        answer = player.top_cave()
     elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
         stat['category'] = 'Menu'
@@ -609,7 +611,7 @@ def action(command, player, action_time, chat_info):
                  '- Пещеры инфо\n' + \
                  '- Пещеры войти - начать исследование пещер\n' + \
                  '- Пещеры налево - выбор пути\n' + \
-                 '- Пещера направо - выбор пути\n' + \
+                 '- Пещеры направо - выбор пути\n' + \
                  '\n'
     elif command == 'пещеры инфо':
         if not player.cave_progress:

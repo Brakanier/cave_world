@@ -384,12 +384,13 @@ class Player(models.Model):
                   'По успешным нападениям ⚔ - топ атака\n' + \
                   'По успешным оборонам 🛡 - топ защита\n' + \
                   'По черепам 💀 - топ череп\n' + \
-                  'По золоту ✨ - топ золото\n'
+                  'По золоту ✨ - топ золото\n' + \
+                  'По пещерам 🕸 - топ пещеры\n'
 
         return message
 
     def top_lvl(self):
-        top = Player.objects.order_by('-lvl').values_list('nickname', 'lvl')[0:10]
+        top = Player.objects.order_by('-lvl')[0:10].values_list('nickname', 'lvl')
         count = 1
         main_message = 'Топ игроков по Уровню 👑\n'
         for user in top:
@@ -399,7 +400,7 @@ class Player(models.Model):
         return main_message
 
     def top_skull(self):
-        top = Player.objects.order_by('-build__stock__skull').values_list('nickname', 'build__stock__skull')[0:10]
+        top = Player.objects.order_by('-build__stock__skull')[0:10].values_list('nickname', 'build__stock__skull')
         count = 1
         main_message = 'Топ игроков по Черепам 💀\n'
         for user in top:
@@ -409,7 +410,7 @@ class Player(models.Model):
         return main_message
 
     def top_attack(self):
-        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_attack').values_list('nickname', 'war__success_attack')[0:10]
+        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_attack')[0:10].values_list('nickname', 'war__success_attack')
         count = 1
         main_message = 'Топ игроков по Успешным Атакам ⚔\n'
         for user in top:
@@ -419,7 +420,7 @@ class Player(models.Model):
         return main_message
 
     def top_defend(self):
-        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_defend').values_list('nickname', 'war__success_defend')[0:10]
+        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_defend')[0:10].values_list('nickname', 'war__success_defend')
         count = 1
         main_message = 'Топ игроков по Успешным Оборонам 🛡\n'
         for user in top:
@@ -429,11 +430,21 @@ class Player(models.Model):
         return main_message
 
     def top_gold(self):
-        top = Player.objects.order_by('-build__stock__gold').values_list('nickname', 'build__stock__gold')[0:10]
+        top = Player.objects.order_by('-build__stock__gold')[0:10].values_list('nickname', 'build__stock__gold')
         count = 1
         main_message = 'Топ Богачей ✨\n'
         for user in top:
             message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' ✨\n'
+            count += 1
+            main_message = main_message + message
+        return main_message
+
+    def top_cave(self):
+        top = Player.objects.filter(cave_progress__success__gt=0).order_by('-cave_progress__success')[0:10].values_list('nickname', 'cave_progress__success')
+        count = 1
+        main_message = 'Топ Исследователей 🕸\n'
+        for user in top:
+            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 🕸\n'
             count += 1
             main_message = main_message + message
         return main_message
