@@ -271,23 +271,43 @@ def action(command, player, action_time, chat_info):
 
     elif re.match(r'кости', command):
         if re.search(r'дерево', command):
-            answer = player.build.tavern_bones(action_time, 'wood', amount(command))
+            count = amount(command)
+            if count > 0:
+                answer = player.build.tavern_bones(action_time, 'wood', count)
+            else:
+                answer = "Вы пытаетесь сыграть на 0 ресурса!"
             stat['action'] = 'Wood'
             stat['label'] = 'Кости_Дерево'
         elif re.search(r'камень', command):
-            answer = player.build.tavern_bones(action_time, 'stone', amount(command))
+            count = amount(command)
+            if count > 0:
+                answer = player.build.tavern_bones(action_time, 'stone', count)
+            else:
+                answer = "Вы пытаетесь сыграть на 0 ресурса!"
             stat['action'] = 'Stone'
             stat['label'] = 'Кости_Камень'
         elif re.search(r'железо', command):
-            answer = player.build.tavern_bones(action_time, 'iron', amount(command))
+            count = amount(command)
+            if count > 0:
+                answer = player.build.tavern_bones(action_time, 'iron', count)
+            else:
+                answer = "Вы пытаетесь сыграть на 0 ресурса!"
             stat['action'] = 'Iron'
             stat['label'] = 'Кости_Железо'
         elif re.search(r'кристаллы', command):
-            answer = player.build.tavern_bones(action_time, 'diamond', amount(command))
+            count = amount(command)
+            if count > 0:
+                answer = player.build.tavern_bones(action_time, 'diamond', count)
+            else:
+                answer = "Вы пытаетесь сыграть на 0 ресурса!"
             stat['action'] = 'Diamond'
             stat['label'] = 'Кости_Кристалы'
         elif re.search(r'золото', command):
-            answer = player.build.tavern_bones(action_time, 'gold', amount(command))
+            count = amount(command)
+            if count > 0:
+                answer = player.build.tavern_bones(action_time, 'gold', count)
+            else:
+                answer = "Вы пытаетесь сыграть на 0 ресурса!"
             stat['action'] = 'Gold'
             stat['label'] = 'Кости_Золото'
         else:
