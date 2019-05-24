@@ -608,7 +608,7 @@ class Build(models.Model):
         if res == 'diamond':
             self.stock.diamond = min(self.stock.diamond + amount*2, self.stock.max)
         if res == 'gold':
-            self.stock.gold = min(self.stock.gold + amount*2, self.stock.max)
+            self.stock.gold = self.stock.gold + amount*2
         return self
 
     def build_market(self, action_time):
