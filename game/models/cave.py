@@ -277,7 +277,7 @@ class CaveProgress(models.Model):
             chest = get_chest('cave_chest')
             add_chest(self.player, chest, 10)
             self.player.build.stock.res_add('diamond', 100)
-            self.player.build.stock.res_add('gold', 200)
+            self.player.build.stock.gold += 200
             self.player.build.stock.res_add('iron', 200)
             self.player.build.stock.skull += 10
             self.player.build.stock.save(update_fields=['diamond', 'gold', 'iron', 'skull'])
