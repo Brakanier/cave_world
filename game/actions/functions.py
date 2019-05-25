@@ -253,14 +253,13 @@ def commands(player):
         war_scouting = ''
         war_attack = ''
         war_shield = ''
-    if not player.build.citadel:
-        buy_info = ''
-        warrior = ''
-        archer = ''
-        wizard = ''
-        army = ''
-    if player.lvl < 10 and not player.build.citadel:
-        war = ''
+        if not player.build.citadel:
+            war = ''
+            buy_info = ''
+            warrior = ''
+            archer = ''
+            wizard = ''
+            army = ''
     if not player.build.barracks:
         warrior = ''
     if not player.build.archery:
