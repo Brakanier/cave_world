@@ -32,7 +32,8 @@ class Command(BaseCommand):
                 self.stdout.write('OK - ' + str(chat_peer[0]))
             except:
                 chat_errors += 1
-                self.stdout.write('FAIL - ' + str(chat_peer[0]))
+                self.stdout.write('FAIL - ' + str(chat_peer[0]) + ' - DELETED')
+                Chat.objects.get(peer_id=chat_peer).delete()
             time.sleep(1)
 
         self.stdout.write('Chat Errors - ' + str(chat_errors))
