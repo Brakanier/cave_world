@@ -270,8 +270,8 @@ class CaveProgress(models.Model):
                          'Вы нашли проход на ' + str(lvl) + ' ур. пещер!\n'
         elif number == 6:
             chest = get_chest('cave_chest')
-            add_chest(self.player, chest, 5)
-            bonus_mess = 'Вы нашли 5 🎁 Пещерных Сундуков 🎁!\n' + \
+            add_chest(self.player, chest, 3)
+            bonus_mess = 'Вы нашли 3 🎁 Пещерных Сундуков 🎁!\n' + \
                          'Вы нашли проход на ' + str(lvl) + ' ур. пещер!\n'
         elif number == 7:
             chest = get_chest('cave_chest')
@@ -284,7 +284,8 @@ class CaveProgress(models.Model):
             self.player.energy += 20
             self.player.place = 'cave'
             self.player.save(update_fields=['energy', 'place'])
-            bonus_mess = 'Поздравляю, вы нашли сокровища!!!\n' + \
+            bonus_mess = 'Поздравляю!!!' + \
+                         'Вы нашли сокровища Хозяина Подземелий!\n' + \
                          '+10 Пещерных сундуков 🎁\n' + \
                          '+200' + icon('iron') + '\n' + \
                          '+100' + icon('diamond') + '\n' + \

@@ -662,6 +662,8 @@ def action(command, player, action_time, chat_info):
             player.save(update_fields=['cave_progress'])
         answer = player.cave_progress.go(2)
 
+    # Алтарь
+
     # Админ
 
     elif re.match(r'дать', command) and player.user_id == 55811116:
