@@ -142,8 +142,7 @@ def enter(chat_info, data):
                 message = 'Ваш ник - ' + player.nickname + '\n'
                 print('Новый пользователь - ' + player.nickname)
                 chat_info['nick'] = player.nickname
-                message += 'Совет:\n' + \
-                           'Напиши "команды", чтобы увидеть доступные команды!' + '\n' + \
+                message += 'Напиши "команды", чтобы узнать доступные команды!' + '\n' + \
                            'Команды открываются с уровнем и постройкой зданий' + '\n'
                 send(chat_info, message, get_keyboard(player))
             else:
