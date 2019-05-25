@@ -33,11 +33,11 @@ class Command(BaseCommand):
             except:
                 chat_errors += 1
                 self.stdout.write('FAIL - ' + str(chat_peer[0]) + ' - DELETED')
-                Chat.objects.get(peer_id=chat_peer).delete()
+                Chat.objects.get(peer_id=chat_peer[0]).delete()
             time.sleep(1)
 
         self.stdout.write('Chat Errors - ' + str(chat_errors))
-
+        '''
         players = Player.objects.filter(lvl__gt=1).values_list('user_id').all()
         parts = self.explode(players, 90)
         for part in parts:
@@ -56,7 +56,7 @@ class Command(BaseCommand):
                 self.stdout.write('FAIL')
             self.stdout.write('Users Send - ' + str(len(part)))
             time.sleep(1)
-
+        '''
         self.stdout.write('End sending')
 
 
