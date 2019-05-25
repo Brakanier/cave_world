@@ -150,63 +150,193 @@ def token():
     return '92ea5a422d8e327dbe40934fbeefd4ec722786ce5b63b1db627cc29e2180c45e01dc4eb273910b4b0a30c'
 
 
-def commands():
-    message = 'Список команд:\n' + \
-              icon('stock') + ' Ресурсы:\n' + \
-              '&#12288;' + icon('stone') + ' Камень [кол-во] - Добывает камень\n' + \
-              '&#12288;' + icon('wood') + ' Дерево [кол-во] - Добывает дерево\n' + \
-              '&#12288;' + icon('iron') + ' Железо [кол-во] - Добывает железо\n' + \
-              '&#12288;' + icon('diamond') + ' Кристаллы [кол-во] - Добывает кристаллы\n' + \
-              '&#12288;' + icon('stock') + ' Склад - Посмотреть склад\n' + \
-              '\n' + icon('build') + 'Здания:\n' + \
-              '&#12288;' + icon('citadel') + ' Здания - Информация о ваших зданиях\n' + \
-              '&#12288;' + icon('build') + ' Строить - Список доступных зданий для постройки\n' + \
-              '&#12288;' + icon('build') + ' Строить [здание] - Построить или улучшить здание\n' + \
-              '&#12288;' + icon('build') + ' Список зданий:\n' + \
-              '&#12288;&#12288;' + icon('stock') + ' Склад\n' + \
-              '&#12288;&#12288;' + icon('craft') + ' Кузница - позволяет ковать инструменты\n' + \
-              '&#12288;&#12288;' + icon('tavern') + ' Таверна - открывает игру в "Кости"\n' + \
-              '&#12288;&#12288;' + icon('citadel') + ' Цитадель - открывает доступ к новым зданиям\n' + \
-              '&#12288;&#12288;' + icon('sword') + ' Казармы - открывает найм Воинов\n' + \
-              '&#12288;&#12288;' + icon('target') + ' Стрельбище - открывает найм Лучников\n' + \
-              '&#12288;&#12288;' + icon('orb') + ' Башня Магов - открывает найм Магов\n' + \
-              '&#12288;&#12288;' + icon('build') + ' Башня - улучшает атаку\n' + \
-              '&#12288;&#12288;' + icon('build') + ' Стена - улучшает защиту\n' + \
-              '&#12288;&#12288;' + icon('stone') + ' Каменоломня - Добывает Камень раз в час\n' + \
-              '&#12288;&#12288;' + icon('wood') + ' Лесопилка - Добывает Дерево раз в час\n' + \
-              '&#12288;&#12288;' + icon('iron') + ' Рудник - Добывает Железо раз в час\n' + \
-              '&#12288;&#12288;' + icon('diamond') + ' Прииск - Добывает Кристаллы раз в час\n' + \
-              '&#12288;&#12288;' + icon('gold') + ' Торговый пост - купить/продать/отправить ресурсы\n' + \
-              '\n' + icon('war') + ' Война:\n' + \
-              '&#12288;' + icon('target') + ' Найм - Показывает стоимость найма армии\n' + \
-              '&#12288;' + icon('sword') + ' Воин [кол-во] - Нанимает Воинов\n' + \
-              '&#12288;' + icon('bow') + ' Лучник [кол-во] - Нанимает Лучников\n' + \
-              '&#12288;' + icon('orb') + ' Маг [кол-во] - Нанимает Магов\n' + \
-              '&#12288;' + icon('war') + ' Армия - Посмотреть свою армию\n' + \
-              '&#12288;' + icon('shield') + ' Щит - Проверить наличие щита от нападений\n' + \
-              '&#12288;' + icon('search') + ' Поиск - Поиск противника для нападения\n' + \
-              '&#12288;' + icon('search') + ' Разведка - информация о противнике (10' + icon('diamond') + ')\n' + \
-              '&#12288;' + icon('war') + ' Атака - Напасть на противника\n' + \
-              '\n' + icon('craft') + ' Кузница:\n' + \
-              '&#12288;' + icon('craft') + ' Ковать [предмет] - Ковать предметы в кузнице\n' + \
-              '&#12288;' + icon('craft') + ' Кирки - Список всех кирок для крафта\n' + \
-              '&#12288;' + icon('craft') + ' Список предметов:\n' + \
-              '&#12288;' + icon('get') + icon('stone') + ' Каменная кирка\n' + \
-              '&#12288;' + icon('get') + icon('iron') + ' Железная кирка\n' + \
-              '&#12288;' + icon('get') + icon('diamond') + ' Кристальная кирка\n' + \
-              '\n' + icon('bonus') + icon('cube') + ' Сундуки:\n' + \
-              '&#12288;' + icon('bonus') + icon('cube') + ' Открыть [название сундука] - открывает сундук\n' + \
-              '&#12288;' + icon('bonus') + icon('cube') + ' Сундуки - Показывает список ваших сундуков\n' + \
-              '\n' + icon('other') + ' Разное:\n' + \
-              '&#12288;' + icon('web') + ' Пещеры - Исследование пещер\n' + \
-              '&#12288;' + icon('gold') + ' Рынок - купить/продать ресурсы\n' + \
-              '&#12288;' + icon('bonus') + ' Бонус - получить ежедневный бонус\n' + \
-              '&#12288;' + icon('lvl') + ' Топ - посмотреть топ игроков\n' + \
-              '&#12288;' + icon('profile') + ' Профиль - посмотреть профиль\n' + \
-              '&#12288;' + icon('cube') + ' Кости [ресурс] [кол-во] - сыграть в кости\n' + \
-              '&#12288;' + icon('other') + ' Репорт [текст] - Написать админам\n' + \
-              '&#12288;' + icon('other') + ' Ник [новый ник] - Сменить ник\n' + \
-              '&#12288;' + icon('gold') + ' Донат - Даст ссылку для поддержки проекта\n' + \
+def commands(player):
+
+    # РЕСУРСЫ
+
+    res = '\n⬇ РЕСУРСЫ ⬇\n\n'
+    stock = icon('stock') + ' Склад - Посмотреть склад\n'
+    stone = icon('stone') + ' Камень [кол-во] - Добывает камень\n'
+    wood = icon('wood') + ' Дерево [кол-во] - Добывает дерево\n'
+    iron = icon('iron') + ' Железо [кол-во] - Добывает железо\n'
+    diamond = icon('diamond') + ' Кристаллы [кол-во] - Добывает кристаллы\n'
+
+    if not in_items(player.inventory.items.all(), 'stone_pickaxe'):
+        iron = ''
+    if not in_items(player.inventory.items.all(), 'iron_pickaxe'):
+        diamond = ''
+
+    # Здания
+
+    builds = '\n⬇ ЗДАНИЯ ⬇\n\n' + icon('citadel') + ' Здания - Информация о ваших зданиях\n'
+    build = icon('build') + ' Строить - Список доступных зданий для постройки\n'
+    build_stock = icon('stock') + ' Строить Склад - больше места\n'
+    build_forge = icon('craft') + ' Строить Кузница - позволяет ковать инструменты\n'
+    build_tavern = icon('tavern') + ' Строить Таверна - открывает игру в "Кости"\n'
+    build_market = icon('gold') + ' Строить Рынок - купить/продать/отправить ресурсы\n'
+    build_citadel = icon('citadel') + ' Строить Цитадель - открывает доступ к новым зданиям\n'
+    build_barracks = icon('sword') + ' Строить Казармы - открывает найм Воинов\n'
+    build_archery = icon('target') + ' Строить Стрельбище - открывает найм Лучников\n'
+    build_magic = icon('orb') + ' Строить Башня Магов - открывает найм Магов\n'
+    build_wall = icon('build') + ' Строить Стена - улучшает защиту\n'
+    build_tower = icon('build') + ' Строить Башня - улучшает атаку\n'
+    build_stone_mine = icon('stone') + ' Строить Каменоломня - Добывает Камень раз в час\n'
+    build_wood_mine = icon('wood') + ' Строить Лесопилка - Добывает Дерево раз в час\n'
+    build_iron_mine = icon('iron') + ' Строить Рудник - Добывает Железо раз в час\n'
+    build_diamond_mine = icon('diamond') + ' Строить Прииск - Добывает Кристаллы раз в час\n'
+
+    if player.build.forge:
+        build_forge = ''
+    if player.build.tavern:
+        build_tavern = ''
+    if player.build.market_lvl >= 10:
+        build_market = ''
+    if player.build.barracks:
+        build_barracks = ''
+    if player.build.archery:
+        build_archery = ''
+    if player.build.magic:
+        build_magic = ''
+    if player.build.citadel:
+        build_citadel = ''
+    else:
+        build_barracks = ''
+        build_archery = ''
+        build_magic = ''
+        build_wall = ''
+        build_tower = ''
+        build_stone_mine = ''
+        build_wood_mine = ''
+        build_iron_mine = ''
+        build_diamond_mine = ''
+
+    # КРАФТ
+
+    forge = '\n⬇ КУЗНИЦА ⬇\n\n' + icon('craft') + ' Кузница - крафт инфо\n'
+    pickaxes = icon('craft') + ' Кирки - Список кирок\n'
+    craft_stone = icon('get') + icon('stone') + ' Ковать Каменная кирка\n'
+    craft_iron = icon('get') + icon('iron') + ' Ковать Железная кирка\n'
+    craft_diamond = icon('get') + icon('diamond') + ' Ковать Кристальная кирка\n'
+
+    if not player.build.forge:
+        forge = ''
+        pickaxes = ''
+        craft_stone = ''
+        craft_iron = ''
+        craft_diamond = ''
+
+    if in_items(player.inventory.items.all(), 'stone_pickaxe'):
+        craft_stone = ''
+    if in_items(player.inventory.items.all(), 'iron_pickaxe'):
+        craft_iron = ''
+    if in_items(player.inventory.items.all(), 'diamond_pickaxe'):
+        craft_diamond = ''
+    if in_items(player.inventory.items.all(), 'stone_pickaxe') and in_items(player.inventory.items.all(), 'iron_pickaxe') and in_items(player.inventory.items.all(), 'diamond_pickaxe'):
+        forge = ''
+        pickaxes = ''
+
+    # ВОЙНА
+
+    war = '\n⬇ СРАЖЕНИЯ ⬇\n\n' + icon('war') + ' Война - война инфо\n'
+    war_search = icon('search') + ' Поиск - Поиск противника\n'
+    war_scouting = icon('search') + ' Разведка - информация о противнике (10' + icon('diamond') + ')\n'
+    war_attack = icon('war') + ' Атака - Атака противника\n'
+    war_shield = icon('shield') + ' Щит - Наличие щита\n'
+    buy_info = icon('target') + ' Найм - Стоимость найма\n'
+    warrior = icon('sword') + ' Воин [кол-во] - Нанимает Воинов\n'
+    archer = icon('bow') + ' Лучник [кол-во] - Нанимает Лучников\n'
+    wizard = icon('orb') + ' Маг [кол-во] - Нанимает Магов\n'
+    army = icon('war') + ' Армия - Ваша армия\n'
+
+    if player.lvl < 10:
+        war = ''
+        war_search = ''
+        war_scouting = ''
+        war_attack = ''
+        war_shield = ''
+    if not player.build.citadel:
+        buy_info = ''
+        warrior = ''
+        archer = ''
+        wizard = ''
+        army = ''
+    if not player.build.barracks:
+        warrior = ''
+    if not player.build.archery:
+        archer = ''
+    if not player.build.magic:
+        wizard = ''
+
+    # СУНДУКИ
+
+    chests = '\n⬇ СУНДУКИ ⬇\n\n' + icon('bonus') + icon('cube') + ' Сундуки - Список ваших сундуков\n'
+    open_chest = icon('bonus') + icon('cube') + ' Открыть [название сундука] - Открывает сундук\n'
+
+    # РАЗНОЕ
+
+    caves = icon('web') + ' Пещеры - Исследование пещер\n'
+    market = icon('gold') + ' Рынок - купить/продать ресурсы\n'
+    bones = icon('cube') + ' Кости [ресурс] [кол-во] - сыграть в кости\n'
+
+    if player.build.market_lvl == 0:
+        market = ''
+    if not player.build.tavern:
+        bones = ''
+    if not player.build.citadel:
+        caves = ''
+
+    message = 'Список доступных команд:\n' + \
+              res + \
+              stock + \
+              stone + \
+              wood + \
+              iron + \
+              diamond + \
+              builds + \
+              build + \
+              build_stock + \
+              build_forge + \
+              build_tavern + \
+              build_market + \
+              build_citadel + \
+              build_barracks + \
+              build_archery + \
+              build_magic + \
+              build_wall + \
+              build_tower + \
+              build_stone_mine + \
+              build_wood_mine + \
+              build_iron_mine + \
+              build_diamond_mine + \
+              forge + \
+              pickaxes + \
+              craft_stone + \
+              craft_iron + \
+              craft_diamond + \
+              war + \
+              war_search + \
+              war_scouting + \
+              war_attack + \
+              war_shield + \
+              buy_info + \
+              warrior + \
+              archer + \
+              wizard + \
+              army + \
+              chests + \
+              open_chest + \
+              '\n⬇ РАЗНОЕ ⬇\n\n' + \
+              caves + \
+              bones + \
+              market + \
+              icon('bonus') + ' Бонус - получить ежедневный бонус\n' + \
+              icon('lvl') + ' Топ - посмотреть топ игроков\n' + \
+              icon('profile') + ' Лорд - посмотреть свой профиль\n' + \
+              icon('other') + ' Репорт [текст] - Написать админам\n' + \
+              icon('other') + ' Ник [новый ник] - Сменить ник\n' + \
+              icon('gold') + ' Донат - Поддержка проекта\n' + \
+              icon('help') + ' Помощь - Подробное описание всех команд\n' + \
+              '\nКоманды открываются с уровнем и постройкой зданий!\n' + \
               '\nЕсли вам что-то непонятно, воспользуйтесь командой "Репорт"'
     return message
 

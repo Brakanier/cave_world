@@ -143,10 +143,8 @@ def enter(chat_info, data):
                 print('Новый пользователь - ' + player.nickname)
                 chat_info['nick'] = player.nickname
                 message += 'Совет:\n' + \
-                           '1) Добудь немного камня' + icon('stone') + '\n' + \
-                           '2) Построй Кузницу' + icon('build') + icon('craft') + '\n' + \
-                           '3) Скрафть Каменную кирку' + icon('get') + '\n' + \
-                           'Напиши "помощь", чтобы увидеть список команд!'
+                           'Напиши "команды", чтобы увидеть доступные команды!' + '\n' + \
+                           'Команды открываются с уровнем и постройкой зданий' + '\n'
                 send(chat_info, message, get_keyboard(player))
             else:
                 chat_info['nick'] = "Новый игрок"
@@ -188,7 +186,7 @@ def action(command, player, action_time, chat_info):
         answer = 'Вы можете поддержать проект по ссылке:\n' + 'https://vk.com/app6471849_-176853872'
 
     if command == '!команды' or command == 'команды':
-        answer = commands()
+        answer = commands(player)
         stat['category'] = 'Menu'
         stat['action'] = 'Help'
         stat['label'] = 'Помощь'
@@ -555,7 +553,7 @@ def action(command, player, action_time, chat_info):
     elif command == "строить рынок"\
             or command == "строить торговый пост"\
             or command == "улучшить рынок"\
-            or command == "улучшить рынок":
+            or command == "улучшить торговый пост":
         answer = player.build.build_market(action_time)
 
     elif re.match(r'отправить', command):
