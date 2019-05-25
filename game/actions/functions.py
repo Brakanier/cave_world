@@ -249,7 +249,6 @@ def commands(player):
     army = icon('war') + ' Армия - Ваша армия\n'
 
     if player.lvl < 10:
-        war = ''
         war_search = ''
         war_scouting = ''
         war_attack = ''
@@ -260,6 +259,8 @@ def commands(player):
         archer = ''
         wizard = ''
         army = ''
+    if player.lvl < 10 and not player.build.citadel:
+        war = ''
     if not player.build.barracks:
         warrior = ''
     if not player.build.archery:
