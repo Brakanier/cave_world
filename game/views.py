@@ -301,7 +301,9 @@ def action(command, player, action_time, chat_info):
             stat['label'] = 'Кости_Кристалы'
         elif re.search(r'золото', command):
             count = amount(command)
-            if count > 0:
+            if count > 1000:
+                answer = "Максимальная ставка золотом 1000!"
+            elif 0 < count <= 1000:
                 answer = player.build.tavern_bones(action_time, 'gold', count)
             else:
                 answer = "Вы пытаетесь сыграть на 0 ресурса!"
@@ -653,16 +655,14 @@ def action(command, player, action_time, chat_info):
             cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
             player.cave_progress = cave_progress
             player.save(update_fields=['cave_progress'])
-        answer = player.cave_progress.go(1)
+        answer = player.cave_progress.go(1, action_time)
     elif command == 'пещеры направо':
         if not player.cave_progress:
             cave = CaveMap.objects.get()
             cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
             player.cave_progress = cave_progress
             player.save(update_fields=['cave_progress'])
-        answer = player.cave_progress.go(2)
-
-    # Алтарь
+        answer = player.cave_progress.go(2, action_time)
 
     # Админ
 
@@ -688,6 +688,14 @@ def action(command, player, action_time, chat_info):
             add_chest(player, chest, 3)
             answer = 'Код активирован!\n' + \
                      'Получено 3 подарочных сундука!\n'
+
+    # Алтарь
+    '''
+    elif command == 'алтарь':
+        answer = 'Оставьте дары для Хозяина Подземелий!'
+    elif re.match(r'алтарь', command):
+        pass
+    '''
 
     send(chat_info, answer, get_keyboard(player, action_time))
 

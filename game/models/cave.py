@@ -136,6 +136,17 @@ class CaveProgress(models.Model):
                         str(minutes % 60) + ' м. ' + \
                         str(sec % 60) + ' сек. ⏳'
             return time_mess
+        if self.time - action_time > 3600:
+            cave_time = self.time - action_time
+            sec = cave_time
+            minutes = sec // 60
+            hour = minutes // 60
+            time_mess = 'Вы нашли сокровища, Хозяин Подземелий закрыл вам проход в пещеры.\n' + \
+                        'Проход откроется через: ' + \
+                        str(hour % 24) + ' ч. ' + \
+                        str(minutes % 60) + ' м. ' + \
+                        str(sec % 60) + ' сек. ⏳'
+            return time_mess
         if self.player.war.sum_army() < 30:
             return "Для исследования пещер вам нужно минимум 30 ⚔ !"
         mess = ''
@@ -155,7 +166,7 @@ class CaveProgress(models.Model):
                 '- Пещеры направо\n'
         return mess
 
-    def go(self, way):
+    def go(self, way, action_time):
         if self.player.place != 'cave_go':
             return "Вы не в пещерах!\n- Пещеры войти"
         if not self.cave:
@@ -194,12 +205,13 @@ class CaveProgress(models.Model):
             self.max_level = 1
             start_mess += 'Впереди какое-то свечение...\n Вы подходите ближе...\n'
             self.success += 1
+            self.time = action_time + 3600 * 6
             CaveMap.objects.filter(pk=self.cave.pk).delete()
             cave = CaveMap.objects.create()
             cave.cave_map = cave.generate()
             cave.save()
 
-        self.save(update_fields=['level', 'max_level', 'success'])
+        self.save(update_fields=['level', 'max_level', 'success', 'time'])
 
         message = start_mess + bonus_mess + end_mess
         return message

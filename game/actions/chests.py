@@ -81,8 +81,8 @@ def open_trophy_chest(player, chest):
                     player.build.stock.gold += reward.trophy.value
                 elif reward.trophy.slug == 'diamond':
                     player.build.stock.diamond += reward.trophy.value
-                print(str(reward.trophy) + ' +' + str(reward.trophy.value))
-                message += icon(reward.trophy.slug) + ' ' + str(reward.trophy) + ' +' + str(reward.trophy.value) + '\n'
+                print(str(reward.trophy) + ' + ' + str(reward.trophy.value))
+                message += icon(reward.trophy.slug) + ' ' + str(reward.trophy) + ' + ' + str(reward.trophy.value) + '\n'
         player.build.stock.save(update_fields=['wood', 'stone', 'iron', 'diamond', 'gold'])
         if message:
             message = 'Награда с сундука:\n' + message
