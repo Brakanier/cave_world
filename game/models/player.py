@@ -726,12 +726,20 @@ class Player(models.Model):
                 chest = Chest.objects.get(slug=slug)
                 add_chest(addr, chest, amount)
 
-                chat_info = {
-                    'user_id': addr.user_id,
-                    'peer_id': addr.chat_id,
-                    'chat_id': addr.chat_id - 2000000000,
-                    'nick': addr.nickname,
-                }
+                if addr.chat_id != 0:
+                    chat_info = {
+                        'user_id': addr.user_id,
+                        'peer_id': addr.chat_id,
+                        'chat_id': addr.chat_id - 2000000000,
+                        'nick': addr.nickname,
+                    }
+                else:
+                    chat_info = {
+                        'user_id': addr.user_id,
+                        'peer_id': addr.user_id,
+                        'chat_id': addr.user_id,
+                        'nick': addr.nickname,
+                    }
                 mess = 'Вам выдали ' + str(amount) + ' ' + chest.title
                 send(chat_info, mess)
 
@@ -753,12 +761,20 @@ class Player(models.Model):
                 player.build.stock.skull += amount
                 player.build.stock.save(update_fields=['skull'])
 
-                chat_info = {
-                    'user_id': player.user_id,
-                    'peer_id': player.chat_id,
-                    'chat_id': player.chat_id - 2000000000,
-                    'nick': player.nickname,
-                }
+                if player.chat_id != 0:
+                    chat_info = {
+                        'user_id': player.user_id,
+                        'peer_id': player.chat_id,
+                        'chat_id': player.chat_id - 2000000000,
+                        'nick': player.nickname,
+                    }
+                else:
+                    chat_info = {
+                        'user_id': player.user_id,
+                        'peer_id': player.user_id,
+                        'chat_id': player.user_id,
+                        'nick': player.nickname,
+                    }
                 
                 mess = 'Вам выдано ' + str(amount) + ' 💀 за поддержку проекта!'
                 send(chat_info, mess)
