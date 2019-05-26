@@ -125,6 +125,17 @@ class CaveProgress(models.Model):
         return mess
 
     def start(self, action_time):
+        if (self.time - action_time) > 3600:
+            cave_time = self.time - action_time
+            sec = cave_time
+            minutes = sec // 60
+            hour = minutes // 60
+            time_mess = 'Вы нашли сокровища, Хозяин Подземелий закрыл вам проход в пещеры.\n' + \
+                        'Проход откроется через: ' + \
+                        str(hour % 24) + ' ч. ' + \
+                        str(minutes % 60) + ' м. ' + \
+                        str(sec % 60) + ' сек. ⏳'
+            return time_mess
         if action_time < self.time:
             cave_time = self.time - action_time
             sec = cave_time
@@ -132,17 +143,6 @@ class CaveProgress(models.Model):
             hour = minutes // 60
             time_mess = 'В пещеры можно отправиться раз в час.\n' + \
                         'До следующего раза: ' + \
-                        str(hour % 24) + ' ч. ' + \
-                        str(minutes % 60) + ' м. ' + \
-                        str(sec % 60) + ' сек. ⏳'
-            return time_mess
-        if self.time - action_time > 3600:
-            cave_time = self.time - action_time
-            sec = cave_time
-            minutes = sec // 60
-            hour = minutes // 60
-            time_mess = 'Вы нашли сокровища, Хозяин Подземелий закрыл вам проход в пещеры.\n' + \
-                        'Проход откроется через: ' + \
                         str(hour % 24) + ' ч. ' + \
                         str(minutes % 60) + ' м. ' + \
                         str(sec % 60) + ' сек. ⏳'
