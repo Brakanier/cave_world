@@ -666,6 +666,18 @@ def action(command, player, action_time, chat_info):
 
     # Админ
 
+    elif command == 'all gold' and player.user_id == 55811116:
+        stocks = Stock.objects.all()
+        gold = 0
+        for stock in stocks:
+            gold += stock.gold
+        answer = 'Всего золота: ' + str(gold) + icon('gold')
+    elif command == 'all skull' and player.user_id == 55811116:
+        stocks = Stock.objects.all()
+        skull = 0
+        for stock in stocks:
+            skull += stock.skull
+        answer = 'Всего черепов: ' + str(skull) + icon('skull')
     elif re.match(r'give', command) and player.user_id == 55811116:
         if re.match(r'give skull', command):
             answer = Player.give_skull(command)
