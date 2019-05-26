@@ -44,6 +44,7 @@ class Stock(models.Model):
         verbose_name_plural = 'Склады'
 
     def stock(self, build, action_time):
+        print('Начало функции')
         self = build.get_passive(action_time)
         message = 'Склад - ' + str(self.lvl) + ' ур.' + '\n' + \
                   'Камень: ' + str(self.stone) + '/' + str(self.max) + icon('stone') + '\n' + \

@@ -666,8 +666,11 @@ def action(command, player, action_time, chat_info):
 
     # Админ
 
-    elif re.match(r'дать', command) and player.user_id == 55811116:
-        answer = Player.give_chests(command)
+    elif re.match(r'give', command) and player.user_id == 55811116:
+        if re.match(r'give skull', command):
+            answer = Player.give_skull(command)
+        else:
+            answer = Player.give_chests(command)
     elif command == 'gencave' and player.user_id == 55811116:
         try:
             CaveMap.objects.get().delete()

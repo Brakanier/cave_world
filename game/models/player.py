@@ -725,12 +725,50 @@ class Player(models.Model):
                 addr = Player.objects.get(user_id=id)
                 chest = Chest.objects.get(slug=slug)
                 add_chest(addr, chest, amount)
+
+                chat_info = {
+                    'user_id': addr.user_id,
+                    'peer_id': addr.chat_id,
+                    'chat_id': addr.chat_id - 2000000000,
+                    'nick': addr.nickname,
+                }
+                mess = 'Вам выдали ' + str(amount) + ' ' + chest.title
+                send(chat_info, mess)
+
                 return 'Выдано: ' + str(amount) + ' ' + chest.title + ' для ' + addr.nickname
             except Player.DoesNotExist:
                 return "Игрок не найден!"
             except Chest.DoesNotExist:
                 return "Сундук не найден!"
         return "Ошибка"
+
+    @staticmethod
+    def give_skull(command):
+        part = command.split()
+        if len(part) == 4 and part[1] == 'skull' and part[2].isdigit() and part[3].isdigit():
+            id = int(part[2])
+            amount = int(part[3])
+            try:
+                player = Player.objects.filter(user_id=id).select_related('build__stock').get()
+                player.build.stock.skull += amount
+                player.build.stock.save(update_fields=['skull'])
+
+                chat_info = {
+                    'user_id': player.user_id,
+                    'peer_id': player.chat_id,
+                    'chat_id': player.chat_id - 2000000000,
+                    'nick': player.nickname,
+                }
+                
+                mess = 'Вам выдано ' + str(amount) + ' 💀 за поддержку проекта!'
+                send(chat_info, mess)
+
+                nick = '[id' + str(player.user_id) + '|' + player.nickname + ']\n'
+                mess = 'Выдано: ' + str(amount) + ' 💀 для ' + nick
+
+                return mess
+            except Player.DoesNotExist:
+                return "Игрок не найден!"
 
     def change_nickname(self, nick, action_time):
         if action_time < self.change_nickname_time:
@@ -754,3 +792,4 @@ class Player(models.Model):
             self.nickname = nick
             self.save(update_fields=['nickname', 'change_nickname_time'])
             return 'Ваш ник - ' + self.nickname
+
