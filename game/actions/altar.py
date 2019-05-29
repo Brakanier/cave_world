@@ -51,14 +51,14 @@ def altar(command, player, action_time):
         if player.change_nickname_time <= action_time:
             mess = "Вы и так можете сменить ник!"
         else:
-            if player.build.stock.skull >= 10:
-                player.build.stock.skull -= 10
+            if player.build.stock.skull >= 5:
+                player.build.stock.skull -= 5
                 player.change_nickname_time = 0
                 player.save(update_fields=['change_nickname_time'])
                 player.build.stock.save(update_fields=['skull'])
                 mess = 'Хранитель Подземелья позволяет сменить ваше имя!'
             else:
-                mess = 'Не хватает черепов - нужно 10' + icon('skull')
+                mess = 'Не хватает черепов - нужно 5' + icon('skull')
 
         return mess
 
