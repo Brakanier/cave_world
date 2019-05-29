@@ -118,7 +118,8 @@ def send(chat_info, message, keyboard=None):
                 peer_id=str(chat_info['user_id']),
                 keyboard=keyboard,
                 message=message,
-                random_id=get_random_id()
+                random_id=get_random_id(),
+                disable_mentions=1,
             )
         else:
             message = '[id' + str(chat_info['user_id']) + '|' + chat_info['nick'] + ']\n' + message
@@ -128,7 +129,8 @@ def send(chat_info, message, keyboard=None):
                 chat_id=str(chat_info['chat_id']),
                 keyboard=keyboard_for_chat(),
                 message=message,
-                random_id=get_random_id()
+                random_id=get_random_id(),
+                disable_mentions=1,
             )
 
 
