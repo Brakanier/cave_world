@@ -173,19 +173,21 @@ def action(command, player, action_time, chat_info):
         'value': 1,
     }
 
-    if re.match(r'ник ', command.lower()):
+    if command == 'ник' or command == 'ник время':
+        answer = player.check_change_nickname_time(action_time)
+    elif re.match(r'ник ', command.lower()):
         part = command.split()
         if len(part) >= 2:
             nick = command[4:]
             answer = player.change_nickname(nick, action_time)
         else:
             answer = "Вы не указали ник!\nНик [новый ник]"
+
     command = command.lower()
 
     # Меню
-    if command == 'ник' or command == 'ник время':
-        answer = player.check_change_nickname_time(action_time)
-    elif re.match(r'донат', command):
+
+    if re.match(r'донат', command):
         answer = 'Вы можете поддержать проект по ссылке:\n' + \
                  'https://vk.com/app6471849_-176853872\n\n' + \
                  'За поддержку проекта вы получите черепа.'
