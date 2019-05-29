@@ -574,8 +574,9 @@ class War(models.Model):
                                                                         defend_last_time=defender.war.defend_last_time,
                                                                         shield=defender.war.shield,
                                                                         success_defend=defender.war.success_defend)
-
+                    
                     defender.war.send_defender(message_def)
+
 
             else:
                 message = 'Найдите противника для нападения!'

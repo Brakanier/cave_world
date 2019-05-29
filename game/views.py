@@ -186,7 +186,9 @@ def action(command, player, action_time, chat_info):
     if command == 'ник' or command == 'ник время':
         answer = player.check_change_nickname_time(action_time)
     elif re.match(r'донат', command):
-        answer = 'Вы можете поддержать проект по ссылке:\n' + 'https://vk.com/app6471849_-176853872'
+        answer = 'Вы можете поддержать проект по ссылке:\n' + \
+                 'https://vk.com/app6471849_-176853872\n\n' + \
+                 'За поддержку проекта вы получите черепа.'
 
     elif command == '!команды' or command == 'команды':
         answer = commands(player)
