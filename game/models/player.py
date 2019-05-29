@@ -21,6 +21,9 @@ class Player(models.Model):
         default=0,
         blank=True,
     )
+    distribution = models.BooleanField(
+        default=True,
+    )
     first_name = models.CharField(
         max_length=30,
         blank=True,
@@ -390,61 +393,61 @@ class Player(models.Model):
         return message
 
     def top_lvl(self):
-        top = Player.objects.order_by('-lvl')[0:10].values_list('nickname', 'lvl')
+        top = Player.objects.order_by('-lvl')[0:10].values_list('nickname', 'lvl', 'user_id')
         count = 1
         main_message = 'Топ игроков по Уровню 👑\n'
         for user in top:
-            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 👑\n'
+            message = str(count) + ' | [id' + str(user[2]) + '|' + user[0] + '] - ' + str(user[1]) + ' 👑\n'
             count += 1
             main_message = main_message + message
         return main_message
 
     def top_skull(self):
-        top = Player.objects.order_by('-build__stock__skull')[0:10].values_list('nickname', 'build__stock__skull')
+        top = Player.objects.order_by('-build__stock__skull')[0:10].values_list('nickname', 'build__stock__skull', 'user_id')
         count = 1
         main_message = 'Топ игроков по Черепам 💀\n'
         for user in top:
-            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 💀\n'
+            message = str(count) + ' | [id' + str(user[2]) + '|' + user[0] + '] - ' + str(user[1]) + ' 💀\n'
             count += 1
             main_message = main_message + message
         return main_message
 
     def top_attack(self):
-        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_attack')[0:10].values_list('nickname', 'war__success_attack')
+        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_attack')[0:10].values_list('nickname', 'war__success_attack', 'user_id')
         count = 1
         main_message = 'Топ игроков по Успешным Атакам ⚔\n'
         for user in top:
-            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' ⚔\n'
+            message = str(count) + ' | [id' + str(user[2]) + '|' + user[0] + '] - ' + str(user[1]) + ' ⚔\n'
             count += 1
             main_message = main_message + message
         return main_message
 
     def top_defend(self):
-        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_defend')[0:10].values_list('nickname', 'war__success_defend')
+        top = Player.objects.filter(lvl__gte=10).order_by('-war__success_defend')[0:10].values_list('nickname', 'war__success_defend', 'user_id')
         count = 1
         main_message = 'Топ игроков по Успешным Оборонам 🛡\n'
         for user in top:
-            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 🛡\n'
+            message = str(count) + ' | [id' + str(user[2]) + '|' + user[0] + '] - ' + str(user[1]) + ' 🛡\n'
             count += 1
             main_message = main_message + message
         return main_message
 
     def top_gold(self):
-        top = Player.objects.order_by('-build__stock__gold')[0:10].values_list('nickname', 'build__stock__gold')
+        top = Player.objects.order_by('-build__stock__gold')[0:10].values_list('nickname', 'build__stock__gold', 'user_id')
         count = 1
         main_message = 'Топ Богачей ✨\n'
         for user in top:
-            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' ✨\n'
+            message = str(count) + ' | [id' + str(user[2]) + '|' + user[0] + '] - ' + str(user[1]) + ' ✨\n'
             count += 1
             main_message = main_message + message
         return main_message
 
     def top_cave(self):
-        top = Player.objects.filter(cave_progress__success__gt=0).order_by('-cave_progress__success')[0:10].values_list('nickname', 'cave_progress__success')
+        top = Player.objects.filter(cave_progress__success__gt=0).order_by('-cave_progress__success')[0:10].values_list('nickname', 'cave_progress__success', 'user_id')
         count = 1
         main_message = 'Топ Исследователей 🕸\n'
         for user in top:
-            message = str(count) + ' | ' + str(user[0]) + ' - ' + str(user[1]) + ' 🕸\n'
+            message = str(count) + ' | [id' + str(user[2]) + '|' + user[0] + '] - ' + str(user[1]) + ' 🕸\n'
             count += 1
             main_message = main_message + message
         return main_message
@@ -717,16 +720,20 @@ class Player(models.Model):
     @staticmethod
     def give_chests(command):
         part = command.split()
-        if len(part) == 4 and part[2].isdigit() and part[3].isdigit():
+        if len(part) == 4 and part[3].isdigit():
+            if part[2].isdigit():
+                id = int(part[2])
+            else:
+                id = get_id(part[2])
+
             slug = part[1]
-            id = int(part[2])
             amount = int(part[3])
             try:
                 addr = Player.objects.get(user_id=id)
                 chest = Chest.objects.get(slug=slug)
                 add_chest(addr, chest, amount)
 
-                if addr.chat_id != 0:
+                if addr.chat_id != 0 and addr.chat_id != addr.user_id:
                     chat_info = {
                         'user_id': addr.user_id,
                         'peer_id': addr.chat_id,
@@ -743,7 +750,10 @@ class Player(models.Model):
                 mess = 'Вам выдали ' + str(amount) + ' ' + chest.title
                 send(chat_info, mess)
 
-                return 'Выдано: ' + str(amount) + ' ' + chest.title + ' для ' + addr.nickname
+                nick = '[id' + str(addr.user_id) + '|' + addr.nickname + ']\n'
+                mess = 'Выдано: ' + str(amount) + ' ' + chest.title + ' для ' + nick
+
+                return mess
             except Player.DoesNotExist:
                 return "Игрок не найден!"
             except Chest.DoesNotExist:
@@ -753,15 +763,19 @@ class Player(models.Model):
     @staticmethod
     def give_skull(command):
         part = command.split()
-        if len(part) == 4 and part[1] == 'skull' and part[2].isdigit() and part[3].isdigit():
-            id = int(part[2])
+        if len(part) == 4 and part[1] == 'skull' and part[3].isdigit():
+            if part[2].isdigit():
+                id = int(part[2])
+            else:
+                id = get_id(part[2])
+
             amount = int(part[3])
             try:
                 player = Player.objects.filter(user_id=id).select_related('build__stock').get()
                 player.build.stock.skull += amount
                 player.build.stock.save(update_fields=['skull'])
 
-                if player.chat_id != 0:
+                if player.chat_id != 0 and player.chat_id != player.user_id:
                     chat_info = {
                         'user_id': player.user_id,
                         'peer_id': player.chat_id,
@@ -807,5 +821,22 @@ class Player(models.Model):
             self.change_nickname_time = action_time + NICKNAME_TIME
             self.nickname = nick
             self.save(update_fields=['nickname', 'change_nickname_time'])
-            return 'Ваш ник - ' + self.nickname
+            return 'Ваш ник - ' + self.nickname + \
+                   '\n Напишите "ник" или "ник время", чтобы узнать когда можно будет сменить ник!'
+
+    def check_change_nickname_time(self, action_time):
+        if action_time < self.change_nickname_time:
+            nick_time = self.change_nickname_time - action_time
+            sec = nick_time
+            minutes = sec // 60
+            hour = minutes // 60
+            day = hour // 24
+            message = 'Время до смены ника:\n' + \
+                      str(day) + ' дней ' + \
+                      str(hour % 24) + ' ч. ' + \
+                      str(minutes % 60) + ' м. ' + \
+                      str(sec % 60) + ' сек. ⏳'
+            return message
+        else:
+            return "Вы можете сменить ник!\nНик [Новый ник]"
 

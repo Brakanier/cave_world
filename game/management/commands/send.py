@@ -38,8 +38,10 @@ class Command(BaseCommand):
 
         self.stdout.write('Chat Errors - ' + str(chat_errors))
 
-        players = Player.objects.filter(lvl__gt=1).values_list('user_id').all()
-        parts = self.explode(players, 90)
+        players = Player.objects.filter(lvl__gte=1, distribution=True).values_list('user_id').all()
+        parts = self.explode(players, 99)
+        message.text += '\n\nВы можете отключить рассылку командой "/send off"' + \
+                        '\nВключить рассылку можно командой "/send on"'
         for part in parts:
             peer_ids = "1"
             for user in part:

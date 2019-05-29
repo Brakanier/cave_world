@@ -160,7 +160,7 @@ class War(models.Model):
             return message
         find_time = action_time - self.find_last_time
         if find_time >= FIND_TIME:
-            lvl = max(lvl - 10, 15)
+            lvl = max(lvl - 15, 15)
             defenders = Player.objects.filter(build__citadel=True, lvl__gte=lvl, war__shield__lte=action_time).exclude(
                 user_id=self.user_id).all()
 
@@ -168,7 +168,7 @@ class War(models.Model):
                 defender = random.choice(defenders)
                 self.enemy_id = defender.user_id
                 message = 'Найден противник!\n' + \
-                          'Ник: ' + defender.nickname + '\n' + \
+                          'Ник: [id' + str(defender.user_id) + '|' + defender.nickname + ']\n' + \
                           'Вы можете разведывать противника:\n' + \
                           'Разведка - информация о противнике (10' + icon('diamond') + ')'
             else:
@@ -182,7 +182,7 @@ class War(models.Model):
         else:
             minutes = (FIND_TIME - find_time) // 60
             sec = (FIND_TIME - find_time) - (minutes * 60)
-            message = 'Искать противника можно раз в 5 минут\n' + \
+            message = 'Искать противника можно раз в 1 минуту\n' + \
                       'До следующего поиска: ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
         return message
 
@@ -191,7 +191,7 @@ class War(models.Model):
             defender = Player.objects.get(user_id=self.enemy_id)
             if defender.war.shield > action_time:
                 message = 'Вы опоздали!\n' + \
-                          'На ' + defender.nickname + ' уже напали!\n' + \
+                          'На [id' + str(defender.user_id) + '|' + defender.nickname + '] уже напали!\n' + \
                           'Найдите нового противника!'
                 self.enemy_id = None
                 War.objects.filter(user_id=self.user_id).update(enemy_id=self.enemy_id)
@@ -201,12 +201,12 @@ class War(models.Model):
                 def_army = defender.war.sum_army()
                 def_army_min = max(def_army - random.randint(30, 100), 0)
                 def_army_max = def_army + random.randint(30, 100)
-                message = 'Разведка: ' + defender.nickname + '\n' + \
+                message = 'Разведка: [id' + str(defender.user_id) + '|' + defender.nickname + ']\n' + \
                           'Уровень: ' + str(defender.lvl) + icon('lvl') + '\n' + \
                           'Армия: ' + str(def_army_min) + ' ~ ' + str(def_army_max) + icon('war')
                 rand_scouting = random.randint(0, 100)
                 if rand_scouting >= 0:
-                    def_message = 'Вас разведывал: ' + self.player.nickname
+                    def_message = 'Вас разведывал: [id' + str(self.player.user_id) + '|' + self.player.nickname + ']'
                     defender.war.send_defender(def_message)
             else:
                 message = "Нужно 10 " + icon('diamond')
@@ -240,12 +240,13 @@ class War(models.Model):
 
     def sum_attack(self, enemy):
         on_war, on_arch, on_wiz = self.get_attack()
+
         if enemy.war.warrior <= 0:
-            on_war = 0
+            on_war = on_war / 2
         if enemy.war.archer <= 0:
-            on_arch = 0
+            on_arch = on_arch / 2
         if enemy.war.wizard <= 0:
-            on_wiz = 0
+            on_wiz = on_wiz / 2
         sum_attack = on_war + on_arch + on_wiz
         return sum_attack
 
@@ -337,11 +338,11 @@ class War(models.Model):
 
                 # Проверка противника на наличие щита
 
-                defender = Player.objects.get(user_id=self.enemy_id)
+                defender = Player.objects.select_related('war', 'build', 'build__stock').get(user_id=self.enemy_id)
 
                 if defender.war.shield > action_time:
                     message = 'Вы опоздали!\n' + \
-                              'На ' + defender.nickname + ' уже напали!\n' + \
+                              'На [id' + str(defender.user_id) + '|' + defender.nickname + '] уже напали!\n' + \
                               'Найдите нового противника!'
                     self.enemy_id = None
                     self.save(update_fields=['enemy_id'])
@@ -386,6 +387,7 @@ class War(models.Model):
                         cost_wood = int(defender.build.stock.wood / 10)
                         cost_iron = int(defender.build.stock.iron / 10)
                         cost_diamond = int(defender.build.stock.diamond / 10)
+                        cost_gold = int(defender.build.stock.gold / 20)
 
                         # Переопределения, если бьёшь слабого
 
@@ -398,6 +400,7 @@ class War(models.Model):
                             cost_wood = 0
                             cost_iron = 0
                             cost_diamond = 0
+                            cost_gold = cost_gold // 5
                         elif a_sum_army / d_sum_army > 2:
                             stone = stone // 2
                             wood = wood // 2
@@ -409,6 +412,7 @@ class War(models.Model):
                             cost_wood = 0
                             cost_iron = 0
                             cost_diamond = 0
+                            cost_gold = cost_gold // 2
 
                         player = exp(player, chat_info, reward_exp)
 
@@ -418,6 +422,7 @@ class War(models.Model):
                         defender.build.stock.wood -= cost_wood
                         defender.build.stock.iron -= cost_iron
                         defender.build.stock.diamond -= cost_diamond
+                        defender.build.stock.gold -= cost_gold
 
                         defender.war.shield = action_time + (8 * 3600)
 
@@ -427,18 +432,14 @@ class War(models.Model):
                         player.build.stock.wood += min(wood, (player.build.stock.max - player.build.stock.wood))
                         player.build.stock.iron += min(iron, (player.build.stock.max - player.build.stock.iron))
                         player.build.stock.diamond += min(diamond, (player.build.stock.max - player.build.stock.diamond))
+                        player.build.stock.gold += cost_gold
                         player.build.stock.skull += reward_skull
 
                         d_war_die, d_arch_die, d_wiz_die = defender.war.get_die(player, 0.2)
 
-                        if low:
-                            d_war_die = d_war_die // 2
-                            d_arch_die = d_arch_die // 2
-                            d_wiz_die = d_wiz_die // 2
-
                         d_sum_die = d_war_die + d_arch_die + d_wiz_die
 
-                        message = 'Вы напали на ' + defender.nickname + '\n' + \
+                        message = 'Вы напали на ' + '[id' + str(defender.user_id) + '|' + defender.nickname + ']\n' + \
                                   '⚔ Победа ⚔\n' + \
                                   '[Ваши потери]\n' + \
                                   'Воины: ' + str(a_war_die) + ' / ' + str(self.warrior) + ' 🗡\n' + \
@@ -455,15 +456,24 @@ class War(models.Model):
                                   'Камень: ' + str(stone) + ' ◾\n' + \
                                   'Железо: ' + str(iron) + ' ◽\n' + \
                                   'Кристаллы: ' + str(diamond) + ' 💎\n' + \
+                                  'Золото: ' + str(cost_gold) + ' ✨\n' + \
                                   'Черепа: ' + str(reward_skull) + ' 💀\n' + \
                                   'Опыт: ' + str(reward_exp) + ' 📚\n'
+
                         low_mess = ""
                         if low:
                             low_mess = "Вы напали на слишком слабого противника!\n(Награда снижена)"
 
                         message += low_mess
 
-                        message_def = 'На вас напал ' + player.nickname + '\n' + \
+                        if low:
+                            d_war_die = d_war_die // 2
+                            d_arch_die = d_arch_die // 2
+                            d_wiz_die = d_wiz_die // 2
+
+                        d_sum_die = d_war_die + d_arch_die + d_wiz_die
+
+                        message_def = 'На вас напал ' + '[id' + str(player.user_id) + '|' + player.nickname + ']\n' + \
                                       '⚔ Вы проиграли ⚔\n' + \
                                       '[Ваши потери]\n' + \
                                       'Воины: ' + str(d_war_die) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
@@ -480,6 +490,7 @@ class War(models.Model):
                                       'Камень: ' + str(cost_stone) + ' ◾\n' + \
                                       'Железо: ' + str(cost_iron) + ' ◽\n' + \
                                       'Кристаллы: ' + str(cost_diamond) + ' 💎\n' + \
+                                      'Золото: ' + str(cost_gold) + ' ✨\n' + \
                                       '🛡 Вам выдан щит от нападений на 8 часов 🛡\n' + \
                                       'Если вы нападёте, щит пропадёт!\n'
 
@@ -499,7 +510,7 @@ class War(models.Model):
                         d_war_die, d_arch_die, d_wiz_die = defender.war.get_die(player)
                         d_sum_die = d_war_die + d_arch_die + d_wiz_die
 
-                        message = 'Вы напали на ' + defender.nickname + '\n' + \
+                        message = 'Вы напали на ' + '[id' + str(defender.user_id) + '|' + defender.nickname + ']\n' + \
                                   '⚔ Поражение ⚔\n' + \
                                   '[Ваши потери]\n' + \
                                   'Воины: ' + str(a_war_die) + ' / ' + str(self.warrior) + ' 🗡\n' + \
@@ -507,7 +518,7 @@ class War(models.Model):
                                   'Маги: ' + str(a_wiz_die) + ' / ' + str(self.wizard) + ' 🔮\n' + \
                                   'Всего: ' + str(a_sum_die) + ' / ' + str(self.sum_army()) + ' ⚔\n'
 
-                        message_def = 'На вас напал ' + player.nickname + '\n' + \
+                        message_def = 'На вас напал ' + '[id' + str(player.user_id) + '|' + player.nickname + ']\n' + \
                                       '⚔ Вы победили ⚔\n' + \
                                       '[Ваши потери]\n' + \
                                       'Воины: ' + str(d_war_die) + ' / ' + str(defender.war.warrior) + ' 🗡\n' + \
@@ -535,6 +546,7 @@ class War(models.Model):
                                                                       wood=player.build.stock.wood,
                                                                       iron=player.build.stock.iron,
                                                                       diamond=player.build.stock.diamond,
+                                                                      gold=player.build.stock.gold,
                                                                       skull=player.build.stock.skull)
                     War.objects.filter(user_id=self.user_id).update(warrior=self.warrior,
                                                                     archer=self.archer,
@@ -554,7 +566,8 @@ class War(models.Model):
                     Stock.objects.filter(user_id=defender.user_id).update(stone=defender.build.stock.stone,
                                                                           wood=defender.build.stock.wood,
                                                                           iron=defender.build.stock.iron,
-                                                                          diamond=defender.build.stock.diamond)
+                                                                          diamond=defender.build.stock.diamond,
+                                                                          gold=defender.build.stock.gold)
                     War.objects.filter(user_id=defender.user_id).update(warrior=defender.war.warrior,
                                                                         archer=defender.war.archer,
                                                                         wizard=defender.war.wizard,
@@ -563,6 +576,7 @@ class War(models.Model):
                                                                         success_defend=defender.war.success_defend)
 
                     defender.war.send_defender(message_def)
+
             else:
                 message = 'Найдите противника для нападения!'
         else:

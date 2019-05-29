@@ -11,6 +11,18 @@ def get_random_id():
     return random.getrandbits(31) * random.choice([-1, 1])
 
 
+def get_id(url):
+    screen_name = url.split('/')[-1]
+    vk = vk_connect()
+    r = vk.utils.resolveScreenName(screen_name=screen_name)
+    if r and r['type'] == 'user':
+        user_id = int(r['object_id'])
+    else:
+        user_id = None
+
+    return user_id
+
+
 def amount(command):
     count = 1
     part = command.split()
@@ -332,10 +344,11 @@ def commands(player):
               icon('bonus') + ' Бонус - получить ежедневный бонус\n' + \
               icon('lvl') + ' Топ - посмотреть топ игроков\n' + \
               icon('profile') + ' Лорд - посмотреть свой профиль\n' + \
-              icon('other') + ' Репорт [текст] - Написать админам\n' + \
               icon('other') + ' Ник [новый ник] - Сменить ник\n' + \
               icon('gold') + ' Донат - Поддержка проекта\n' + \
               icon('help') + ' Помощь - Подробное описание всех команд\n' + \
+              icon('other') + ' Репорт [текст] - Написать админам\n' + \
+              icon('skull') + ' Алтарь - Дары Хранителю Подземелья\n' + \
               '\nКоманды открываются с уровнем и постройкой зданий!\n' + \
               '\nЕсли вам что-то непонятно, воспользуйтесь командой "Репорт"'
     return message
@@ -587,9 +600,10 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('Шахта', color=VkKeyboardColor.PRIMARY, payload={"command": "mine"})
         keyboard.add_line()
-        keyboard.add_button('🕸 Пещеры 🕸', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры войти"})
+        keyboard.add_button('🕸 Пещеры', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры войти"})
+        keyboard.add_button('💀 Алтарь', color=VkKeyboardColor.DEFAULT, payload={"command": "алтарь"})
         if player.build.market_lvl > 0:
-            keyboard.add_button('✨ Торговля ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "рынок"})
+            keyboard.add_button('✨ Рынок', color=VkKeyboardColor.DEFAULT, payload={"command": "рынок"})
         keyboard.add_line()
         keyboard.add_button('🔨 Строить', color=VkKeyboardColor.DEFAULT, payload={"command": "build_cave"})
         if player.build.forge:
@@ -718,6 +732,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('✨ Мои лоты ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "мои лоты"})
 
+    # Пещеры
+
     elif player.place == 'cave_go':
         keyboard.add_button('Вернуться', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
@@ -726,5 +742,19 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('💬 Инфо 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры инфо"})
         keyboard.add_button('❓ Помощь ❓', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры"})
+
+    # Алтарь
+
+    elif player.place == 'altar':
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_line()
+        keyboard.add_button('🤴 Ник - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь ник"})
+        keyboard.add_button('🛡 Щит - 10 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь щит"})
+        keyboard.add_line()
+        keyboard.add_button('⚔ Атака - 2 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь атака"})
+        keyboard.add_button('🎯 Разведка - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь разведка"})
+        keyboard.add_line()
+        keyboard.add_button('💬 Инфо 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "алтарь"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
 
     return keyboard.get_keyboard()

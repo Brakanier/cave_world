@@ -18,6 +18,7 @@ from .models.promocode import PromoCode
 
 from .actions.functions import *
 from .actions.chests import *
+from .actions.altar import *
 from system.models import Registration, Chat, Report
 
 from .actions.statistic import *
@@ -180,11 +181,14 @@ def action(command, player, action_time, chat_info):
         else:
             answer = "Вы не указали ник!\nНик [новый ник]"
     command = command.lower()
+
     # Меню
-    if re.match(r'донат', command):
+    if command == 'ник' or command == 'ник время':
+        answer = player.check_change_nickname_time(action_time)
+    elif re.match(r'донат', command):
         answer = 'Вы можете поддержать проект по ссылке:\n' + 'https://vk.com/app6471849_-176853872'
 
-    if command == '!команды' or command == 'команды':
+    elif command == '!команды' or command == 'команды':
         answer = commands(player)
         stat['category'] = 'Menu'
         stat['action'] = 'Help'
@@ -232,7 +236,7 @@ def action(command, player, action_time, chat_info):
         answer = player.top_defend()
     elif re.match(r'топ золото', command):
         answer = player.top_gold()
-    elif re.match(r'топ пещеры', command):
+    elif re.match(r'топ пещер', command):
         answer = player.top_cave()
     elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
@@ -649,14 +653,14 @@ def action(command, player, action_time, chat_info):
             answer = 'Вы уже в пещерах!'
         else:
             answer = player.cave_progress.start(action_time)
-    elif command == 'пещеры налево':
+    elif command == 'пещеры налево' or command == 'пещеры л':
         if not player.cave_progress:
             cave = CaveMap.objects.get()
             cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
             player.cave_progress = cave_progress
             player.save(update_fields=['cave_progress'])
         answer = player.cave_progress.go(1, action_time)
-    elif command == 'пещеры направо':
+    elif command == 'пещеры направо' or command == 'пещеры п':
         if not player.cave_progress:
             cave = CaveMap.objects.get()
             cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
@@ -704,10 +708,24 @@ def action(command, player, action_time, chat_info):
             answer = 'Код активирован!\n' + \
                      'Получено 3 подарочных сундука!\n'
 
-    # Алтарь
-    '''
     elif command == 'алтарь':
-        answer = 'Оставьте дары для Хозяина Подземелий!'
+        answer = altar_info(player)
+    elif re.match(r'алтарь', command):
+        answer = altar(command, player, action_time)
+    elif command == '/send off':
+        player.distribution = False
+        player.save(update_fields=['distribution'])
+        answer = 'Вы отключили рассылу!\n' + \
+                 'Чтобы включить рассылку напишите "/send on"'
+    elif command == '/send on':
+        player.distribution = False
+        player.save(update_fields=['distribution'])
+        answer = 'Вы включили рассылку!\nCпасибо, что вам интересен наш проект!'
+
+    # Алтарь
+
+    '''
+    
     elif re.match(r'алтарь', command):
         pass
     '''

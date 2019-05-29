@@ -13,3 +13,10 @@ class Buff(models.Model):
     time_end = models.BigIntegerField(
         default=0,
     )
+
+    def buff_check(self, action_time):
+        if action_time > self.time_end:
+            self.delete()
+            return False
+        else:
+            return True
