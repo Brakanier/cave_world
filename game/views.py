@@ -173,7 +173,7 @@ def action(command, player, action_time, chat_info):
         'value': 1,
     }
 
-    if command == 'ник' or command == 'ник время':
+    if command.lower() == 'ник' or command.lower() == 'ник время':
         answer = player.check_change_nickname_time(action_time)
     elif re.match(r'ник ', command.lower()):
         part = command.split()

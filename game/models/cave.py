@@ -227,7 +227,7 @@ class CaveProgress(models.Model):
             lost_war = self.player.war.warrior // lost_part
             lost_arch = self.player.war.archer // lost_part
             lost_wiz = self.player.war.wizard // lost_part
-            bonus_mess = 'Двигаясь по пещере вы нашли долину гейзеров.\n Кто ж знал, что пар с ядовитым газом...\n'
+            bonus_mess = 'Двигаясь по пещере вы нашли долину гейзеров.\nКто ж знал, что пар с ядовитым газом...\n'
             lost_mess = '[Ваши потери]\n' + \
                         'Воины: ' + str(lost_war) + ' / ' + str(self.player.war.warrior) + ' 🗡\n' + \
                         'Лучники: ' + str(lost_arch) + ' / ' + str(self.player.war.archer) + ' 🏹\n' + \
