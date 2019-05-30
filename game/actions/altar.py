@@ -36,7 +36,10 @@ def altar(command, player, action_time):
     if part[1] == 'щит':
         if player.build.stock.skull >= 10:
             player.build.stock.skull -= 10
-            player.war.shield += 24 * 3600
+            if player.war.shield >= action_time:
+                player.war.shield += 24 * 3600
+            else:
+                player.war.shield += action_time + (24 * 3600)
             player.war.save(update_fields=['shield'])
             player.build.stock.save(update_fields=['skull'])
             mess = 'Хранитель Подземелья наградил вас щитом от нападаний на 24ч.'
