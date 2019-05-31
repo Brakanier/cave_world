@@ -45,7 +45,7 @@ def index(request):
                         'peer_id': from_id,
                         'chat_id': from_id
                     }
-                    enter(chat_info, data)
+                    new_enter(chat_info, data)
                 else:
                     chat_info = {
                         'user_id': from_id,
@@ -53,26 +53,154 @@ def index(request):
                         'chat_id': peer_id - 2000000000,
                         'nick': 'Новый игрок',
                     }
-                    enter(chat_info, data)
-                    Player.objects.filter(user_id=chat_info['user_id']).update(chat_id=chat_info['peer_id'])
-                    if Chat.objects.filter(peer_id=chat_info['peer_id']).exists():
-                        try:
-                            count = count_users_chat(chat_info)
-                            Chat.objects.filter(peer_id=chat_info['peer_id']).update(count_users=count)
-                        except vk_api.ApiError:
-                            print('У бота нет прав админа')
-                    else:
-                        try:
-                            count = count_users_chat(chat_info)
-                            Chat.objects.create(peer_id=chat_info['peer_id'], count_users=count)
-                        except vk_api.ApiError:
-                            print('У бота нет прав админа')
+                    new_enter(chat_info, data)
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
             return HttpResponse('Ошибка - неверный secret key')
     else:
         return HttpResponse('Сайт находится в разработке!')
+
+
+def new_enter(chat_info, data):
+    # Вход
+    # Если игрок есть то сразу выполняет команды
+    # Если игрока нет, то определяет надо ли регистрировать
+    # Или это ввели ник
+    try:
+        player = Player.objects.get(user_id=chat_info['user_id'])
+
+        action_time = data['object']['date']
+        if 'payload' in data['object']:
+            payload = json.loads(data['object']['payload'])
+            if 'command' in payload:
+                action(payload['command'], player, action_time, chat_info)
+        else:
+            text = data['object']['text']
+            if text:
+                action(text, player, action_time, chat_info)
+
+    except Player.DoesNotExist:
+        text = data['object']['text']
+
+        if Registration.objects.filter(user_id=chat_info['user_id']).exists():
+
+            create_models(chat_info, text)
+
+        elif start_in(chat_info, text):
+            Registration.objects.create(user_id=chat_info['user_id'])
+            mess = 'Добро пожаловать в Cave World!\n' \
+                   'Введите игровой ник:'
+            send(chat_info, mess)
+
+
+def start_in(chat_info, text):
+    # Определяет начинать регистрацию или нет
+    start_reg = True
+
+    if chat_info['user_id'] != chat_info['peer_id']:
+
+        start = ['start', 'старт', 'начать', 'рег', 'регистрация']
+
+        if text in start:
+            start_reg = True
+        else:
+            start_reg = False
+
+    return start_reg
+
+
+def create_models(chat_info, nick):
+    # Создает все модели для игрока и саму модель игрока.
+    try:
+
+        war = War.objects.create(user_id=chat_info['user_id'])
+        stock = Stock.objects.create(user_id=chat_info['user_id'])
+        build = Build.objects.create(user_id=chat_info['user_id'], stock=stock)
+        inventory = Inventory.objects.create(user_id=chat_info['user_id'])
+
+    except:
+
+        war = War.objects.get(user_id=chat_info['user_id'])
+        build = Build.objects.get(user_id=chat_info['user_id'])
+        inventory = Inventory.objects.get(user_id=chat_info['user_id'])
+
+    try:
+        player = Player.objects.create(user_id=chat_info['user_id'],
+                                       place='cave',
+                                       nickname=nick,
+                                       build=build,
+                                       war=war,
+                                       inventory=inventory,
+                                       chat_id=chat_info['peer_id'],
+                                       )
+
+        mess = 'Ваш ник - ' + player.nickname + '\n'
+        mess += 'Напиши "команды", чтобы узнать доступные команды!' + '\n' + \
+                'Команды открываются с уровнем и постройкой зданий' + '\n'
+
+        send(chat_info, mess, get_keyboard(player))
+
+    except:
+
+        chat_info['nick'] = "Новый игрок"
+        mess = "Ник слишком длинный!"
+        send(chat_info, mess)
+
+
+def add_update_chat(chat_info):
+    try:
+        count = count_users_chat(chat_info)
+
+        try:
+            Chat.objects.filter(peer_id=chat_info['peer_id']).update(count_users=count)
+        except Chat.DoesNotExist:
+            Chat.objects.create(peer_id=chat_info['peer_id'], count_users=count)
+
+    except vk_api.ApiError:
+        pass
+
+
+'''
+def enter(chat_info, data):
+    if not Registration.objects.filter(user_id=chat_info['user_id']).exists():
+        message = 'Добро пожаловать в Cave World!\n' \
+                  'Введите свой ник:'
+        send(chat_info, message)
+        reg = Registration.objects.create(user_id=chat_info['user_id'])
+        reg.save()
+        print('Новый пользователь - Регистрация начата')
+    elif Registration.objects.filter(user_id=chat_info['user_id']).exists():
+        r = Registration.objects.get(user_id=chat_info['user_id'])
+        if not r.reg:
+            print('ветка регистрации')
+            nick = data['object']['text']
+            player = register(chat_info, nick)
+            if player:
+                player.place = 'cave'
+                player.save()
+                Registration.objects.filter(user_id=chat_info['user_id']).update(reg=True)
+                message = 'Ваш ник - ' + player.nickname + '\n'
+                print('Новый пользователь - ' + player.nickname)
+                chat_info['nick'] = player.nickname
+                message += 'Напиши "команды", чтобы узнать доступные команды!' + '\n' + \
+                           'Команды открываются с уровнем и постройкой зданий' + '\n'
+                send(chat_info, message, get_keyboard(player))
+            else:
+                chat_info['nick'] = "Новый игрок"
+                message = "Ник слишком длинный!"
+                send(chat_info, message)
+        else:
+            player = Player.objects.get(user_id=chat_info['user_id'])
+            action_time = data['object']['date']
+            if 'payload' in data['object']:
+                payload = json.loads(data['object']['payload'])
+                if payload['command']:
+                    action(payload['command'], player, action_time, chat_info)
+            else:
+                text = data['object']['text']
+                if text:
+                    action(text, player, action_time, chat_info)
 
 
 def register(chat_info, nick):
@@ -120,51 +248,10 @@ def register(chat_info, nick):
                   'Введите ник:'
         send(chat_info, message)
         return None
-
-
-def enter(chat_info, data):
-    if not Registration.objects.filter(user_id=chat_info['user_id']).exists():
-        message = 'Добро пожаловать в Cave World!\n' \
-                  'Введите свой ник:'
-        send(chat_info, message)
-        reg = Registration.objects.create(user_id=chat_info['user_id'])
-        reg.save()
-        print('Новый пользователь - Регистрация начата')
-    elif Registration.objects.filter(user_id=chat_info['user_id']).exists():
-        r = Registration.objects.get(user_id=chat_info['user_id'])
-        if not r.reg:
-            print('ветка регистрации')
-            nick = data['object']['text']
-            player = register(chat_info, nick)
-            if player:
-                player.place = 'cave'
-                player.save()
-                Registration.objects.filter(user_id=chat_info['user_id']).update(reg=True)
-                message = 'Ваш ник - ' + player.nickname + '\n'
-                print('Новый пользователь - ' + player.nickname)
-                chat_info['nick'] = player.nickname
-                message += 'Напиши "команды", чтобы узнать доступные команды!' + '\n' + \
-                           'Команды открываются с уровнем и постройкой зданий' + '\n'
-                send(chat_info, message, get_keyboard(player))
-            else:
-                chat_info['nick'] = "Новый игрок"
-                message = "Ник слишком длинный!"
-                send(chat_info, message)
-        else:
-            player = Player.objects.get(user_id=chat_info['user_id'])
-            action_time = data['object']['date']
-            if 'payload' in data['object']:
-                payload = json.loads(data['object']['payload'])
-                if payload['command']:
-                    action(payload['command'], player, action_time, chat_info)
-            else:
-                text = data['object']['text']
-                if text:
-                    action(text, player, action_time, chat_info)
-
+'''
 
 def action(command, player, action_time, chat_info):
-    answer = 'пусто'
+    answer = None
     chat_info['nick'] = player.nickname
     stat = {
         'category': '',
@@ -729,11 +816,16 @@ def action(command, player, action_time, chat_info):
     # Алтарь
 
     '''
-    
     elif re.match(r'алтарь', command):
         pass
     '''
 
     send(chat_info, answer, get_keyboard(player, action_time))
 
+    # Обновление инфы из бесед, если была команда для бота
+    if answer and chat_info['user_id'] != chat_info['peer_id']:
+        Player.objects.filter(user_id=chat_info['user_id']).update(chat_id=chat_info['peer_id'])
+        add_update_chat(chat_info)
+
+    # Отправка статистики
     threading.Thread(target=track, args=(player.user_id, stat)).start()
