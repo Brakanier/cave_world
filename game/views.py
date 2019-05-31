@@ -132,8 +132,12 @@ def create_models(chat_info, nick):
         user = user[0]
         if user['first_name']:
             first_name = user['first_name']
+        else:
+            first_name = ''
         if user['last_name']:
             last_name = user['last_name']
+        else:
+            last_name = ''
 
         player = Player.objects.create(user_id=chat_info['user_id'],
                                        place='cave',
