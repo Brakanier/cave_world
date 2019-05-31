@@ -827,5 +827,6 @@ def action(command, player, action_time, chat_info):
         Player.objects.filter(user_id=chat_info['user_id']).update(chat_id=chat_info['peer_id'])
         add_update_chat(chat_info)
 
-    # Отправка статистики
-    threading.Thread(target=track, args=(player.user_id, stat)).start()
+    if answer:
+        # Отправка статистики
+        threading.Thread(target=track, args=(player.user_id, stat)).start()
