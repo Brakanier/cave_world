@@ -126,9 +126,20 @@ def create_models(chat_info, nick):
         inventory = Inventory.objects.get(user_id=chat_info['user_id'])
 
     try:
+
+        vk = vk_connect()
+        user = vk.users.get(user_ids=str(chat_info['user_id']))
+        user = user[0]
+        if user['first_name']:
+            first_name = user['first_name']
+        if user['last_name']:
+            last_name = user['last_name']
+
         player = Player.objects.create(user_id=chat_info['user_id'],
                                        place='cave',
                                        nickname=nick,
+                                       first_name=first_name,
+                                       last_name=last_name,
                                        build=build,
                                        war=war,
                                        inventory=inventory,
