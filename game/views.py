@@ -144,7 +144,7 @@ def create_models(chat_info, nick):
     except:
 
         chat_info['nick'] = "Новый игрок"
-        mess = "Ник слишком длинный!"
+        mess = "Ник занят или слишком длинный!"
         send(chat_info, mess)
 
 
