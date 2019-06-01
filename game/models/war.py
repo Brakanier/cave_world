@@ -160,7 +160,7 @@ class War(models.Model):
             return message
         find_time = action_time - self.find_last_time
         if find_time >= FIND_TIME:
-            lvl = max(lvl - 15, 15)
+            lvl = max(lvl - 12, 15)
             defenders = Player.objects.filter(build__citadel=True, lvl__gte=lvl, war__shield__lte=action_time).exclude(
                 user_id=self.user_id).all()
 

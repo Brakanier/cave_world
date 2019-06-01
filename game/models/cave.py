@@ -209,7 +209,7 @@ class CaveProgress(models.Model):
             self.max_level = 1
             start_mess += 'Впереди какое-то свечение...\n Вы подходите ближе...\n'
             self.success += 1
-            self.time = action_time + 3600 * 6
+            self.time = action_time + 3600 * 10
             CaveMap.objects.filter(pk=self.cave.pk).delete()
             cave = CaveMap.objects.create()
             cave.cave_map = cave.generate()
@@ -295,7 +295,7 @@ class CaveProgress(models.Model):
             self.player.build.stock.res_add('diamond', 100)
             self.player.build.stock.gold += 200
             self.player.build.stock.res_add('iron', 200)
-            self.player.build.stock.skull += 10
+            self.player.build.stock.skull += 12
             self.player.build.stock.save(update_fields=['diamond', 'gold', 'iron', 'skull'])
             self.player.energy += 20
             self.player.place = 'cave'

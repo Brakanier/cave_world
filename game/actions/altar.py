@@ -8,7 +8,7 @@ def altar_info(player):
     player.place = "altar"
     player.save(update_fields=['place'])
     mess = 'Оставьте дары для Хранителя Подземелья!\n' + \
-           'Щит - 10' + icon('skull') + '\n' + \
+           'Щит - 20' + icon('skull') + '\n' + \
            'Ник - 5' + icon('skull') + '\n' + \
            'Атака - 2' + icon('skull') + '\n' + \
            'Разведка - 5' + icon('skull') + '\n'
@@ -34,8 +34,8 @@ def altar(command, player, action_time):
     # ЩИТ
 
     if part[1] == 'щит':
-        if player.build.stock.skull >= 10:
-            player.build.stock.skull -= 10
+        if player.build.stock.skull >= 20:
+            player.build.stock.skull -= 20
             if player.war.shield >= action_time:
                 player.war.shield += 24 * 3600
             else:
@@ -44,7 +44,7 @@ def altar(command, player, action_time):
             player.build.stock.save(update_fields=['skull'])
             mess = 'Хранитель Подземелья наградил вас щитом от нападаний на 24ч.'
         else:
-            mess = 'Не хватает черепов - нужно 10' + icon('skull')
+            mess = 'Не хватает черепов - нужно 20' + icon('skull')
 
         return mess
 

@@ -151,8 +151,8 @@ def create_models(chat_info, nick):
                                        )
 
         mess = 'Ваш ник - ' + player.nickname + '\n'
-        mess += 'Напиши "команды", чтобы узнать доступные команды!' + '\n' + \
-                'Команды открываются с уровнем и постройкой зданий' + '\n'
+        mess += 'Напиши "команды", чтобы узнать доступные команды.' + '\n' + \
+                'Команды и кнопки открываются с уровнем и постройкой зданий!' + '\n'
 
         send(chat_info, mess, get_keyboard(player))
 
@@ -175,95 +175,6 @@ def add_update_chat(chat_info):
     except vk_api.ApiError:
         pass
 
-
-'''
-def enter(chat_info, data):
-    if not Registration.objects.filter(user_id=chat_info['user_id']).exists():
-        message = 'Добро пожаловать в Cave World!\n' \
-                  'Введите свой ник:'
-        send(chat_info, message)
-        reg = Registration.objects.create(user_id=chat_info['user_id'])
-        reg.save()
-        print('Новый пользователь - Регистрация начата')
-    elif Registration.objects.filter(user_id=chat_info['user_id']).exists():
-        r = Registration.objects.get(user_id=chat_info['user_id'])
-        if not r.reg:
-            print('ветка регистрации')
-            nick = data['object']['text']
-            player = register(chat_info, nick)
-            if player:
-                player.place = 'cave'
-                player.save()
-                Registration.objects.filter(user_id=chat_info['user_id']).update(reg=True)
-                message = 'Ваш ник - ' + player.nickname + '\n'
-                print('Новый пользователь - ' + player.nickname)
-                chat_info['nick'] = player.nickname
-                message += 'Напиши "команды", чтобы узнать доступные команды!' + '\n' + \
-                           'Команды открываются с уровнем и постройкой зданий' + '\n'
-                send(chat_info, message, get_keyboard(player))
-            else:
-                chat_info['nick'] = "Новый игрок"
-                message = "Ник слишком длинный!"
-                send(chat_info, message)
-        else:
-            player = Player.objects.get(user_id=chat_info['user_id'])
-            action_time = data['object']['date']
-            if 'payload' in data['object']:
-                payload = json.loads(data['object']['payload'])
-                if payload['command']:
-                    action(payload['command'], player, action_time, chat_info)
-            else:
-                text = data['object']['text']
-                if text:
-                    action(text, player, action_time, chat_info)
-
-
-def register(chat_info, nick):
-    print('регистрация')
-    if not Player.objects.filter(user_id=chat_info['user_id']).exists() and not Player.objects.filter(nickname=nick).exists():
-        print('cоздание пользователя')
-        try:
-            war = War.objects.create(user_id=chat_info['user_id'])
-            stock = Stock.objects.create(user_id=chat_info['user_id'])
-            build = Build.objects.create(user_id=chat_info['user_id'], stock=stock)
-            inventory = Inventory.objects.create(user_id=chat_info['user_id'])
-        except:
-            war = War.objects.get(user_id=chat_info['user_id'])
-            stock = Stock.objects.get(user_id=chat_info['user_id'])
-            build = Build.objects.get(user_id=chat_info['user_id'], stock=stock)
-            inventory = Inventory.objects.get(user_id=chat_info['user_id'])
-        try:
-            player = Player.objects.create(user_id=chat_info['user_id'],
-                                           nickname=nick,
-                                           build=build,
-                                           war=war,
-                                           inventory=inventory,
-                                           chat_id=chat_info['peer_id'],
-                                           )
-        except:
-            player = None
-
-        if player:
-            vk = vk_connect()
-            user = vk.users.get(user_ids=str(chat_info['user_id']))
-            user = user[0]
-            if user['first_name']:
-                player.first_name = user['first_name']
-            if user['last_name']:
-                player.last_name = user['last_name']
-
-        return player
-    elif Player.objects.filter(user_id=chat_info['user_id']).exists():
-        print('пользователь существует')
-        player = Player.objects.get(user_id=chat_info['user_id'])
-        return player
-    else:
-        print('ник занят')
-        message = 'Ник уже занят!\n' + \
-                  'Введите ник:'
-        send(chat_info, message)
-        return None
-'''
 
 def action(command, player, action_time, chat_info):
     answer = None
@@ -749,7 +660,7 @@ def action(command, player, action_time, chat_info):
             player.cave_progress = cave_progress
             player.save(update_fields=['cave_progress'])
         answer = player.cave_progress.info()
-    elif command == 'пещеры войти':
+    elif command == 'пещеры войти' or command == 'пещеры вход':
         if not player.cave_progress:
             cave = CaveMap.objects.get()
             cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
@@ -814,10 +725,15 @@ def action(command, player, action_time, chat_info):
             answer = 'Код активирован!\n' + \
                      'Получено 3 подарочных сундука!\n'
 
+    # Алтарь
+
     elif command == 'алтарь':
         answer = altar_info(player)
     elif re.match(r'алтарь', command):
         answer = altar(command, player, action_time)
+
+    # Рассылка
+
     elif command == '/send off':
         player.distribution = False
         player.save(update_fields=['distribution'])
@@ -827,13 +743,6 @@ def action(command, player, action_time, chat_info):
         player.distribution = False
         player.save(update_fields=['distribution'])
         answer = 'Вы включили рассылку!\nCпасибо, что вам интересен наш проект!'
-
-    # Алтарь
-
-    '''
-    elif re.match(r'алтарь', command):
-        pass
-    '''
 
     send(chat_info, answer, get_keyboard(player, action_time))
 

@@ -165,10 +165,12 @@ class Build(models.Model):
         return self.stock
 
     def build_stock(self, action_time):
-        if self.stock.lvl == 50:
+        if self.stock.lvl >= 80:
             return 'Склад максимального уровня!'
         self.stock = self.get_passive(action_time)
-        if self.stock.lvl >= 10:
+        if self.stock.lvl >= 50:
+            stone_need = self.stock.lvl * STOCK_STONE * 3
+        elif self.stock.lvl >= 10:
             stone_need = self.stock.lvl * STOCK_STONE * 2
         else:
             stone_need = self.stock.lvl * STOCK_STONE
@@ -396,7 +398,7 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Каменоломни доступно с 10 ур.'
             return message
-        if self.stone_mine_lvl >= 30:
+        if self.stone_mine_lvl >= 40:
             return 'Каменоломня максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_wood = (self.stone_mine_lvl + 1) * STONE_MINE_WOOD
@@ -426,7 +428,7 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Лесопилки доступно с 10 ур.'
             return message
-        if self.wood_mine_lvl >= 30:
+        if self.wood_mine_lvl >= 40:
             return 'Лесопилка максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_stone = (self.wood_mine_lvl + 1) * WOOD_MINE_STONE
@@ -456,7 +458,7 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Рудника доступно с 10 ур.'
             return message
-        if self.iron_mine_lvl >= 30:
+        if self.iron_mine_lvl >= 40:
             return 'Рудник максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_stone = (self.iron_mine_lvl + 1) * IRON_MINE_STONE
@@ -486,7 +488,7 @@ class Build(models.Model):
         if lvl < 10:
             message = 'Строительство Прииска доступно с 10 ур.'
             return message
-        if self.diamond_mine_lvl >= 30:
+        if self.diamond_mine_lvl >= 40:
             return 'Прииск максимального уровня!'
         self.stock = self.get_passive(action_time)
         need_stone = (self.diamond_mine_lvl + 1) * DIAMOND_MINE_STONE

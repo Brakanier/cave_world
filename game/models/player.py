@@ -458,7 +458,9 @@ class Player(models.Model):
         if not self.place == 'cave_build':
             self.place = 'cave_build'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
-        if self.build.stock.lvl >= 10:
+        if self.build.stock.lvl >= 50:
+            stone_need = self.build.stock.lvl * STOCK_STONE * 3
+        elif self.build.stock.lvl >= 10:
             stone_need = self.build.stock.lvl * STOCK_STONE * 2
         else:
             stone_need = self.build.stock.lvl * STOCK_STONE
