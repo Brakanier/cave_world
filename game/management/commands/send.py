@@ -51,6 +51,7 @@ class Command(BaseCommand):
                     access_token=self.token(),
                     peer_ids=peer_ids,
                     message=message.text,
+                    dont_parse_links=1,
                     random_id=0
                 )
                 self.stdout.write('OK')
