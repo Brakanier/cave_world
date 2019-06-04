@@ -545,7 +545,7 @@ class Player(models.Model):
         else:
             self.place = 'mine'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
-            message = 'Вы спустили в Шахту'
+            message = 'Вы спустились в Шахту'
         return message
 
     def cave(self):
