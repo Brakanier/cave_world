@@ -82,6 +82,7 @@ def altar(command, player, action_time):
                 player.war.war_last_time = 0
                 player.save(update_fields=['change_nickname_time'])
                 player.war.save(update_fields=['war_last_time'])
+                player.build.stock.save(update_fields=['skull'])
                 mess = 'Хранитель Подземелья наградил вашу армию силой на еще одно сражение!'
             else:
                 mess = 'Не хватает черепов - нужно 2' + icon('skull')
