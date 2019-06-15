@@ -9,7 +9,7 @@ class Command(BaseCommand):
         self.stdout.write('Start clearing market')
         products = Product.objects.filter(unit_price__gte=5).exclude(type='skull').all()
         for item in products:
-            #Product.del_lot(item.seller, item.id)
+            Product.del_lot(item.seller, item.id)
             self.stdout.write('Remove - ' + item.seller.nickname + ' | ' + str(item.id) + ' | ' + str(item.price))
 
         self.stdout.write('End clear')
