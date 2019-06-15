@@ -713,11 +713,11 @@ def action(command, player, action_time, chat_info):
         cave.cave_map = cave.generate()
         cave.save()
     elif command == 'price' and player.user_id == 55811116:
-        wood_avr = Product.get_all_average_price('wood')
-        stone_avr = Product.get_all_average_price('stone')
-        iron_avr = Product.get_all_average_price('iron')
-        diamond_avr = Product.get_all_average_price('diamond')
-        skull_avr = Product.get_all_average_price('skull')
+        wood_avr = Product.get_average_price('wood')
+        stone_avr = Product.get_average_price('stone')
+        iron_avr = Product.get_average_price('iron')
+        diamond_avr = Product.get_average_price('diamond')
+        skull_avr = Product.get_average_price('skull')
         answer = 'Цены:\n' + \
                  'Дерево: ' + str(wood_avr) + '\n' \
                  'Камень: ' + str(stone_avr) + '\n' \

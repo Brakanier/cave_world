@@ -247,21 +247,13 @@ class Product(models.Model):
         print(type)
         print(all_price)
         print(all_amount)
-        return avr
+        if len(products) < 3:
+            avr = 2
+        if len(products) < 3 and type == 'skull':
+            avr = 200
 
-    @staticmethod
-    def get_all_average_price(type):
-        products = Product.objects.filter(type=type).all()
-        all_price = 0
-        all_amount = 0
-        for item in products:
-            all_price += item.price
-            all_amount += item.amount
+        print(avr)
 
-        avr = all_price / all_amount
-        print(type)
-        print(all_price)
-        print(all_amount)
         return avr
 
     @staticmethod
