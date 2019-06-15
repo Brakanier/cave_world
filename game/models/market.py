@@ -124,26 +124,23 @@ class Product(models.Model):
         if amount > max_amount:
             amount = max_amount
         if player.build.stock.res_check(type, amount) and lots < 10:
-            '''
             result, min_price, max_price = Product.check_price(type, amount, price)
             if result:
-            '''
-            item = Product.objects.create(seller=player, type=type, price=price, amount=amount)
-            item.save()
-            player.build.stock.res_remove(type, amount)
-            player.build.stock.save(update_fields=[type])
-            message = 'Лот выставлен!\n' + \
-                      'ID | Кол-во | Цена\n' + \
-                      str(item.id) + ' | ' \
-                      + str(item.amount) + icon(item.type) + ' | ' \
-                      + str(item.price) + icon('gold')
-            '''
+                item = Product.objects.create(seller=player, type=type, price=price, amount=amount)
+                item.save()
+                player.build.stock.res_remove(type, amount)
+                player.build.stock.save(update_fields=[type])
+                message = 'Лот выставлен!\n' + \
+                          'ID | Кол-во | Цена\n' + \
+                          str(item.id) + ' | ' \
+                          + str(item.amount) + icon(item.type) + ' | ' \
+                          + str(item.price) + icon('gold')
+
             else:
                 message = 'Вы указали слишком большую или маленькую цену!\n' + \
-                          'Указанная цена: ' + str(price) + '\n' \
-                          'Мин. цена: ' + str(min_price) + '\n' \
-                          'Макс. цена: ' + str(max_price) + '\n'
-            '''
+                          'Указанная цена: ' + str(price) + icon('gold') + '\n' \
+                          'Мин. цена: ' + str(min_price) + icon('gold') + '\n' \
+                          'Макс. цена: ' + str(max_price) + icon('gold') + '\n'
 
         else:
             message = 'Нехватает' + icon(type) + ' или у вас больше 10 лотов!'
@@ -226,8 +223,9 @@ class Product(models.Model):
     @staticmethod
     def check_price(type, amount, price):
         avr = Product.get_average_price(type)
-        max_price = int(avr * 1.5 * amount)
-        min_price = int(avr / 1.5 * amount)
+        range_price = avr * 0.5
+        max_price = int((avr + range_price) * amount)
+        min_price = int((avr - range_price) * amount)
 
         if price < min_price or price > max_price:
             result = False
@@ -250,3 +248,44 @@ class Product(models.Model):
         print(all_price)
         print(all_amount)
         return avr
+
+    @staticmethod
+    def get_all_average_price(type):
+        products = Product.objects.filter(type=type).all()
+        all_price = 0
+        all_amount = 0
+        for item in products:
+            all_price += item.price
+            all_amount += item.amount
+
+        avr = all_price / all_amount
+        print(type)
+        print(all_price)
+        print(all_amount)
+        return avr
+
+    @staticmethod
+    def admin_del_lot(id):
+        try:
+            item = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            return "Лот не найден!"
+        if item.type == 'wood':
+            item.seller.build.stock.wood += item.amount
+            item.seller.build.stock.save(update_fields=['wood'])
+        elif item.type == 'stone':
+            item.seller.build.stock.stone += item.amount
+            item.seller.build.stock.save(update_fields=['stone'])
+        elif item.type == 'iron':
+            item.seller.build.stock.iron += item.amount
+            item.seller.build.stock.save(update_fields=['iron'])
+        elif item.type == 'diamond':
+            item.seller.build.stock.diamond += item.amount
+            item.seller.build.stock.save(update_fields=['diamond'])
+        elif item.type == 'skull':
+            item.seller.build.stock.skull += item.amount
+            item.seller.build.stock.save(update_fields=['skull'])
+        message = 'Вы сняли с продажи:\n' + \
+                  'ID: ' + str(item.id) + ' | ' + str(item.amount) + icon(item.type) + ' | ' + str(item.price) + icon('gold')
+        item.delete()
+        return message

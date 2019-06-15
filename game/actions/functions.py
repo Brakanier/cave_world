@@ -1,6 +1,7 @@
 from .constant import *
 from ..models.inventory import InventoryChest
 
+
 import random
 import vk_api
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
