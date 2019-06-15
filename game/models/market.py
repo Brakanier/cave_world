@@ -7,7 +7,8 @@ class Product(models.Model):
         ('wood', 'Дерево'),
         ('stone', 'Камень'),
         ('iron', 'Железо'),
-        ('diamond', 'Кристаллы')
+        ('diamond', 'Кристаллы'),
+        ('skull', 'Черепа')
     )
     type = models.CharField(
         max_length=30,
@@ -123,13 +124,27 @@ class Product(models.Model):
         if amount > max_amount:
             amount = max_amount
         if player.build.stock.res_check(type, amount) and lots < 10:
+            '''
+            result, min_price, max_price = Product.check_price(type, amount, price)
+            if result:
+            '''
             item = Product.objects.create(seller=player, type=type, price=price, amount=amount)
             item.save()
             player.build.stock.res_remove(type, amount)
             player.build.stock.save(update_fields=[type])
             message = 'Лот выставлен!\n' + \
                       'ID | Кол-во | Цена\n' + \
-                      str(item.id) + ' | ' + str(item.amount) + icon(item.type) + ' | ' + str(item.price) + icon('gold')
+                      str(item.id) + ' | ' \
+                      + str(item.amount) + icon(item.type) + ' | ' \
+                      + str(item.price) + icon('gold')
+            '''
+            else:
+                message = 'Вы указали слишком большую или маленькую цену!\n' + \
+                          'Указанная цена: ' + str(price) + '\n' \
+                          'Мин. цена: ' + str(min_price) + '\n' \
+                          'Макс. цена: ' + str(max_price) + '\n'
+            '''
+
         else:
             message = 'Нехватает' + icon(type) + ' или у вас больше 10 лотов!'
         return message
@@ -208,3 +223,30 @@ class Product(models.Model):
 
         return message
 
+    @staticmethod
+    def check_price(type, amount, price):
+        avr = Product.get_average_price(type)
+        max_price = int(avr * 1.5 * amount)
+        min_price = int(avr / 1.5 * amount)
+
+        if price < min_price or price > max_price:
+            result = False
+        else:
+            result = True
+
+        return result, min_price, max_price
+
+    @staticmethod
+    def get_average_price(type):
+        products = Product.objects.filter(type=type).all()
+        all_price = 0
+        all_amount = 0
+        for item in products:
+            all_price += item.price
+            all_amount += item.amount
+
+        avr = all_price / all_amount
+        print(type)
+        print(all_price)
+        print(all_amount)
+        return avr

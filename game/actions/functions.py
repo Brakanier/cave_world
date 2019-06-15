@@ -1,6 +1,5 @@
 from .constant import *
 from ..models.inventory import InventoryChest
-from ..models.market import Product
 
 import random
 import vk_api
@@ -22,21 +21,6 @@ def get_id(url):
         user_id = None
 
     return user_id
-
-
-def get_average_price(type):
-    products = Product.objects.filter(type=type).all()
-    all_price = 0
-    all_amount = 0
-    for item in products:
-        all_price += item.price
-        all_amount += item.amount
-
-    avr = all_price / all_amount
-    print(type)
-    print(all_price)
-    print(all_amount)
-    return avr
 
 
 def amount(command):
