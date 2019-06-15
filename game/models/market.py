@@ -207,3 +207,4 @@ class Product(models.Model):
                   'Отправить [ресурс] [кол-во] [ID-игрока] - отправить ресурсы.\n'
 
         return message
+

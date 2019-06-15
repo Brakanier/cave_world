@@ -712,6 +712,18 @@ def action(command, player, action_time, chat_info):
         cave = CaveMap.objects.create()
         cave.cave_map = cave.generate()
         cave.save()
+    elif command == 'price' and player.user_id == 55811116:
+        wood_avr = get_average_price('wood')
+        stone_avr = get_average_price('stone')
+        iron_avr = get_average_price('iron')
+        diamond_avr = get_average_price('diamond')
+        skull_avr = get_average_price('skull')
+        answer = 'Цены:\n' + \
+                 'Дерево: ' + str(wood_avr) + '\n' \
+                 'Камень: ' + str(stone_avr) + '\n' \
+                 'Железо: ' + str(iron_avr) + '\n' \
+                 'Кристаллы: ' + str(diamond_avr) + '\n' \
+                 'Черепа: ' + str(skull_avr) + '\n'
 
     elif command == 'код месяц':
         try:
