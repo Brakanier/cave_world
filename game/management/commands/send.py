@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 chat_errors += 1
                 self.stdout.write('FAIL - ' + str(chat_peer[0]) + ' - DELETED')
                 Chat.objects.get(peer_id=chat_peer[0]).delete()
-            time.sleep(1)
+            time.sleep(0.2)
 
         self.stdout.write('Chat Errors - ' + str(chat_errors))
 
@@ -58,7 +58,7 @@ class Command(BaseCommand):
             except:
                 self.stdout.write('FAIL')
             self.stdout.write('Users Send - ' + str(len(part)))
-            time.sleep(1)
+            time.sleep(0.2)
 
         self.stdout.write('End sending')
 
