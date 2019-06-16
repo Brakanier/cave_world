@@ -4,7 +4,6 @@ from system.models import Chat, Message
 
 import vk_api
 import time
-import json
 
 
 class Command(BaseCommand):
@@ -57,7 +56,7 @@ class Command(BaseCommand):
                          dont_parse_links=1,
                          random_id=0
                          )
-                result = json.loads(result)
+
                 for user in result:
                     if user['error']:
                         user_error += 1
@@ -68,11 +67,10 @@ class Command(BaseCommand):
             self.stdout.write('Users Send - ' + str(len(part)))
             time.sleep(0.2)
 
-        self.stdout.write('User ok: ' + str(user_ok))
-        self.stdout.write('User error: ' + str(user_error))
+        self.stdout.write('Users ok: ' + str(user_ok))
+        self.stdout.write('Users error: ' + str(user_error))
 
         self.stdout.write('End sending')
-
 
     @staticmethod
     def explode(lst, n):
