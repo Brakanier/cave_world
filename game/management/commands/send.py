@@ -4,6 +4,7 @@ from system.models import Chat, Message
 
 import vk_api
 import time
+import json
 
 
 class Command(BaseCommand):
@@ -38,27 +39,37 @@ class Command(BaseCommand):
 
         self.stdout.write('Chat Errors - ' + str(chat_errors))
 
-        players = Player.objects.filter(lvl__gte=1, distribution=True).values_list('user_id').all()
+        players = Player.objects.filter(lvl__gte=0, distribution=True).values_list('user_id').all()
         parts = self.explode(players, 99)
         message.text += '\n\nВы можете отключить рассылку командой "/send off"' + \
                         '\nВключить рассылку можно командой "/send on"'
+        user_error = 0
+        user_ok = 0
         for part in parts:
             peer_ids = "1"
             for user in part:
                 peer_ids += ',' + str(user[0])
             try:
-                vk.messages.send(
-                    access_token=self.token(),
-                    peer_ids=peer_ids,
-                    message=message.text,
-                    dont_parse_links=1,
-                    random_id=0
-                )
-                self.stdout.write('OK')
+                result = vk.messages.send(
+                         access_token=self.token(),
+                         peer_ids=peer_ids,
+                         message=message.text,
+                         dont_parse_links=1,
+                         random_id=0
+                         )
+                result = json.loads(result)
+                for user in result:
+                    if user['error']:
+                        user_error += 1
+                    else:
+                        user_ok += 1
             except:
                 self.stdout.write('FAIL')
             self.stdout.write('Users Send - ' + str(len(part)))
             time.sleep(0.2)
+
+        self.stdout.write('User ok: ' + str(user_ok))
+        self.stdout.write('User error: ' + str(user_error))
 
         self.stdout.write('End sending')
 

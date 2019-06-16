@@ -2,9 +2,11 @@ from django.db import models
 
 
 class Buff(models.Model):
-    user_id = models.BigIntegerField(
-        db_index=True,
-        unique=True,
+    player = models.ForeignKey(
+        'game.Player',
+        on_delete=models.SET(None),
+        null=True,
+        related_name='buffs',
     )
     buff_type = models.CharField(
         max_length=30,
