@@ -90,6 +90,8 @@ class Report(models.Model):
             answer_info['user_id'] = report.user_id
             answer_info['peer_id'] = report.chat_id
             answer_info['nick'] = report.user_nickname
+            head = 'Ваш вопрос:\n' + report.text + '\n\n'
+            message = head + message
             self.send(self, answer_info, message)
             admin_message = 'Ответ отправлен id-' + str(report.id) + ' | ' + str(report.chat_id) + ' | ' + str(report.user_id)
             report.delete()
