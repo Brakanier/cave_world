@@ -58,7 +58,7 @@ class Command(BaseCommand):
                          )
 
                 for user in result:
-                    if user['error']:
+                    if 'error' in user:
                         user_error += 1
                     else:
                         user_ok += 1
