@@ -729,17 +729,17 @@ def action(command, player, action_time, chat_info):
         id = Product.get_id(command)
         answer = Product.admin_del_lot(id)
 
-    elif command == 'код месяц':
+    elif command == 'код двамесяца':
         try:
-            code = PromoCode.objects.get(user_id=player.user_id, code='месяц')
+            code = PromoCode.objects.get(user_id=player.user_id, code='двамесяца')
             answer = 'Вы уже использовали этот код!'
         except PromoCode.DoesNotExist:
-            code = PromoCode.objects.create(user_id=player.user_id, code='месяц')
+            code = PromoCode.objects.create(user_id=player.user_id, code='двамесяца')
             code.save()
             chest = get_chest('present_chest')
-            add_chest(player, chest, 3)
+            add_chest(player, chest, 5)
             answer = 'Код активирован!\n' + \
-                     'Получено 3 подарочных сундука!\n'
+                     'Получено 5 подарочных сундуков!\n'
 
     # Алтарь
 
