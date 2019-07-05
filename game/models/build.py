@@ -56,22 +56,31 @@ class Stock(models.Model):
 
         return message
 
-    def res_check(self, type, amount):
-        res = self.__getattribute__(type)
-        if res >= amount:
+    # Наличие места на складе
+    def res_place(self, res_type, res_amount):
+        res = self.__getattribute__(res_type)
+        if (res + res_amount) > self.max:
+            return False
+        else:
+            return True
+
+    # Наличие ресурса на складе
+    def res_check(self, res_type, res_amount):
+        res = self.__getattribute__(res_type)
+        if res >= res_amount:
             return True
         else:
             return False
 
-    def res_remove(self, type, amount):
-        res = self.__getattribute__(type)
-        res_amount = res - amount
-        self.__setattr__(type, res_amount)
+    def res_remove(self, res_type, res_amount):
+        res = self.__getattribute__(res_type)
+        res_amount = res - res_amount
+        self.__setattr__(res_type, res_amount)
 
-    def res_add(self, type, amount):
-        res = self.__getattribute__(type)
-        res_amount = min(res + amount, self.max)
-        self.__setattr__(type, res_amount)
+    def res_add(self, res_type, res_amount):
+        res = self.__getattribute__(res_type)
+        res_amount = min(res + res_amount, self.max)
+        self.__setattr__(res_type, res_amount)
 
 
 class Build(models.Model):
@@ -529,7 +538,13 @@ class Build(models.Model):
                 iron_passive = (GET_PASSIVE_IRON + (GET_PASSIVE_IRON_X * self.iron_mine_lvl)) // 24
             if self.diamond_mine_lvl:
                 diamond_passive = (GET_PASSIVE_DIAMOND + (GET_PASSIVE_DIAMOND_X * self.diamond_mine_lvl)) // 24
-            message = 'Торговый Пост ' + str(self.market_lvl) + ' ур.: ' + str(self.market_lvl * 50) + ' макс.\n' + \
+
+            send_max = self.market_lvl * 50
+            fast_k = 0
+            if self.market_lvl > 10:
+                send_max = 500
+                fast_k = (self.market_lvl - 10) * 5
+            message = 'Рынок ' + str(self.market_lvl) + ' ур.: ' + str(send_max) + 'max -' + str(fast_k) + '%⏳\n' + \
                       'Башня ' + str(self.tower_lvl) + ' ур.: +' + str(self.tower_lvl) + '%' + icon('war') + '\n' \
                       'Стена ' + str(self.wall_lvl) + ' ур.: +' + str(self.wall_lvl) + '%' + icon('shield') + '\n' + \
                       'Каменоломня ' + str(self.stone_mine_lvl) + ' ур.: ' + str(stone_passive) + icon('stone') + ' в час\n' + \
@@ -615,8 +630,8 @@ class Build(models.Model):
         return self
 
     def build_market(self, action_time):
-        if self.market_lvl == 10:
-            return 'Торговый Пост максимального уровня!'
+        if self.market_lvl == 20:
+            return 'Рынок максимального уровня!'
         self.stock = self.get_passive(action_time)
         wood_need = (self.market_lvl + 1) * MARKET_WOOD
         stone_need = (self.market_lvl + 1) * MARKET_STONE
@@ -634,9 +649,9 @@ class Build(models.Model):
             self.stock.save(update_fields=['wood', 'stone', 'iron', 'diamond'])
             self.save(update_fields=['market_lvl'])
             if self.market_lvl == 1:
-                message = 'Торговый Пост построен! (' + str(self.market_lvl) + ' ур.)'
+                message = 'Рынок построен! (' + str(self.market_lvl) + ' ур.)'
             else:
-                message = 'Торговый Пост улучшен! (' + str(self.market_lvl) + ' ур.)'
+                message = 'Рынок улучшен! (' + str(self.market_lvl) + ' ур.)'
         else:
             message = 'Недостаточно ресурсов! \n' + \
                       'Нужно:\n' + \

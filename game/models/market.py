@@ -60,7 +60,7 @@ class Product(models.Model):
     @staticmethod
     def market_res(player, type):
         if player.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         try:
             products = Product.objects.filter(type=type).order_by('unit_price')
             all_price = 0
@@ -113,34 +113,32 @@ class Product(models.Model):
         return keyboard.get_keyboard()
 
     @staticmethod
-    def get_products(player, type):
-        if player.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
-        try:
-            products = Product.objects.filter(type=type).order_by('unit_price')[0:10]
-        except Product.DoesNotExist:
-            return "Товаров не найдено"
-        head = "ID | Кол-во | Цена\n"
-        items = head
-        for item in products:
-            items += str(item.id) + ' | ' + str(item.amount) + icon(item.type) + ' | ' + str(item.price) + icon('gold')
-            if item.seller == player:
-                items += ' (Ваш)\n'
-            else:
-                items += '\n'
-        items += "Купить [ID] - купить лот."
-        return items
-
-    @staticmethod
     def buy(player, id):
         if player.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         try:
             item = Product.objects.get(id=id)
             item_type = item.type
         except Product.DoesNotExist:
             return "Лот не найден!"
         if player.build.stock.res_check('gold', item.price):
+            if player.build.stock.res_place(item.type, item.amount):
+                player.build.stock.res_add(item.type, item.amount)
+                player.build.stock.res_remove('gold', item.price)
+                player.build.stock.save(update_fields=[item.type, 'gold'])
+
+                item.seller.build.stock.gold += item.price
+                item.seller.build.stock.save(update_fields=['gold'])
+                sell_mess = 'У вас купили ' + str(item.amount) + icon(item.type) + \
+                            ' за ' + str(item.price) + icon('gold')
+                item.send_seller(sell_mess)
+                message = 'Вы купили ' + str(item.amount) + icon(item.type) + ' за ' + str(item.price) + icon('gold')
+                item.delete()
+            else:
+                message = 'Не хватает места на складе!'
+
+            # TODO Удалить после обновы
+            '''
             if item.type == 'wood':
                 player.build.stock.wood = min(player.build.stock.wood + item.amount, player.build.stock.max)
                 player.build.stock.res_remove('gold', item.price)
@@ -161,27 +159,23 @@ class Product(models.Model):
                 player.build.stock.skull += item.amount
                 player.build.stock.res_remove('gold', item.price)
                 player.build.stock.save(update_fields=['skull', 'gold'])
-            item.seller.build.stock.gold += item.price
-            item.seller.build.stock.save(update_fields=['gold'])
-            sell_mess = 'У вас купили ' + str(item.amount) + icon(item.type) + ' за ' + str(item.price) + icon('gold')
-            item.send_seller(sell_mess)
-            message = 'Вы купили ' + str(item.amount) + icon(item.type) + ' за ' + str(item.price) + icon('gold')
-            item.delete()
+            '''
+
         else:
-            message = "Нехватает золота!"
+            message = "Не хватает золота!"
 
         try:
             items = Product.objects.filter(type=item_type).order_by('unit_price')[0:5]
             player.keyboard = Product._market_keyboard(player, items)
         except Product.DoesNotExist:
-            return "Товаров не найдено"
+            pass
 
         return message
 
     @staticmethod
     def sell(player, type, amount, price):
         if player.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         lots = player.products.count()
         max_amount = player.build.market_lvl * 50
         if amount > max_amount:
@@ -206,13 +200,13 @@ class Product(models.Model):
                           'Макс. цена: ' + str(max_price) + icon('gold') + '\n'
 
         else:
-            message = 'Нехватает' + icon(type) + ' или у вас больше 10 лотов!'
+            message = 'Не хватает' + icon(type) + ' или у вас больше 10 лотов!'
         return message
 
     @staticmethod
     def del_lot(player, id):
         if player.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         try:
             item = player.products.get(id=id)
         except Product.DoesNotExist:
@@ -258,7 +252,7 @@ class Product(models.Model):
     @staticmethod
     def my_lots(player):
         if player.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         products = player.products.all()
         head = "Ваши лоты:\n" + "ID | Кол-во | Цена\n"
         items = head
@@ -269,7 +263,7 @@ class Product(models.Model):
     @staticmethod
     def info(player):
         if player.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         player.place = 'market'
         player.save(update_fields=['place'])
         message = 'Рынок\n' + \

@@ -255,6 +255,8 @@ def action(command, player, action_time, chat_info):
         answer = player.top_gold()
     elif re.match(r'топ пещер', command):
         answer = player.top_cave()
+    elif re.match(r'топ здания', command):
+        answer = player.top_build()
     elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
         stat['category'] = 'Menu'
@@ -494,7 +496,7 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'War'
         stat['label'] = 'Война'
         answer = player.war_menu()
-    elif command == ('найм' or 'нанять'):
+    elif command in ('найм', 'нанять'):
         stat['category'] = 'Place'
         stat['action'] = 'Buy'
         stat['label'] = 'Найм'
@@ -579,7 +581,7 @@ def action(command, player, action_time, chat_info):
         answer = player.build.build_market(action_time)
 
     elif re.match(r'отправить', command):
-        answer = player.send_res(command, action_time)
+        answer = player._send_res(command, action_time)
 
     # Торговля
 

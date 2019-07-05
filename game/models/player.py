@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F, Sum
 
 from .build import Stock
 from .items import Item
@@ -452,6 +453,24 @@ class Player(models.Model):
             main_message = main_message + message
         return main_message
 
+    def top_build(self):
+        build_top = Player.objects.annotate(build_point=(F('build__stock__lvl') +
+                                                         F('build__market_lvl') +
+                                                         F('build__wall_lvl') +
+                                                         F('build__tower_lvl') +
+                                                         F('build__stone_mine_lvl') +
+                                                         F('build__wood_mine_lvl') +
+                                                         F('build__iron_mine_lvl') +
+                                                         F('build__diamond_mine_lvl'))).order_by("-build_point")[0:10]
+
+        count = 1
+        main_message = 'Топ Строителей 🔨\n'
+        for user in build_top:
+            message = str(count) + ' | [id' + str(user.user_id) + '|' + user.nickname + '] - ' + str(user.build_point) + ' 🔨\n'
+            count += 1
+            main_message = main_message + message
+        return main_message
+
     # Строительство
 
     def cave_build(self):
@@ -476,7 +495,7 @@ class Player(models.Model):
         market_wood = (self.build.market_lvl + 1) * MARKET_WOOD
         market_iron = (self.build.market_lvl + 1) * MARKET_IRON
         market_diamond = (self.build.market_lvl + 1) * MARKET_DIAMOND
-        message_market = 'Торговый пост: ' + \
+        message_market = 'Рынок: ' + \
                          str(market_stone) + icon('stone') + ' + ' + \
                          str(market_wood) + icon('wood') + ' + ' + \
                          str(market_iron) + icon('iron') + ' + ' + \
@@ -574,10 +593,17 @@ class Player(models.Model):
             self.place = 'army'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
             message = 'Здесь вы можете нанять себе армию!'
-        warrior = '\n🗡 Воин: ' + str(WARRIOR_IRON) + icon('iron')
-        archer = '\n🏹 Лучник: ' + str(ARCHER_IRON) + icon('iron') + ' + ' + str(ARCHER_WOOD) + icon('wood')
-        wizard = '\n🔮 Маг: ' + str(WIZARD_IRON) + icon('iron') + ' + ' + str(WIZARD_WOOD) + icon('wood') + ' + ' + str(WIZARD_DIAMOND) + icon('diamond')
-        message += warrior + archer + wizard
+        max_war = self.build.stock.iron // 16
+        max_arch = min(self.build.stock.iron // 6, self.build.stock.wood // 20)
+        max_wiz = min(self.build.stock.iron // 2, self.build.stock.wood // 12, self.build.stock.diamond // 4)
+
+        war = '\n🗡 Воин: ' + str(WARRIOR_IRON) + '◽ ' + '(' + str(max_war) + ')'
+        arch = '\n🏹 Лучник: ' + str(ARCHER_IRON) + '◽' + str(ARCHER_WOOD) + '🌲 ' + '(' + str(max_arch) + ')'
+        wiz = '\n🔮 Маг: ' + str(WIZARD_IRON) + \
+              '◽' + str(WIZARD_WOOD) + \
+              '🌲' + str(WIZARD_DIAMOND) + '💎 ' + \
+              '(' + str(max_wiz) + ')'
+        message += war + arch + wiz
         return message
 
     def forge(self):
@@ -662,9 +688,84 @@ class Player(models.Model):
                 except:
                     pass
 
+    def _send_res(self, command, action_time):
+        if self.build.market_lvl == 0:
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
+
+        send_time = action_time - self.build.market_send_time
+        send_time_cd = MARKET_SEND_TIME
+        send_max = self.build.market_lvl * 50
+
+        # Уменьшаем перезарядку с 11 уровня, 1 уровень = 5% времени
+        if self.build.market_lvl > 10:
+            fast_k = 1 - ((self.build.market_lvl - 10) * 0.05)
+            send_time_cd = int(MARKET_SEND_TIME * fast_k)
+            send_max = 500
+
+        if send_time >= send_time_cd:
+
+            # Проверяем ресурс
+            part = command.split()
+            res = {
+                'дерево': 'wood',
+                'камень': 'stone',
+                'железо': 'iron',
+                'кристаллы': 'diamond',
+            }
+            try:
+                res = res[part[1]]
+            except:
+                return 'Ошибка.\nОтправить [ресурс] [кол-во] [ID-игрока]'
+
+            # Валидация команды
+            if len(part) == 4 and res and part[2].isdigit() and part[3].isdigit():
+
+                res_type = res
+                res_amount = int(part[2])
+                addr_id = int(part[3])
+
+                # Условия выхода
+                if res_amount > send_max:
+                    return 'Вы пытаетесь отправить слишком много ресурсов!\n' + \
+                           'Рынок ' + str(self.build.market_lvl) + ' ур. - ' + \
+                           str(send_max) + ' ресурса макс. за раз.'
+                if self.user_id == addr_id:
+                    return "Вы пытаетесь отправить ресурсы себе."
+
+                if self.build.stock.res_check(res_type, res_amount):
+                    try:
+                        addr = Player.objects.get(user_id=addr_id)
+                        self.build.stock.res_remove(res_type, res_amount)
+                        addr.build.stock.res_add(res_type, res_amount)
+                        self.build.market_send_time = action_time
+
+                        # Сохранение
+                        self.build.save(update_fields=['market_send_time'])
+                        addr.build.stock.save(update_fields=[res_type])
+                        self.build.stock.save(update_fields=[res_type])
+
+                        addr_mess = self.nickname + ' прислал вам ' + str(res_amount) + icon(res_type)
+                        addr.send_mess(addr_mess)
+                        message = 'Отправлено ' + str(res_amount) + icon(res_type) + ' - ' + addr.nickname
+                    except Player.DoesNotExist:
+                        message = 'Получатель не найден!'
+                else:
+                    message = 'Недостаточно ресурса!'
+            else:
+                message = 'Ошибка.\n' + \
+                          'Отправить [ресурс] [кол-во] [ID-игрока]'
+        else:
+            hour = (send_time_cd - send_time) // 3600
+            minutes = (send_time_cd - send_time - (hour * 3600)) // 60
+            sec = (send_time_cd - send_time) - (minutes * 60) - (hour * 3600)
+            message = 'Отправлять ресурсы можно раз в несколько часов.\n' + \
+                      'До следующей отправки: ' + str(hour) + ' ч. ' + str(minutes) + ' м. ' + str(sec) + ' сек. ⏳'
+
+        return message
+
     def send_res(self, command, action_time):
         if self.build.market_lvl == 0:
-            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         time = action_time - self.build.market_send_time
         if time >= MARKET_SEND_TIME:
             part = command.split()
@@ -685,7 +786,7 @@ class Player(models.Model):
                 id = int(part[3])
                 if amount > self.build.market_lvl * 50:
                     return 'Вы пытаетесь отправить слишком много ресурсов!\n' + \
-                           'Торговый пост ' + str(self.build.market_lvl) + ' ур. - ' + \
+                           'Рынок ' + str(self.build.market_lvl) + ' ур. - ' + \
                            str(self.build.market_lvl * 50) + ' ресурса макс. за раз.'
                 if self.build.stock.res_check(type, amount):
                     if self.user_id == id:

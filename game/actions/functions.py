@@ -515,13 +515,12 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_line()
         keyboard.add_button('👑 По уровню 👑', color=VkKeyboardColor.DEFAULT, payload={"command": "топ лвл"})
+        keyboard.add_button('🔨 По зданиям 🔨', color=VkKeyboardColor.DEFAULT, payload={"command": "топ здания"})
         keyboard.add_line()
-        keyboard.add_button('⚔ По нападениям ⚔', color=VkKeyboardColor.DEFAULT, payload={"command": "топ атака"})
-        keyboard.add_line()
+        keyboard.add_button('⚔ По атакам ⚔', color=VkKeyboardColor.DEFAULT, payload={"command": "топ атака"})
         keyboard.add_button('🛡 По оборонам 🛡', color=VkKeyboardColor.DEFAULT, payload={"command": "топ защита"})
         keyboard.add_line()
         keyboard.add_button('💀 По черепам 💀', color=VkKeyboardColor.DEFAULT, payload={"command": "топ череп"})
-        keyboard.add_line()
         keyboard.add_button('✨ По золоту ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "топ золото"})
         keyboard.add_line()
         keyboard.add_button('🕸 По пещерам 🕸', color=VkKeyboardColor.DEFAULT, payload={"command": "топ пещеры"})
@@ -630,7 +629,7 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'cave_build':
         stock_lvl_up = '🔨 🏤 Склад ' + str(player.build.stock.lvl + 1) + ' ур.'
-        market_lvl_up = '🔨 ✨ Торговый Пост ' + str(player.build.market_lvl + 1) + ' ур.'
+        market_lvl_up = '🔨 ✨ Рынок ' + str(player.build.market_lvl + 1) + ' ур.'
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
