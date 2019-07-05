@@ -582,29 +582,19 @@ def action(command, player, action_time, chat_info):
         answer = player.send_res(command, action_time)
 
     # Торговля
-    elif command == "рынок деревотест":
-        answer = Product.market_res(player, 'wood')
-    elif command == "рынок каменьтест":
-        answer = Product.market_res(player, 'stone')
-    elif command == "рынок железотест":
-        answer = Product.market_res(player, 'iron')
-    elif command == "рынок кристалтест":
-        answer = Product.market_res(player, 'diamond')
-    elif command == "рынок черептест":
-        answer = Product.market_res(player, 'skull')
 
     elif command == "рынок" or command == "купить" or command == "продать" or command == "торговый пост":
         answer = Product.info(player)
     elif command == "рынок дерево":
-        answer = Product.get_products(player, 'wood')
+        answer = Product.market_res(player, 'wood')
     elif command == "рынок камень":
-        answer = Product.get_products(player, 'stone')
+        answer = Product.market_res(player, 'stone')
     elif command == "рынок железо":
-        answer = Product.get_products(player, 'iron')
+        answer = Product.market_res(player, 'iron')
     elif re.match(r'рынок кристал', command):
-        answer = Product.get_products(player, 'diamond')
+        answer = Product.market_res(player, 'diamond')
     elif re.match(r'рынок череп', command):
-        answer = Product.get_products(player, 'skull')
+        answer = Product.market_res(player, 'skull')
     elif command == "мои лоты":
         answer = Product.my_lots(player)
     elif re.match(r'снять', command):
