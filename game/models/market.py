@@ -98,6 +98,7 @@ class Product(models.Model):
 
         keyboard.add_button('⬅ Назад', color=VkKeyboardColor.DEFAULT, payload={"command": "рынок"})
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
 
         for item in items:
             if item.seller == player:
@@ -109,9 +110,6 @@ class Product(models.Model):
                    ' за ' + str(item.price) + icon('gold') + your
             keyboard.add_line()
             keyboard.add_button(text, color=VkKeyboardColor.POSITIVE, payload={"command": command})
-
-        keyboard.add_line()
-        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
 
         return keyboard.get_keyboard()
 
