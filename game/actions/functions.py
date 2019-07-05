@@ -732,6 +732,7 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'market':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
         keyboard.add_button('◾ Камень ◾', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок камень"})
         keyboard.add_button('🌲 Дерево 🌲', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок дерево"})
