@@ -582,6 +582,16 @@ def action(command, player, action_time, chat_info):
         answer = player.send_res(command, action_time)
 
     # Торговля
+    elif command == "рынок деревотест":
+        answer = Product.market_res(player, 'wood')
+    elif command == "рынок каменьтест":
+        answer = Product.market_res(player, 'stone')
+    elif command == "рынок железотест":
+        answer = Product.market_res(player, 'iron')
+    elif command == "рынок кристалтест":
+        answer = Product.market_res(player, 'diamond')
+    elif command == "рынок черептест":
+        answer = Product.market_res(player, 'skull')
 
     elif command == "рынок" or command == "купить" or command == "продать" or command == "торговый пост":
         answer = Product.info(player)
@@ -760,7 +770,12 @@ def action(command, player, action_time, chat_info):
         player.save(update_fields=['distribution'])
         answer = 'Вы включили рассылку!\nCпасибо, что вам интересен наш проект!'
 
-    send(chat_info, answer, get_keyboard(player, action_time))
+    if hasattr(player, 'keyboard'):
+        keyboard = player.keyboard
+    else:
+        keyboard = get_keyboard(player, action_time)
+
+    send(chat_info, answer, keyboard)
 
     # Обновление инфы из бесед, если была команда для бота
     if answer and chat_info['user_id'] != chat_info['peer_id']:

@@ -58,6 +58,64 @@ class Product(models.Model):
                     pass
 
     @staticmethod
+    def market_res(player, type):
+        if player.build.market_lvl == 0:
+            return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
+        try:
+            products = Product.objects.filter(type=type).order_by('unit_price')
+            all_price = 0
+            all_amount = 0
+            for item in products:
+                all_price += item.price
+                all_amount += item.amount
+
+            avr = all_price / all_amount
+            avr = int(avr * 100) / 100
+
+            head = 'ID | Кол-во | Цена\n'
+            items = head
+
+            for item in products[0:10]:
+                items += str(item.id) + ' | ' + str(item.amount) + icon(item.type) + ' | ' + str(item.price) + icon('gold')
+                if item.seller == player:
+                    items += ' (Ваш)\n'
+                else:
+                    items += '\n'
+
+            items += '\nСр. цена за 1 ' + icon(type) + ' = ' + str(avr) + ' ✨\n' + "Купить [ID] - купить лот."
+
+            player.keyboard = Product._market_keyboard(player, products[0:5])
+
+            return items
+
+        except Product.DoesNotExist:
+
+            return "Товаров не найдено"
+
+    @staticmethod
+    def _market_keyboard(player, items):
+        keyboard = VkKeyboard()
+
+        keyboard.add_button('⬅ Назад', color=VkKeyboardColor.DEFAULT, payload={"command": "рынок"})
+        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+
+        for item in items:
+            if item.seller == player:
+                your = ' (Ваш)'
+            else:
+                your = ''
+            command = 'купить ' + str(item.id)
+            text = '(ID: ' + str(item.id) + ') ' + 'Купить ' + str(item.amount) + icon(item.type) + \
+                   ' за ' + str(item.price) + icon('gold') + your
+            keyboard.add_line()
+            keyboard.add_button(text, color=VkKeyboardColor.POSITIVE, payload={"command": command})
+
+        keyboard.add_line()
+        keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
+
+        return keyboard.get_keyboard()
+
+    @staticmethod
     def get_products(player, type):
         if player.build.market_lvl == 0:
             return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
@@ -82,6 +140,7 @@ class Product(models.Model):
             return 'Сначала постройте Торговый Пост!\nКоманда: Строить рынок'
         try:
             item = Product.objects.get(id=id)
+            item_type = item.type
         except Product.DoesNotExist:
             return "Лот не найден!"
         if player.build.stock.res_check('gold', item.price):
@@ -113,6 +172,13 @@ class Product(models.Model):
             item.delete()
         else:
             message = "Нехватает золота!"
+
+        try:
+            items = Product.objects.filter(type=item_type).order_by('unit_price')[0:5]
+            player.keyboard = Product._market_keyboard(player, items)
+        except Product.DoesNotExist:
+            return "Товаров не найдено"
+
         return message
 
     @staticmethod

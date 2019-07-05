@@ -139,8 +139,8 @@ def send(chat_info, message, keyboard=None):
 def keyboard_for_chat():
     keyboard = VkKeyboard()
 
-    keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
     keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "!команды"})
+    keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
     keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
 
     return keyboard.get_keyboard()
