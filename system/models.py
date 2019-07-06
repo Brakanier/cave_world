@@ -26,6 +26,11 @@ class Chat(models.Model):
 class Message(models.Model):
     text = models.TextField()
 
+    attachment = models.CharField(
+        max_length=200,
+        default=''
+    )
+
 
 class Report(models.Model):
     user_id = models.BigIntegerField(
@@ -82,7 +87,7 @@ class Report(models.Model):
         try:
             report = Report.objects.get(id=part[1])
             message = command.replace(part[0] + ' ' + part[1], '')
-            message = 'Ответ на репорт:\n' + message
+            message = 'Ответ:\n' + message
             if report.user_id == report.chat_id:
                 answer_info['chat_id'] = report.chat_id
             else:

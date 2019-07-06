@@ -96,7 +96,9 @@ class War(models.Model):
                 War.objects.filter(user_id=self.user_id).update(warrior=self.warrior)
                 message = 'Вы наняли ' + str(amount) + icon('sword')
             else:
+                max_war = build.stock.iron // 16
                 message = 'Недостаточно ресурсов!\n' + \
+                          'Хватает на ' + str(max_war) + icon('sword') + '\n' + \
                           'Для ' + str(amount) + icon('sword') + ' нужно:\n' + \
                           'Железа: ' + str(need_iron) + icon('iron')
         else:
@@ -118,7 +120,9 @@ class War(models.Model):
                 War.objects.filter(user_id=self.user_id).update(archer=self.archer)
                 message = 'Вы наняли ' + str(amount) + icon('bow')
             else:
+                max_arch = min(build.stock.iron // 6, build.stock.wood // 20)
                 message = 'Недостаточно ресурсов!\n' + \
+                          'Хватает на ' + str(max_arch) + icon('bow') + '\n' + \
                           'Для ' + str(amount) + icon('bow') + ' нужно:\n' + \
                           'Дерева: ' + str(need_wood) + icon('wood') + '\n' + \
                           'Железа: ' + str(need_iron) + icon('iron')
@@ -145,7 +149,9 @@ class War(models.Model):
                 War.objects.filter(user_id=self.user_id).update(wizard=self.wizard)
                 message = 'Вы наняли ' + str(amount) + icon('orb')
             else:
+                max_wiz = min(build.stock.iron // 2, build.stock.wood // 12, build.stock.diamond // 4)
                 message = 'Недостаточно ресурсов!\n' + \
+                          'Хватает на ' + str(max_wiz) + icon('orb') + '\n' + \
                           'Для ' + str(amount) + icon('orb') + ' нужно:\n' + \
                           'Дерева: ' + str(need_wood) + icon('wood') + '\n' + \
                           'Железа: ' + str(need_iron) + icon('iron') + '\n' + \

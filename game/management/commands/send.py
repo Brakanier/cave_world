@@ -27,6 +27,7 @@ class Command(BaseCommand):
                     access_token=self.token(),
                     peer_id=chat_peer[0],
                     message=message.text,
+                    attachment=message.attachment,
                     random_id=0
                 )
                 self.stdout.write('OK - ' + str(chat_peer[0]))
@@ -40,7 +41,7 @@ class Command(BaseCommand):
 
         players = Player.objects.filter(lvl__gte=0, distribution=True).values_list('user_id').all()
         parts = self.explode(players, 99)
-        message.text += '\n\nВы можете отключить рассылку командой "/send off"' + \
+        off_send_mess = 'Вы можете отключить рассылку командой "/send off"' + \
                         '\nВключить рассылку можно командой "/send on"'
         user_error = 0
         user_ok = 0
@@ -53,9 +54,18 @@ class Command(BaseCommand):
                          access_token=self.token(),
                          peer_ids=peer_ids,
                          message=message.text,
+                         attachment=message.attachment,
                          dont_parse_links=1,
                          random_id=0
                          )
+
+                vk.messages.send(
+                    access_token=self.token(),
+                    peer_ids=peer_ids,
+                    message=off_send_mess,
+                    dont_parse_links=1,
+                    random_id=0
+                )
 
                 for user in result:
                     if 'error' in user:
