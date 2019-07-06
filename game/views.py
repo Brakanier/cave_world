@@ -247,15 +247,15 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Menu'
         stat['action'] = 'Top_Skull'
         stat['label'] = 'Топ_Череп'
-    elif re.match(r'топ атака', command):
+    elif re.match(r'топ атак', command):
         answer = player.top_attack()
-    elif re.match(r'топ защита', command):
+    elif re.match(r'топ защит', command):
         answer = player.top_defend()
-    elif re.match(r'топ золото', command):
+    elif re.match(r'топ золот', command):
         answer = player.top_gold()
     elif re.match(r'топ пещер', command):
         answer = player.top_cave()
-    elif re.match(r'топ здания', command):
+    elif command in ('топ здания', 'топ строителей'):
         answer = player.top_build()
     elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
