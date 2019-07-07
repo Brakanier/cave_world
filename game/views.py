@@ -102,7 +102,7 @@ def start_in(chat_info, text):
 
         start = ['start', 'старт', 'начать', 'рег', 'регистрация']
 
-        if text in start:
+        if text.lower() in start:
             start_reg = True
         else:
             start_reg = False
