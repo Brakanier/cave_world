@@ -55,10 +55,10 @@ def pickaxe_info(items):
     else:
         message_pickaxe_iron = '◽ Железная кирка ◽: Есть\n'
     if not in_items(items, 'diamond_pickaxe'):
-        message_pickaxe_diamond = '💎 Алмазная кирка 💎: ' + str(DIAMOND_PICKAXE) + icon('diamond') + '\n'
+        message_pickaxe_diamond = '💎 Кристальная кирка 💎: ' + str(DIAMOND_PICKAXE) + icon('diamond') + '\n'
         message_pickaxe_diamond += 'Увеличивает добычу в 2 раза.\n\n'
     else:
-        message_pickaxe_diamond = '💎 Алмазная кирка 💎: Есть\n'
+        message_pickaxe_diamond = '💎 Кристальная кирка 💎: Есть\n'
     message = message_pickaxe_stone + message_pickaxe_iron + message_pickaxe_diamond
     return message
 
