@@ -590,6 +590,7 @@ class Player(models.Model):
     def buy(self, action_time):
         message = 'Здесь вы можете нанять себе армию!'
         if self.place != 'army':
+            self.place = 'army'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
 
         self.build.get_passive(action_time)
