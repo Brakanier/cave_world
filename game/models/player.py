@@ -587,13 +587,12 @@ class Player(models.Model):
             message = 'Вы вышли в Земли'
         return message
 
-    def buy(self):
-        if self.place == 'army':
-            message = 'Вы уже в меню найма!'
-        else:
-            self.place = 'army'
+    def buy(self, action_time):
+        message = 'Здесь вы можете нанять себе армию!'
+        if not self.place == 'army':
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
-            message = 'Здесь вы можете нанять себе армию!'
+
+        self.build.get_passive(action_time)
         max_war = self.build.stock.iron // 16
         max_arch = min(self.build.stock.iron // 6, self.build.stock.wood // 20)
         max_wiz = min(self.build.stock.iron // 2, self.build.stock.wood // 12, self.build.stock.diamond // 4)
@@ -604,7 +603,16 @@ class Player(models.Model):
               '◽' + str(WIZARD_WOOD) + \
               '🌲' + str(WIZARD_DIAMOND) + '💎 ' + \
               '(' + str(max_wiz) + ')'
-        message += war + arch + wiz
+        if self.build.barracks or self.build.archery or self.build.magic:
+            if self.build.barracks:
+                message += war
+            if self.build.archery:
+                message += arch
+            if self.build.magic:
+                message += wiz
+        else:
+            message += '\nНет доступных воиск.\n' + \
+                       'Постройте казармы/стрельбище/башню магов!'
         return message
 
     def forge(self):

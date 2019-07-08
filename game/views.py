@@ -500,7 +500,7 @@ def action(command, player, action_time, chat_info):
         stat['category'] = 'Place'
         stat['action'] = 'Buy'
         stat['label'] = 'Найм'
-        answer = player.buy()
+        answer = player.buy(action_time)
 
     # Армия
 

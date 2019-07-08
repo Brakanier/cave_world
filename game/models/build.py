@@ -266,7 +266,8 @@ class Build(models.Model):
                           'Строить Каменоломня - Добывает камень раз в час\n' + \
                           'Строить Лесопилка - Добывает дерево раз в час\n' + \
                           'Строить Рудник - Добывает железо раз в час\n' + \
-                          'Строить Прииск - Добывает кристаллы раз в час\n'
+                          'Строить Прииск - Добывает кристаллы раз в час\n' + \
+                          '\nНовые здания доступны в меню Земли > Строить\n'
             else:
                 message = 'Недостаточно ресурсов! \n' + \
                           'Нужно:\n' + \
@@ -339,7 +340,10 @@ class Build(models.Model):
                     Build.objects.filter(user_id=self.user_id).update(barracks=self.barracks)
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                                       iron=self.stock.iron)
-                    message = 'Казармы построены!'
+                    message = 'Казармы построены!\n' + \
+                              'Воины стали доступны в меню Земли > Нанять\n' + \
+                              'Или командой:\n' + \
+                              'Воин [кол-во]\n'
                 else:
                     message = 'Недостаточно ресурсов! \n' + \
                               'Нужно:\n' + \
@@ -363,7 +367,10 @@ class Build(models.Model):
                     Build.objects.filter(user_id=self.user_id).update(archery=self.archery)
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                                       wood=self.stock.wood)
-                    message = 'Стрельбище построено!'
+                    message = 'Стрельбище построено!\n' + \
+                              'Лучники стали доступны в меню Земли > Нанять\n' + \
+                              'Или командой:\n' + \
+                              'Лучник [кол-во]\n'
                 else:
                     message = 'Недостаточно ресурсов! \n' + \
                               'Нужно:\n' + \
@@ -390,7 +397,10 @@ class Build(models.Model):
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                                       wood=self.stock.wood,
                                                                       diamond=self.stock.diamond)
-                    message = 'Башня Магов построена!'
+                    message = 'Башня Магов построена!\n' + \
+                              'Маги стали доступны в меню Земли > Нанять\n' + \
+                              'Или командой:\n' + \
+                              'Маг [кол-во]\n'
                 else:
                     message = 'Недостаточно ресурсов! \n' + \
                               'Нужно:\n' + \
@@ -559,10 +569,10 @@ class Build(models.Model):
                 result = random.randint(3, 18)
                 enemy_result = random.randint(3, 18)
                 if result > enemy_result:
-                    # Выйгрыш
+                    # Выигрыш
                     self.tavern_res_remove(res, amount)
                     self.tavern_res_add(res, amount)
-                    message = 'Вы выйграли: ' + str(amount*2) + icon(res) + '\n' + \
+                    message = 'Вы выиграли: ' + str(amount*2) + icon(res) + '\n' + \
                               'Ваш результат: ' + str(result) + icon('cube') + '\n' + \
                               'Результат соперника: ' + str(enemy_result) + icon('cube')
                 elif result < enemy_result:
