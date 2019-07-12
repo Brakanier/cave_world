@@ -54,6 +54,7 @@ def index(request):
                         'nick': 'Новый игрок',
                     }
                     new_enter(chat_info, data)
+
                 return HttpResponse('ok', content_type="text/plain", status=200)
             return HttpResponse('Ошибка - неверный type')
         else:
@@ -164,16 +165,18 @@ def create_models(chat_info, nick):
 
 
 def add_update_chat(chat_info):
+
+    count = 0
     try:
         count = count_users_chat(chat_info)
-
-        try:
-            Chat.objects.filter(peer_id=chat_info['peer_id']).update(count_users=count)
-        except Chat.DoesNotExist:
-            Chat.objects.create(peer_id=chat_info['peer_id'], count_users=count)
-
-    except vk_api.ApiError:
+    except vk_api.ApiError as e:
         pass
+        #print(e)
+
+    try:
+        Chat.objects.filter(peer_id=chat_info['peer_id']).update(count_users=count)
+    except Chat.DoesNotExist:
+        Chat.objects.create(peer_id=chat_info['peer_id'], count_users=count)
 
 
 def action(command, player, action_time, chat_info):
