@@ -601,7 +601,7 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'army':
         keyboard.add_button('⬅ Назад', color=VkKeyboardColor.PRIMARY, payload={"command": "цитадель"})
-        keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
+        keyboard.add_button('💬 Инфо', color=VkKeyboardColor.DEFAULT, payload={"command": "найм"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         if player.build.barracks or player.build.archery or player.build.magic:
             keyboard.add_line()
@@ -618,6 +618,8 @@ def get_keyboard(player, action_time=0):
                 keyboard.add_button('🏹 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник 5"})
             if player.build.magic:
                 keyboard.add_button('🔮 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "маг 5"})
+        keyboard.add_line()
+        keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
 
     # Земли - Строительство
 
