@@ -298,6 +298,8 @@ def commands(player):
 
     # caves = icon('web') + ' Пещеры - Исследование пещер\n'
     caves = ''
+
+    hunt = icon('target') + ' Охота - информация об охоте\n'
     market = icon('gold') + ' Рынок - купить/продать ресурсы\n'
     bones = icon('cube') + ' Кости [ресурс] [кол-во] - сыграть в кости\n'
 
@@ -349,6 +351,7 @@ def commands(player):
               chests + \
               open_chest + \
               '\n⬇ РАЗНОЕ ⬇\n\n' + \
+              hunt + \
               caves + \
               bones + \
               market + \
