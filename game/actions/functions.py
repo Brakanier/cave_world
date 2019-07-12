@@ -600,7 +600,7 @@ def get_keyboard(player, action_time=0):
     # Найм
 
     elif player.place == 'army':
-        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
+        keyboard.add_button('⬅ Назад', color=VkKeyboardColor.PRIMARY, payload={"command": "цитадель"})
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         if player.build.barracks or player.build.archery or player.build.magic:
@@ -794,7 +794,7 @@ def get_keyboard(player, action_time=0):
     # Рынок
 
     elif player.place == 'market':
-        keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_button('Земли', color=VkKeyboardColor.PRIMARY, payload={"command": "land"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
         keyboard.add_line()
         keyboard.add_button('◾ Камень ◾', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок камень"})
