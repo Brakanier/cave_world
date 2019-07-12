@@ -1093,7 +1093,7 @@ class Player(models.Model):
 
             user_ids = [user['member_id'] for user in users['items']]
 
-            alcohol_time = action_time + 900
+            alcohol_time = action_time + random.randint(180, 600)
 
             Player.objects.filter(user_id__in=user_ids).update(alcohol_time=alcohol_time, energy=F('energy')+10)
 
