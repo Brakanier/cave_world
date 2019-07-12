@@ -491,6 +491,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🔝 Топ 🔝', color=VkKeyboardColor.DEFAULT, payload={"command": "топ"})
         keyboard.add_button('Инвентарь', color=VkKeyboardColor.DEFAULT, payload={"command": "inventory"})
         keyboard.add_line()
+        keyboard.add_button('❤ Донат ❤', color=VkKeyboardColor.DEFAULT, payload={"command": "донат"})
+        keyboard.add_line()
         color = VkKeyboardColor.POSITIVE
         if action_time - player.bonus_time <= BONUS_TIME:
             color = VkKeyboardColor.NEGATIVE
