@@ -22,8 +22,7 @@ class Command(BaseCommand):
 
         player = Player.objects.get(user_id=55811116)
 
-        off_send_mess = 'Вы можете отключить рассылку командой "/send off"' + \
-                        '\nВключить рассылку можно командой "/send on"'
+        off_send_mess = 'Чтобы включить/отключить рассылку - напишите команду "рассылка"'
 
         vk = self.vk_connect()
         vk.messages.send(

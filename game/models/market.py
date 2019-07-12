@@ -137,30 +137,6 @@ class Product(models.Model):
             else:
                 message = 'Не хватает места на складе!'
 
-            # TODO Удалить после обновы
-            '''
-            if item.type == 'wood':
-                player.build.stock.wood = min(player.build.stock.wood + item.amount, player.build.stock.max)
-                player.build.stock.res_remove('gold', item.price)
-                player.build.stock.save(update_fields=['wood', 'gold'])
-            elif item.type == 'stone':
-                player.build.stock.stone = min(player.build.stock.stone + item.amount, player.build.stock.max)
-                player.build.stock.res_remove('gold', item.price)
-                player.build.stock.save(update_fields=['stone', 'gold'])
-            elif item.type == 'iron':
-                player.build.stock.iron = min(player.build.stock.iron + item.amount, player.build.stock.max)
-                player.build.stock.res_remove('gold', item.price)
-                player.build.stock.save(update_fields=['iron', 'gold'])
-            elif item.type == 'diamond':
-                player.build.stock.diamond = min(player.build.stock.diamond + item.amount, player.build.stock.max)
-                player.build.stock.res_remove('gold', item.price)
-                player.build.stock.save(update_fields=['diamond', 'gold'])
-            elif item.type == 'skull':
-                player.build.stock.skull += item.amount
-                player.build.stock.res_remove('gold', item.price)
-                player.build.stock.save(update_fields=['skull', 'gold'])
-            '''
-
         else:
             message = "Не хватает золота!"
 
@@ -177,9 +153,14 @@ class Product(models.Model):
         if player.build.market_lvl == 0:
             return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
         lots = player.products.count()
-        max_amount = player.build.market_lvl * 50
+        if player.build.market_lvl > 10:
+            max_amount = 500
+        else:
+            max_amount = player.build.market_lvl * 50
         if amount > max_amount:
-            amount = max_amount
+            mess = 'Рынок ' + str(player.build.market_lvl) + ' ур.\n' + \
+                   'Макс. кол-во для 1 лота: ' + str(max_amount) + icon(type)
+            return mess
         if player.build.stock.res_check(type, amount) and lots < 10:
             result, min_price, max_price = Product.check_price(type, amount, price)
             if result:

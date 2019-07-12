@@ -41,8 +41,7 @@ class Command(BaseCommand):
 
         players = Player.objects.filter(lvl__gte=0, distribution=True).values_list('user_id').all()
         parts = self.explode(players, 99)
-        off_send_mess = 'Вы можете отключить рассылку командой "/send off"' + \
-                        '\nВключить рассылку можно командой "/send on"'
+        off_send_mess = 'Чтобы включить/отключить рассылку - напишите команду "рассылка"'
         user_error = 0
         user_ok = 0
         for part in parts:

@@ -5,7 +5,9 @@ from .build import Stock
 from .items import Item
 from ..actions.functions import *
 from ..actions.chests import *
+from ..actions.tavern_alcohol import alcohol
 
+import threading
 import random
 import time
 
@@ -62,6 +64,12 @@ class Player(models.Model):
     bonus_time = models.BigIntegerField(
         default=0,
     )
+    alcohol_time = models.BigIntegerField(
+        default=0,
+    )
+    hunt_time = models.BigIntegerField(
+        default=0,
+    )
     place = models.CharField(
         max_length=50,
         default='cave',
@@ -99,110 +107,115 @@ class Player(models.Model):
     def __str__(self):
         return self.nickname
 
-    def create(self, user_id, build, war):
-        self.build = build
-        self.war = war
-        self.user_id = user_id
-        return self
-
     # Действия
 
     def get_stone(self, action_time, chat_info, amount=1):
         self.build.stock = self.build.get_passive(action_time)
+        items = self.inventory.items.all()
         self = energy(self, action_time)
+
         if self.energy >= GET_ENERGY * amount:
-            diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
+
+            diamond_pickaxe = in_items(items, 'diamond_pickaxe')
+            skull_pickaxe = in_items(items, 'skull_pickaxe')
             stone = 8 * amount
-            if diamond_pickaxe:
-                stone = stone * 2
+
+            if skull_pickaxe:
+                stone *= 3
+            elif diamond_pickaxe:
+                stone *= 2
+
             stone = stone + random.randint(-4 * amount, 4 * amount)
-            space = self.build.stock.max - self.build.stock.stone
-            if space > 0:
-                if space >= stone:
-                    self.energy = self.energy - GET_ENERGY * amount
-                    stone = min(stone, space)
-                    self.build.stock.stone = self.build.stock.stone + stone
-                    self = exp(self, chat_info, GET_ENERGY * amount)
-                    message = 'Добыто камня: ' + str(stone) + icon('stone') + '\n' + \
-                              'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
-                              'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                    Stock.objects.filter(user_id=self.user_id).update(stone=self.build.stock.stone)
-                    message = get_chest_mine(self, message)
-                else:
-                    message = 'Не хватает места! (Постройте склад)\n'
+
+            if self.build.stock.res_place('stone', stone):
+                self.energy = self.energy - GET_ENERGY * amount
+                self.build.stock.res_add('stone', stone)
+                self = exp(self, chat_info, GET_ENERGY * amount)
+
+                message = 'Добыто камня: ' + str(stone) + icon('stone') + '\n' + \
+                          'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
+                          'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
+
+                self.build.stock.save(update_fields=['stone'])
+                message = get_chest_mine(self, message)
             else:
-                message = 'Склад заполнен! (Постройте склад)'
-            Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
-                                                               last_energy_action=self.last_energy_action,
-                                                               exp=self.exp,
-                                                               lvl=self.lvl)
+                message = 'Не хватает места! (Улучшите склад)\n'
+
+            self.save(update_fields=['energy', 'last_energy_action', 'exp', 'lvl'])
         else:
             message = 'Недостаточно энергии!'
         return message
 
     def get_wood(self, action_time, chat_info, amount=1):
         self.build.stock = self.build.get_passive(action_time)
+        items = self.inventory.items.all()
         self = energy(self, action_time)
         if self.energy >= GET_ENERGY * amount:
-            diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
+            diamond_pickaxe = in_items(items, 'diamond_pickaxe')
+            skull_pickaxe = in_items(items, 'skull_pickaxe')
             wood = 8 * amount
-            if diamond_pickaxe:
-                wood = wood * 2
+
+            if skull_pickaxe:
+                wood *= 3
+            elif diamond_pickaxe:
+                wood *= 2
+
             wood = wood + random.randint(-4 * amount, 4 * amount)
-            space = self.build.stock.max - self.build.stock.wood
-            if space > 0:
-                if space >= wood:
+
+            if self.build.stock.res_place('wood', wood):
                     self.energy = self.energy - GET_ENERGY * amount
-                    wood = min(wood, space)
-                    self.build.stock.wood = self.build.stock.wood + wood
+                    self.build.stock.res_add('wood', wood)
                     self = exp(self, chat_info, GET_ENERGY * amount)
+
                     message = 'Добыто дерева: ' + str(wood) + icon('wood') + '\n' + \
                               'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                               'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                    Stock.objects.filter(user_id=self.user_id).update(wood=self.build.stock.wood)
-                else:
-                    message = 'Не хватает места! (Постройте склад)\n'
+
+                    self.build.stock.save(update_fields=['wood'])
             else:
-                message = 'Склад заполнен! (Постройте склад)'
-            Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
-                                                               last_energy_action=self.last_energy_action,
-                                                               exp=self.exp,
-                                                               lvl=self.lvl)
+                message = 'Не хватает места! (Улучшите склад)\n'
+
+            self.save(update_fields=['energy', 'last_energy_action', 'exp', 'lvl'])
         else:
             message = 'Недостаточно энергии!'
         return message
 
     def get_iron(self, action_time, chat_info, amount=1):
         self.build.stock = self.build.get_passive(action_time)
-        stone_pickaxe = in_items(self.inventory.items.all(), 'stone_pickaxe')
+        items = self.inventory.items.all()
+        stone_pickaxe = in_items(items, 'stone_pickaxe')
+
         if stone_pickaxe:
             self = energy(self, action_time)
+
             if self.energy >= GET_ENERGY * amount:
-                diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
+                diamond_pickaxe = in_items(items, 'diamond_pickaxe')
+                skull_pickaxe = in_items(items, 'skull_pickaxe')
                 iron = 4 * amount
-                if diamond_pickaxe:
-                    iron = iron * 2
+
+                if skull_pickaxe:
+                    iron *= 3
+                elif diamond_pickaxe:
+                    iron *= 2
+
                 iron = iron + random.randint(-2 * amount, 2 * amount)
-                space = self.build.stock.max - self.build.stock.iron
-                if space > 0:
-                    if space >= iron:
+
+                if self.build.stock.res_place('iron', iron):
                         self.energy = self.energy - GET_ENERGY * amount
-                        iron = min(iron, space)
-                        self.build.stock.iron = self.build.stock.iron + iron
+                        self.build.stock.res_add('iron', iron)
                         self = exp(self, chat_info, GET_ENERGY * amount)
+
                         message = 'Добыто железа: ' + str(iron) + icon('iron') + '\n' + \
                                   'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                                   'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                        Stock.objects.filter(user_id=self.user_id).update(iron=self.build.stock.iron)
+
+                        self.build.stock.save(update_fields=['iron'])
                         message = get_chest_mine(self, message)
-                    else:
-                        message = 'Не хватает места! (Постройте склад)\n'
                 else:
-                    message = 'Склад заполнен! (Постройте склад)'
-                Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
-                                                                   last_energy_action=self.last_energy_action,
-                                                                   exp=self.exp,
-                                                                   lvl=self.lvl)
+                    message = 'Не хватает места! (Улучшите склад)\n'
+
+                self.save(update_fields=['energy', 'last_energy_action', 'exp', 'lvl'])
+
             else:
                 message = 'Недостаточно энергии!'
         else:
@@ -212,35 +225,37 @@ class Player(models.Model):
 
     def get_diamond(self, action_time, chat_info, amount=1):
         self.build.stock = self.build.get_passive(action_time)
-        iron_pickaxe = in_items(self.inventory.items.all(), 'iron_pickaxe')
+        items = self.inventory.items.all()
+        iron_pickaxe = in_items(items, 'iron_pickaxe')
         if iron_pickaxe:
             self = energy(self, action_time)
             if self.energy >= GET_ENERGY * amount:
-                diamond_pickaxe = in_items(self.inventory.items.all(), 'diamond_pickaxe')
+                diamond_pickaxe = in_items(items, 'diamond_pickaxe')
+                skull_pickaxe = in_items(items, 'skull_pickaxe')
                 diamond = 2 * amount
-                if diamond_pickaxe:
-                    diamond = diamond * 2
+
+                if skull_pickaxe:
+                    diamond *= 3
+                elif diamond_pickaxe:
+                    diamond *= 2
+
                 diamond = diamond + random.randint(-1 * amount, 1 * amount)
-                space = self.build.stock.max - self.build.stock.diamond
-                if space > 0:
-                    if space >= diamond:
+
+                if self.build.stock.res_place('diamond', diamond):
                         self.energy = self.energy - GET_ENERGY * amount
-                        diamond = min(diamond, space)
-                        self.build.stock.diamond = self.build.stock.diamond + diamond
+                        self.build.stock.res_add('diamond', diamond)
                         self = exp(self, chat_info, GET_ENERGY * amount)
+
                         message = 'Добыто кристаллов: ' + str(diamond) + icon('diamond') + '\n' + \
                                   'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
                                   'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp')
-                        Stock.objects.filter(user_id=self.user_id).update(diamond=self.build.stock.diamond)
+
+                        self.build.stock.save(update_fields=['diamond'])
                         message = get_chest_mine(self, message)
-                    else:
-                        message = 'Не хватает места! (Постройте склад)\n'
                 else:
-                    message = 'Склад заполнен! (Постройте склад)'
-                Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
-                                                                   last_energy_action=self.last_energy_action,
-                                                                   exp=self.exp,
-                                                                   lvl=self.lvl)
+                    message = 'Не хватает места! (Улучшите склад)\n'
+
+                self.save(update_fields=['energy', 'last_energy_action', 'exp', 'lvl'])
             else:
                 message = 'Недостаточно энергии!'
         else:
@@ -251,24 +266,30 @@ class Player(models.Model):
     def bonus(self, action_time):
         time = action_time - self.bonus_time
         if time > BONUS_TIME:
+
+            bonus_k = 1 + (self.lvl // 5)
+            stone = BONUS_STONE * bonus_k
+            wood = BONUS_WOOD * bonus_k
+            iron = BONUS_IRON * bonus_k
+            diamond = BONUS_DIAMOND * bonus_k
+            gold = BONUS_GOLD * bonus_k
+            self.build.stock.res_add('stone', stone)
+            self.build.stock.res_add('wood', wood)
+            self.build.stock.res_add('iron', iron)
+            self.build.stock.res_add('diamond', diamond)
+            self.build.stock.res_add('gold', gold)
+
             self.bonus_time = action_time
-            self.build.stock.stone = self.build.stock.stone + BONUS_STONE
-            self.build.stock.wood = self.build.stock.wood + BONUS_WOOD
-            self.build.stock.iron = self.build.stock.iron + BONUS_IRON
-            self.build.stock.diamond = self.build.stock.diamond + BONUS_DIAMOND
-            self.build.stock.gold = self.build.stock.gold + BONUS_GOLD
-            Stock.objects.filter(user_id=self.user_id).update(stone=self.build.stock.stone,
-                                                              wood=self.build.stock.wood,
-                                                              iron=self.build.stock.iron,
-                                                              diamond=self.build.stock.diamond,
-                                                              gold=self.build.stock.gold)
-            Player.objects.filter(user_id=self.user_id).update(bonus_time=self.bonus_time)
+
+            self.build.stock.save(update_fields=['stone', 'wood', 'iron', 'diamond', 'gold'])
+            self.save(update_fields=['bonus_time'])
+
             message = 'Вы получили ежедневный бонус!\n+ ' + \
-                      str(BONUS_STONE) + icon('stone') + '\n + ' + \
-                      str(BONUS_WOOD) + icon('wood') + '\n + ' + \
-                      str(BONUS_IRON) + icon('iron') + '\n + ' + \
-                      str(BONUS_DIAMOND) + icon('diamond') + '\n + ' + \
-                      str(BONUS_GOLD) + icon('gold')
+                      str(stone) + icon('stone') + '\n + ' + \
+                      str(wood) + icon('wood') + '\n + ' + \
+                      str(iron) + icon('iron') + '\n + ' + \
+                      str(diamond) + icon('diamond') + '\n + ' + \
+                      str(gold) + icon('gold')
         else:
             hour = (BONUS_TIME - time) // 3600
             minutes = ((BONUS_TIME - time) - (hour * 3600)) // 60
@@ -339,6 +360,30 @@ class Player(models.Model):
 
             else:
                 message = 'Недостаточно кристаллов!'
+        else:
+            message = 'У вас уже есть ' + item.title + '!'
+        return message
+
+    def craft_skull_pickaxe(self, action_time):
+        if not self.build.forge:
+            return 'Сначала постройте Кузницу!'
+        self.build.stock = self.build.get_passive(action_time)
+        item = in_items(self.inventory.items.all(), 'skull_pickaxe')
+        if not item:
+            if self.build.stock.res_check('skull', SKULL_PICKAXE):
+                self.build.stock.res_remove('skull', SKULL_PICKAXE)
+                pickaxe = Item.objects.get(slug='skull_pickaxe')
+                self.inventory.items.add(pickaxe)
+                self.build.stock.save(update_fields=['skull'])
+
+                message = 'Поздравляю!\n' + \
+                          'Вы скрафтили' + icon('skull') + ' ' + pickaxe.title + icon('skull') + ' !\n'
+                effects = pickaxe.effects.all()
+                for effect in effects:
+                    message += effect.title + '!\n'
+
+            else:
+                message = 'Недостаточно черепов!'
         else:
             message = 'У вас уже есть ' + item.title + '!'
         return message
@@ -587,6 +632,67 @@ class Player(models.Model):
             message = 'Вы вышли в Земли'
         return message
 
+    def citadel(self, action_time):
+        if self.place != 'citadel':
+            self.place = 'citadel'
+            self.save(update_fields=['place'])
+
+        if self.war.shield > action_time:
+            shield = self.war.shield - action_time
+            hour = shield // 3600
+            minutes = (shield - (hour * 3600)) // 60
+            sec = shield - (minutes * 60) - (hour * 3600)
+            shield = str(hour) + ' ч. ' + \
+                     str(minutes) + ' м. ' + \
+                     str(sec) + ' сек.' + icon('time')
+        else:
+            shield = 'У вас нет щита!'
+
+        army_mess = '⚔ Армия:\n' + \
+                    'Воины: ' + str(self.war.warrior) + icon('sword') + '\n' + \
+                    'Лучники: ' + str(self.war.archer) + icon('bow') + '\n' + \
+                    'Маги: ' + str(self.war.wizard) + icon('orb') + '\n' + \
+                    'Всего: ' + str(self.war.sum_army()) + icon('war') + '\n'
+        build_mess = '🔨 Военные здания:\n' + \
+                     'Башня: +' + str(self.build.tower_lvl) + '%' + icon('war') + '\n' + \
+                     'Стена: +' + str(self.build.wall_lvl) + '%' + icon('shield') + '\n'
+        stat_mess = '📜 Информация:\n' + \
+                    'Успешных атак: ' + str(self.war.success_attack) + icon('war') + '\n' + \
+                    'Успешных оборон: ' + str(self.war.success_defend) + icon('shield') + '\n' + \
+                    'Щит: ' + shield
+
+        mess = '🏰 Цитадель 🏰\n' + 'Главный оплот вашего поселения. Здесь вы управляете армией и военными походами.\n'
+        return mess + army_mess + build_mess + stat_mess
+
+    def hunt(self, action_time):
+        if self.place != 'hunt':
+            self.place = 'hunt'
+            self.save(update_fields=['place'])
+
+        if self.hunt_time > action_time:
+            hunt = self.hunt_time - action_time
+            hour = hunt // 3600
+            minutes = (hunt - (hour * 3600)) // 60
+            sec = hunt - (minutes * 60) - (hour * 3600)
+            hunt = 'Охота через: ' + \
+                   str(hour) + ' ч. ' + \
+                   str(minutes) + ' м. ' + \
+                   str(sec) + ' с.' + icon('time')
+        else:
+            hunt = 'Выберите кого отправить:\n' + \
+                   '- Охота воины\n' + \
+                   '- Охота лучники\n' + \
+                   '- Охота маги\n'
+
+        mess = '🎯 Охота 🎯\n' + \
+               'Охота - это всегда опасно.\n' + \
+               'На охоте ваши воиска могут найти что-то полезное, ' + \
+               'принести мясо животных, которое хорошо ценится на местном рынке ' + \
+               'или потерять несколько бойцов из отряда!\n' + \
+               'Отправлять воиска на охоту можно раз в 2 часа.\n' + hunt
+
+        return mess
+
     def buy(self, action_time):
         message = 'Здесь вы можете нанять себе армию!'
         if self.place != 'army':
@@ -633,7 +739,7 @@ class Player(models.Model):
         return message
 
     def forge_pickaxe(self):
-        if not self.place == 'forge_pickaxe':
+        if self.place != 'forge_pickaxe':
             self.place = 'forge_pickaxe'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
         message = 'Стоимость крафта:\n'
@@ -861,7 +967,10 @@ class Player(models.Model):
                         'nick': addr.nickname,
                     }
                 mess = 'Вам выдали ' + str(amount) + ' ' + chest.title
-                send(chat_info, mess)
+                try:
+                    send(chat_info, mess)
+                except:
+                    pass
 
                 nick = '[id' + str(addr.user_id) + '|' + addr.nickname + ']\n'
                 mess = 'Выдано: ' + str(amount) + ' ' + chest.title + ' для ' + nick
@@ -904,7 +1013,10 @@ class Player(models.Model):
                     }
                 
                 mess = 'Вам выдано ' + str(amount) + ' 💀 за поддержку проекта!'
-                send(chat_info, mess)
+                try:
+                    send(chat_info, mess)
+                except:
+                    pass
 
                 nick = '[id' + str(player.user_id) + '|' + player.nickname + ']\n'
                 mess = 'Выдано: ' + str(amount) + ' 💀 для ' + nick
@@ -952,4 +1064,307 @@ class Player(models.Model):
             return message
         else:
             return "Вы можете сменить ник!\nНик [Новый ник]"
+
+    def alcohol(self, chat_info, action_time):
+
+        if chat_info['user_id'] == chat_info['peer_id']:
+            return "Можно использовать только в беседах!"
+
+        if self.build.stock.res_check('gold', 500):
+
+            if self.alcohol_time > action_time:
+                alco = (
+                    'Ты сильно пьян!',
+                    'Ты еле стоишь...',
+                    'Еще один кубок? Ты еле стоишь...',
+                    'Тебе хватит на сегодня...',
+                )
+                tavern_owner = random.choice(alco)
+                return 'Хозяин Таверны: "' + tavern_owner + '"'
+
+            self.build.stock.res_remove('gold', 500)
+
+            vk = vk_connect()
+            users = vk.messages.getConversationMembers(
+                access_token=token(),
+                peer_id=str(chat_info['peer_id']),
+                group_id='176853872',
+            )
+
+            user_ids = [user['member_id'] for user in users['items']]
+
+            alcohol_time = action_time + 900
+
+            Player.objects.filter(user_id__in=user_ids).update(alcohol_time=alcohol_time, energy=F('energy')+10)
+
+            threading.Thread(target=alcohol, args=(vk, self, user_ids, chat_info['peer_id'])).start()
+
+            all_el = (
+                'Тащите лучшую бочку хмельного!',
+                'У меня как раз есть бочка прекрасного эля!',
+                'Бочку эля!',
+                'Несите бочку лучшего эля!',
+                'Всем лучшего эля в кубки!',
+            )
+            tavern_owner = random.choice(all_el)
+            mess = 'Хозяин Таверны: "' + tavern_owner + '"'
+
+        else:
+            need_gold = (
+                'Заработай больше золота и приходи...',
+                'Даже не пытайся, только опозоришься...',
+                'Все знают что твой карман пуст...',
+                'Сыграй лучше в кости на свои гроши, может там тебе повезет...',
+            )
+            tavern_owner = random.choice(need_gold)
+            mess = 'Хозяин Таверны: "' + tavern_owner + '"'
+
+        return mess
+
+    def alcohol_mess(self, action_time, mess):
+
+        if self.alcohol_time > action_time:
+            rand = random.randint(0, 1)
+
+            if rand:
+                parts = mess.split('\n')
+                mess = ''
+
+                for mess_str in parts:
+                    mess += mess_str[::-1] + '\n'
+
+            else:
+                mess = list(mess)
+                rand_max = len(mess) - 1
+
+                for i in range(5):
+                    first = random.randint(0, rand_max)
+                    second = random.randint(0, rand_max)
+                    mess[first], mess[second] = mess[second], mess[first]
+
+                mess = "".join(mess)
+
+            mess += "\nВы пьяны!"
+        return mess
+
+    def hunting_war(self, action_time):
+        if self.war.warrior < 1:
+            return "У вас нет воинов для охоты!"
+
+        if self.hunt_time > action_time:
+            hunt = self.hunt_time - action_time
+            hour = hunt // 3600
+            minutes = (hunt - (hour * 3600)) // 60
+            sec = hunt - (minutes * 60) - (hour * 3600)
+            mess = 'Охота через: ' + \
+                   str(hour) + ' ч. ' + \
+                   str(minutes) + ' м. ' + \
+                   str(sec) + ' с.' + icon('time')
+            return mess
+
+        mess = ''
+        rand = random.randint(0, 100)
+        if 0 <= rand < 20:
+            # Большая добыча
+            reward = self.war.warrior // 2
+            mess = 'Ваши воины смогли выследить и завалить большое стадо бизонов!\n' + \
+                   'Они принесли много мяса!\n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 20 <= rand < 40:
+            # Средняя добыча
+            reward = self.war.warrior // 4
+            mess = 'Ваши воины решили что смогут догнать антилоп, частично у них получилось!\n' + \
+                   'Они принесли среднее кол-во мяса!\n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 40 <= rand < 60:
+            # Маленькая добыча
+            reward = self.war.warrior // 6
+            mess = 'Один не совсем умный боец предложил охотиться на белок, и все его поддержали... \n' + \
+                   'Они принесли мало мяса... \n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 60 <= rand < 80:
+            # Нет добычи
+            mess = 'Ваши воины наткнулись на стаю волков. \n' + \
+                   'К счастью волки не смогли прокусить их доспехи. \n' + \
+                   'Зато утащили всю добычу!\n' + \
+                   'Воины вернулись ни с чем...'
+        elif 80 <= rand < 90:
+            # Потери
+            die = 1 + (self.war.warrior // 10)
+            mess = 'Отряд воинов наткнулся на логово медведей. ' + \
+                   'Часть отряда была разорвана вместе с доспехами.' + \
+                   '\nПотери: ' + str(die) + icon('sword')
+            self.war.warrior -= die
+            self.war.save(update_fields=['warrior'])
+        elif 90 <= rand <= 100:
+            # Алтарь
+            skull = 2 + (self.war.warrior // 100)
+            die = 1 + (self.war.warrior // 10)
+            skull = skull // 2
+
+            mess = 'Ваши воины нашли 💀 Древний Алтарь 💀\n' + \
+                   'Не долго думая, они решили вынести все накопленные черепа, чем разгневали Хранителя Подземелья. \n' + \
+                   'Часть ваших воинов пополнила коллекцию черепов...\n' + \
+                   'Некоторым удалось прихватить череп и выжить!' + \
+                   '\nДобыто: ' + str(skull) + icon('skull') + \
+                   '\nПотери: ' + str(die) + icon('sword')
+
+            self.war.warrior -= die
+            self.war.save(update_fields=['warrior'])
+            self.build.stock.skull += skull
+            self.build.stock.save(update_fields=['skull'])
+
+        self.hunt_time = action_time + 7200
+        self.save(update_fields=['hunt_time'])
+        return mess
+
+    def hunting_arch(self, action_time):
+        if self.war.archer < 1:
+            return "У вас нет лучников для охоты!"
+
+        if self.hunt_time > action_time:
+            hunt = self.hunt_time - action_time
+            hour = hunt // 3600
+            minutes = (hunt - (hour * 3600)) // 60
+            sec = hunt - (minutes * 60) - (hour * 3600)
+            mess = 'Охота через: ' + \
+                   str(hour) + ' ч. ' + \
+                   str(minutes) + ' м. ' + \
+                   str(sec) + ' с.' + icon('time')
+            return mess
+
+        mess = ''
+        rand = random.randint(0, 100)
+        if 0 <= rand < 20:
+            # Большая добыча
+            reward = self.war.archer // 2
+            mess = 'Ваши лучники отлично стреляют!\n' + \
+                   'Они принесли много мяса!\n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 20 <= rand < 40:
+            # Средняя добыча
+            reward = self.war.archer // 4
+            mess = 'Подстрелив несколько антилоп, ваши лучники решили, что этого достаточно. \n' + \
+                   'И устроили турнир, кто собьёт больше яблок с деревьев. \n' + \
+                   'Они принесли среднее кол-во мяса!\n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 40 <= rand < 60:
+            # Маленькая добыча
+            reward = self.war.archer // 6
+            mess = 'Ваши лучники начали соревноваться в стрельбе по птицам и забыли про охоту... \n' + \
+                   'Они принесли мало мяса... \n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 60 <= rand < 80:
+            # Нет добычи
+            mess = 'Ваши лучники нашли большое стадо буйволов... \n' + \
+                   'Как оказалось, буйволам не нравится когда в них летят стрелы. \n' + \
+                   'А лучники очень быстро бегают...\n' + \
+                   'Они вернулись ни с чем...'
+        elif 80 <= rand < 90:
+            # Потери
+            die = self.war.archer // 10
+            mess = 'Ваши лучники нашли пещеру и решили изучить её.\n' + \
+                   'Выжившие помнят только крики...' + \
+                   '\nПотери: ' + str(die) + icon('bow')
+            self.war.archer -= die
+            self.war.save(update_fields=['archer'])
+        elif 90 <= rand <= 100:
+            # Алтарь
+            skull = 2 + (self.war.archer // 100)
+            die = 1 + (self.war.archer // 20)
+
+            mess = 'Ваши лучники нашли 💀 Древний Алтарь 💀\n' + \
+                   'При помощи стрел и веревок они решили достать черепа с алтаря, чем разгневали Хранителя Подземелья. \n' + \
+                   'Часть ваших лучников подошла слишком близко и пополнила коллекцию черепов... \n' + \
+                   'Хорошо, что у лучников нет тяжелых доспехов!\n' + \
+                   '\nДобыто: ' + str(skull) + icon('skull') + \
+                   '\nПотери: ' + str(die) + icon('bow')
+
+            self.war.archer -= die
+            self.war.save(update_fields=['archer'])
+            self.build.stock.skull += skull
+            self.build.stock.save(update_fields=['skull'])
+
+        self.hunt_time = action_time + 7200
+        self.save(update_fields=['hunt_time'])
+        return mess
+
+    def hunting_wiz(self, action_time):
+        if self.war.wizard < 1:
+            return "У вас нет магов для охоты!"
+
+        if self.hunt_time > action_time:
+            hunt = self.hunt_time - action_time
+            hour = hunt // 3600
+            minutes = (hunt - (hour * 3600)) // 60
+            sec = hunt - (minutes * 60) - (hour * 3600)
+            mess = 'Охота через: ' + \
+                   str(hour) + ' ч. ' + \
+                   str(minutes) + ' м. ' + \
+                   str(sec) + ' с.' + icon('time')
+            return mess
+
+        mess = ''
+        rand = random.randint(0, 100)
+        if 0 <= rand < 20:
+            # Большая добыча
+            reward = self.war.wizard // 2
+            mess = 'Ваши маги нашли много разных животных и доставили их в замороженном виде! \n' + \
+                   'Они принесли много мяса! \n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 20 <= rand < 40:
+            # Средняя добыча
+            reward = self.war.wizard // 4
+            mess = 'Бизоны или буйволы? Не проблема! \n' + \
+                   'Увы, часть мяса сгорела от огненных заклинаний. \n' + \
+                   'Они принесли среднее кол-во мяса!\n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 40 <= rand < 60:
+            # Маленькая добыча
+            reward = self.war.wizard // 6
+            mess = 'Маги достаточно ленивы, чтобы бегать за живностью по полям и лесам... \n' + \
+                   'Они принесли мало мяса... \n' + \
+                   'С продажи мяса вы получили ' + str(reward) + icon('gold')
+            self.build.stock.gold += reward
+            self.build.stock.save(update_fields=['gold'])
+        elif 60 <= rand < 80:
+            # Нет добычи
+            mess = 'Нет ничего лучше медитации! \n' + \
+                   'Ваши маги достигли ясности разума, но забыли зачем пошли... \n' + \
+                   'Они вернулись ни с чем...'
+        elif 80 <= rand < 90:
+            # Потери
+            die = 1 + (self.war.wizard // 10)
+            mess = 'Вы знали, что магия сильно влияет на природу? \n' + \
+                   'Очередное заклинание спровоцировало появление каменного голема... \n' + \
+                   'Теперь в мире гуляет голем украшенный магическими мантиями...' + \
+                   '\nПотери: ' + str(die) + icon('orb')
+            self.war.wizard -= die
+            self.war.save(update_fields=['wizard'])
+        elif 90 <= rand <= 100:
+            # Алтарь
+
+            mess = 'Ваши маги нашли 💀 Древний Алтарь 💀\n' + \
+                   'Согласно мудрости наставника: "Не трожь то, что старше тебя", алтарь остался нетронутым... \n' + \
+                   'Маги вернулись ни с чем, но живые!'
+
+        self.hunt_time = action_time + 7200
+        self.save(update_fields=['hunt_time'])
+        return mess
 

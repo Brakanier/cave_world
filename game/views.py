@@ -253,8 +253,6 @@ def action(command, player, action_time, chat_info):
         answer = player.top_defend()
     elif re.match(r'топ золот', command):
         answer = player.top_gold()
-    elif re.match(r'топ пещер', command):
-        answer = player.top_cave()
     elif command in ('топ здания', 'топ строителей'):
         answer = player.top_build()
     elif command == 'склад' or command == 'ресурсы':
@@ -458,6 +456,11 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Craft_Diamond_Pickaxe'
         stat['label'] = 'Ковать_Кристальная_Кирка'
         answer = player.craft_diamond_pickaxe(action_time)
+    elif 'ковать костян' in command:
+        stat['category'] = 'Craft'
+        stat['action'] = 'Craft_Skull_Pickaxe'
+        stat['label'] = 'Ковать_Костяная_Кирка'
+        answer = player.craft_skull_pickaxe(action_time)
 
     # Локацииц
 
@@ -491,6 +494,11 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Land'
         stat['label'] = 'Земли'
         answer = player.land()
+    elif command == 'цитадель':
+        stat['category'] = 'Place'
+        stat['action'] = 'Citadel'
+        stat['label'] = 'Цитадель'
+        answer = player.citadel(action_time)
     elif command == 'война':
         stat['category'] = 'Place'
         stat['action'] = 'War'
@@ -522,6 +530,17 @@ def action(command, player, action_time, chat_info):
         stat['label'] = 'Лучник'
         stat['value'] = amount(command)
         answer = player.war.craft_wizard(player.build, action_time, amount(command))
+
+    # Охота
+
+    elif command == 'охота':
+        answer = player.hunt(action_time)
+    elif re.match(r'охота воин', command):
+        answer = player.hunting_war(action_time)
+    elif re.match(r'охота лучник', command):
+        answer = player.hunting_arch(action_time)
+    elif re.match(r'охота маг', command):
+        answer = player.hunting_wiz(action_time)
 
     # Война
 
@@ -642,51 +661,6 @@ def action(command, player, action_time, chat_info):
         else:
             answer = "Неверный ID лота!"
 
-    # Пещеры
-
-    elif command == 'пещеры':
-        answer = '🕸 Пещеры 🕸 - представляют собой лабиринт.\n' + \
-                 'На каждом из уровней вы можете найти хорошее, плохое или проход на уровень дальше.\n' + \
-                 'Карта пещер для всех общая.\n' + \
-                 'Когда игрок добирается до сокровищ, происходит обвал, пещеры генерируются заново!\n' + \
-                 'Команды: \n' + \
-                 '- Пещеры инфо\n' + \
-                 '- Пещеры войти - начать исследование пещер\n' + \
-                 '- Пещеры налево - выбор пути\n' + \
-                 '- Пещеры направо - выбор пути\n' + \
-                 '\n'
-    elif command == 'пещеры инфо':
-        if not player.cave_progress:
-            cave = CaveMap.objects.get()
-            cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-            player.cave_progress = cave_progress
-            player.save(update_fields=['cave_progress'])
-        answer = player.cave_progress.info()
-    elif command == 'пещеры войти' or command == 'пещеры вход':
-        if not player.cave_progress:
-            cave = CaveMap.objects.get()
-            cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-            player.cave_progress = cave_progress
-            player.save(update_fields=['cave_progress'])
-        if player.place == 'cave_go':
-            answer = 'Вы уже в пещерах!'
-        else:
-            answer = player.cave_progress.start(action_time)
-    elif command == 'пещеры налево' or command == 'пещеры л':
-        if not player.cave_progress:
-            cave = CaveMap.objects.get()
-            cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-            player.cave_progress = cave_progress
-            player.save(update_fields=['cave_progress'])
-        answer = player.cave_progress.go(1, action_time)
-    elif command == 'пещеры направо' or command == 'пещеры п':
-        if not player.cave_progress:
-            cave = CaveMap.objects.get()
-            cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-            player.cave_progress = cave_progress
-            player.save(update_fields=['cave_progress'])
-        answer = player.cave_progress.go(2, action_time)
-
     # Админ
 
     elif command == 'all gold' and player.user_id == 55811116:
@@ -750,22 +724,31 @@ def action(command, player, action_time, chat_info):
     elif re.match(r'алтарь', command):
         answer = altar(command, player, action_time)
 
+    # Тест
+
+    elif command == 'всем эль!!!':
+        answer = player.alcohol(chat_info, action_time)
+
     # Рассылка
 
-    elif command == '/send off':
-        player.distribution = False
-        player.save(update_fields=['distribution'])
-        answer = 'Вы отключили рассылу!\n' + \
-                 'Чтобы включить рассылку напишите "/send on"'
-    elif command == '/send on':
-        player.distribution = False
-        player.save(update_fields=['distribution'])
-        answer = 'Вы включили рассылку!\nCпасибо, что вам интересен наш проект!'
+    elif command == 'рассылка':
+        if player.distribution:
+            player.distribution = False
+            player.save(update_fields=['distribution'])
+            answer = '😢 Вы отключили рассылку! 😢\n' + \
+                     'Чтобы первым узнавать об обновлениях и розыгрышах напишите "рассылка"'
+        else:
+            player.distribution = True
+            player.save(update_fields=['distribution'])
+            answer = '👍🏻 Вы включили рассылку! 👍🏻\nCпасибо, что вам интересен наш проект!'
 
     if hasattr(player, 'keyboard'):
         keyboard = player.keyboard
     else:
         keyboard = get_keyboard(player, action_time)
+
+    if answer:
+        answer = player.alcohol_mess(action_time, answer)
 
     send(chat_info, answer, keyboard)
 
@@ -777,3 +760,52 @@ def action(command, player, action_time, chat_info):
     if answer:
         # Отправка статистики
         threading.Thread(target=track, args=(player.user_id, stat)).start()
+
+    '''
+        # Пещеры
+
+        elif command == 'пещеры':
+            answer = '🕸 Пещеры 🕸 - представляют собой лабиринт.\n' + \
+                     'На каждом из уровней вы можете найти хорошее, плохое или проход на уровень дальше.\n' + \
+                     'Карта пещер для всех общая.\n' + \
+                     'Когда игрок добирается до сокровищ, происходит обвал, пещеры генерируются заново!\n' + \
+                     'Команды: \n' + \
+                     '- Пещеры инфо\n' + \
+                     '- Пещеры войти - начать исследование пещер\n' + \
+                     '- Пещеры налево - выбор пути\n' + \
+                     '- Пещеры направо - выбор пути\n' + \
+                     '\n'
+        elif command == 'пещеры инфо':
+            if not player.cave_progress:
+                cave = CaveMap.objects.get()
+                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
+                player.cave_progress = cave_progress
+                player.save(update_fields=['cave_progress'])
+            answer = player.cave_progress.info()
+        elif command == 'пещеры войти' or command == 'пещеры вход':
+            if not player.cave_progress:
+                cave = CaveMap.objects.get()
+                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
+                player.cave_progress = cave_progress
+                player.save(update_fields=['cave_progress'])
+            if player.place == 'cave_go':
+                answer = 'Вы уже в пещерах!'
+            else:
+                answer = player.cave_progress.start(action_time)
+        elif command == 'пещеры налево' or command == 'пещеры л':
+            if not player.cave_progress:
+                cave = CaveMap.objects.get()
+                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
+                player.cave_progress = cave_progress
+                player.save(update_fields=['cave_progress'])
+            answer = player.cave_progress.go(1, action_time)
+        elif command == 'пещеры направо' or command == 'пещеры п':
+            if not player.cave_progress:
+                cave = CaveMap.objects.get()
+                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
+                player.cave_progress = cave_progress
+                player.save(update_fields=['cave_progress'])
+            answer = player.cave_progress.go(2, action_time)
+        elif re.match(r'топ пещер', command):
+            answer = player.top_cave()
+    '''

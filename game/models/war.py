@@ -419,6 +419,19 @@ class War(models.Model):
                             cost_iron = 0
                             cost_diamond = 0
                             cost_gold = cost_gold // 2
+                        elif a_sum_army / d_sum_army > 5:
+                            stone = stone // 2
+                            wood = wood // 2
+                            iron = iron // 2
+                            diamond = diamond // 2
+                            reward_exp = 1
+                            low = True
+                            cost_stone = 0
+                            cost_wood = 0
+                            cost_iron = 0
+                            cost_diamond = 0
+                            cost_gold = cost_gold // 2
+                            reward_skull = 0
 
                         player = exp(player, chat_info, reward_exp)
 
