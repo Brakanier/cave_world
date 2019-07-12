@@ -1083,6 +1083,7 @@ class Player(models.Model):
                 return 'Хозяин Таверны: "' + tavern_owner + '"'
 
             self.build.stock.res_remove('gold', 500)
+            self.build.stock.save(update_fields=['gold'])
 
             vk = vk_connect()
             users = vk.messages.getConversationMembers(
