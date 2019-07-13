@@ -273,11 +273,11 @@ class Player(models.Model):
             iron = BONUS_IRON * bonus_k
             diamond = BONUS_DIAMOND * bonus_k
             gold = BONUS_GOLD * bonus_k
-            self.build.stock.res_add('stone', stone)
-            self.build.stock.res_add('wood', wood)
-            self.build.stock.res_add('iron', iron)
-            self.build.stock.res_add('diamond', diamond)
-            self.build.stock.res_add('gold', gold)
+            self.build.stock.stone += stone
+            self.build.stock.wood += wood
+            self.build.stock.iron += iron
+            self.build.stock.diamond += diamond
+            self.build.stock.gold += gold
 
             self.bonus_time = action_time
 
