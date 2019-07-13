@@ -173,10 +173,15 @@ def add_update_chat(chat_info):
         pass
         #print(e)
 
+    if count == 0:
+        is_admin = False
+    else:
+        is_admin = True
+
     try:
-        Chat.objects.filter(peer_id=chat_info['peer_id']).update(count_users=count)
-    except Chat.DoesNotExist:
-        Chat.objects.create(peer_id=chat_info['peer_id'], count_users=count)
+        Chat.objects.create(peer_id=chat_info['peer_id'], count_users=count, is_admin=is_admin)
+    except:
+        Chat.objects.filter(peer_id=chat_info['peer_id']).update(count_users=count, is_admin=is_admin)
 
 
 def action(command, player, action_time, chat_info):

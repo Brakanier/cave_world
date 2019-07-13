@@ -21,6 +21,9 @@ class Chat(models.Model):
     count_users = models.IntegerField(
         default=0,
     )
+    is_admin = models.BooleanField(
+        default=False,
+    )
 
 
 class Message(models.Model):

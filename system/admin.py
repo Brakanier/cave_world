@@ -10,7 +10,7 @@ admin.site.register(Report)
 
 @admin.register(Chat)
 class ChatAdmin(admin.ModelAdmin):
-    list_display = ('peer_id', 'count_users')
+    list_display = ('peer_id', 'is_admin', 'count_users')
 
 
 @admin.register(Message)

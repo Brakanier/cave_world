@@ -121,25 +121,31 @@ def send(chat_info, message, keyboard=None):
         return
     vk = vk_connect()
     if chat_info['user_id'] == chat_info['chat_id']:
-        vk.messages.send(
-            access_token=token(),
-            peer_id=str(chat_info['user_id']),
-            keyboard=keyboard,
-            message=message,
-            random_id=0,
-            disable_mentions=1,
-        )
+        try:
+            vk.messages.send(
+                access_token=token(),
+                peer_id=str(chat_info['user_id']),
+                keyboard=keyboard,
+                message=message,
+                random_id=0,
+                disable_mentions=1,
+            )
+        except:
+            pass
     else:
         message = '[id' + str(chat_info['user_id']) + '|' + chat_info['nick'] + ']\n' + message
-        vk.messages.send(
-            access_token=token(),
-            peer_id=str(chat_info['peer_id']),
-            chat_id=str(chat_info['chat_id']),
-            keyboard=keyboard_for_chat(),
-            message=message,
-            random_id=0,
-            disable_mentions=1,
-        )
+        try:
+            vk.messages.send(
+                access_token=token(),
+                peer_id=str(chat_info['peer_id']),
+                chat_id=str(chat_info['chat_id']),
+                keyboard=keyboard_for_chat(),
+                message=message,
+                random_id=0,
+                disable_mentions=1,
+            )
+        except:
+            pass
 
 
 def keyboard_for_chat():
