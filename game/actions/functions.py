@@ -540,8 +540,10 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('💀 По черепам 💀', color=VkKeyboardColor.DEFAULT, payload={"command": "топ череп"})
         keyboard.add_button('✨ По золоту ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "топ золото"})
+        '''
         keyboard.add_line()
         keyboard.add_button('🕸 По пещерам 🕸', color=VkKeyboardColor.DEFAULT, payload={"command": "топ пещеры"})
+        '''
 
     # Земли
 
