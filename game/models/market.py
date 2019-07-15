@@ -64,7 +64,7 @@ class Product(models.Model):
         try:
             products = Product.objects.filter(type=type).order_by('unit_price')
             all_price = 0
-            all_amount = 0
+            all_amount = 1
             for item in products:
                 all_price += item.price
                 all_amount += item.amount
