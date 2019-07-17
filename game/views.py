@@ -213,12 +213,12 @@ def action(command, player, action_time, chat_info):
                  'https://vk.com/app6471849_-176853872\n\n' + \
                  'За поддержку проекта вы попадете в виджет на странице группы и получите черепа:\n 1 рубль = 1 💀'
 
-    elif command == '!команды' or command == 'команды':
+    elif command == 'команды':
         answer = commands(player)
         stat['category'] = 'Menu'
         stat['action'] = 'Help'
         stat['label'] = 'Помощь'
-    elif command == 'помощь' or command == '!помощь':
+    elif command == 'помощь':
         answer = "Описание всех команд:\n" + "https://vk.com/@cave_world_bot-cave-world-opisanie-komand"
     elif command == 'бонус':
         answer = player.bonus(action_time)
@@ -760,15 +760,15 @@ def action(command, player, action_time, chat_info):
     elif chat_info['peer_id'] != chat_info['user_id'] and command == '!кости' and is_admin(player.user_id, chat_info):
         try:
             chat = Chat.objects.get(peer_id=chat_info['peer_id'])
-            answer = chat.bones_on()
-        except Chat.DoesNotExist():
+            answer = chat.bones_change()
+        except Chat.DoesNotExist:
             answer = 'Вашей беседы нет в базе. Свяжитесь с админом через команду "репорт".'
 
     elif chat_info['peer_id'] != chat_info['user_id'] and command == '!эль' and is_admin(player.user_id, chat_info):
         try:
             chat = Chat.objects.get(peer_id=chat_info['peer_id'])
-            answer = chat.alco_on()
-        except Chat.DoesNotExist():
+            answer = chat.alco_change()
+        except Chat.DoesNotExist:
             answer = 'Вашей беседы нет в базе. Свяжитесь с админом через команду "репорт".'
 
     # Беседы
