@@ -168,6 +168,8 @@ class War(models.Model):
             diamond = WIZARD_DIAMOND
 
             min_amount = self.player.buy_equally()
+            if min_amount == 0:
+                return 'У вас мало ресурсов!'
 
             need_wood = min_amount * wood
             need_iron = min_amount * iron
