@@ -590,7 +590,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🌲 ⛏ х5', color=VkKeyboardColor.POSITIVE, payload={"command": "дерево 5"})
         keyboard.add_line()
         keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
-        keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "!команды"})
+        keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "команды"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
 
     # Цитадель
@@ -719,7 +719,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('🤴 Лорд', color=VkKeyboardColor.DEFAULT, payload={"command": "профиль"})
         if player.lvl >= 5:
-            keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "!команды"})
+            keyboard.add_button('❓ Команды', color=VkKeyboardColor.DEFAULT, payload={"command": "команды"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
 
     # Подземелье - Строительство
