@@ -657,7 +657,7 @@ def get_keyboard(player, action_time=0):
                 keyboard.add_button('🔮 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "маг 5"})
         if player.build.barracks and player.build.archery and player.build.magic:
             keyboard.add_line()
-            keyboard.add_button('Нанять макс. поровну 🗡=🏹=🔮', color=VkKeyboardColor.POSITIVE, payload={"command": "нанять поровну"})
+            keyboard.add_button('Нанять макс. поровну 🗡=🏹=🔮', color=VkKeyboardColor.POSITIVE, payload={"command": "нанять макс"})
         keyboard.add_line()
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
 
