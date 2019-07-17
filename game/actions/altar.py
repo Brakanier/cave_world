@@ -8,9 +8,9 @@ def altar_info(player):
     player.place = "altar"
     player.save(update_fields=['place'])
     mess = 'Оставьте дары для Хранителя Подземелья!\n' + \
-           'Щит - 20' + icon('skull') + '\n' + \
+           'Щит - 15' + icon('skull') + '\n' + \
            'Ник - 5' + icon('skull') + '\n' + \
-           'Атака - 2' + icon('skull') + '\n' + \
+           'Атака - 5' + icon('skull') + '\n' + \
            'Разведка - 5' + icon('skull') + '\n'
     mess += '\nКоманды 💀 Алтаря 💀:\n' + \
             'Алтарь ник - сброс перезарядки ника\n' + \
@@ -34,8 +34,8 @@ def altar(command, player, action_time):
     # ЩИТ
 
     if part[1] == 'щит':
-        if player.build.stock.skull >= 20:
-            player.build.stock.skull -= 20
+        if player.build.stock.skull >= 15:
+            player.build.stock.skull -= 15
             if player.war.shield >= action_time:
                 player.war.shield += 24 * 3600
             else:
@@ -44,7 +44,7 @@ def altar(command, player, action_time):
             player.build.stock.save(update_fields=['skull'])
             mess = 'Хранитель Подземелья наградил вас щитом от нападаний на 24ч.'
         else:
-            mess = 'Не хватает черепов - нужно 20' + icon('skull')
+            mess = 'Не хватает черепов - нужно 15' + icon('skull')
 
         return mess
 
@@ -77,15 +77,15 @@ def altar(command, player, action_time):
         if player.war.war_last_time + 3600 <= action_time:
             mess = "Вы и так можете атаковать!"
         else:
-            if player.build.stock.skull >= 2:
-                player.build.stock.skull -= 2
+            if player.build.stock.skull >= 5:
+                player.build.stock.skull -= 5
                 player.war.war_last_time = 0
                 player.save(update_fields=['change_nickname_time'])
                 player.war.save(update_fields=['war_last_time'])
                 player.build.stock.save(update_fields=['skull'])
                 mess = 'Хранитель Подземелья наградил вашу армию силой на еще одно сражение!'
             else:
-                mess = 'Не хватает черепов - нужно 2' + icon('skull')
+                mess = 'Не хватает черепов - нужно 5' + icon('skull')
 
         return mess
 

@@ -158,6 +158,12 @@ def keyboard_for_chat():
     return keyboard.get_keyboard()
 
 
+def chat_list():
+    mess = 'Список бесед с ботом:\n' + \
+           '1) Игровая беседа #1 - https://vk.me/join/AJQ1d3CbaQ5UNU4dBAao3OhI'
+    return mess
+
+
 def count_users_chat(chat_info):
     vk = vk_connect()
     users = vk.messages.getConversationMembers(
@@ -166,6 +172,22 @@ def count_users_chat(chat_info):
         group_id='176853872',
     )
     return users['count']
+
+
+def is_admin(user_id, chat_info):
+    vk = vk_connect()
+    members = vk.messages.getConversationMembers(
+        access_token=token(),
+        peer_id=chat_info['peer_id'],
+        group_id='176853872',
+    )
+    admins_ids = (member['member_id'] for member in members['items'] if 'is_admin' in member)
+    if user_id in admins_ids:
+        is_admin = True
+    else:
+        is_admin = False
+
+    return is_admin
 
 
 def vk_connect():
@@ -196,8 +218,8 @@ def commands(player):
 
     # Здания
 
-    builds = '\n⬇ ЗДАНИЯ ⬇\n\n' + icon('citadel') + ' Здания - Информация о ваших зданиях\n'
-    build = icon('build') + ' Строить - Список доступных зданий для постройки\n'
+    builds = '\n⬇ ЗДАНИЯ ⬇\n\n' + icon('citadel') + ' Здания - информация о ваших зданиях\n'
+    build = icon('build') + ' Строить - список доступных зданий для постройки\n'
     build_stock = icon('stock') + ' Строить Склад - больше места\n'
     build_forge = icon('craft') + ' Строить Кузница - позволяет ковать инструменты\n'
     build_tavern = icon('tavern') + ' Строить Таверна - открывает игру в "Кости"\n'
@@ -208,10 +230,10 @@ def commands(player):
     build_magic = icon('orb') + ' Строить Башня Магов - открывает найм Магов\n'
     build_wall = icon('build') + ' Строить Стена - улучшает защиту\n'
     build_tower = icon('build') + ' Строить Башня - улучшает атаку\n'
-    build_stone_mine = icon('stone') + ' Строить Каменоломня - Добывает Камень раз в час\n'
-    build_wood_mine = icon('wood') + ' Строить Лесопилка - Добывает Дерево раз в час\n'
-    build_iron_mine = icon('iron') + ' Строить Рудник - Добывает Железо раз в час\n'
-    build_diamond_mine = icon('diamond') + ' Строить Прииск - Добывает Кристаллы раз в час\n'
+    build_stone_mine = icon('stone') + ' Строить Каменоломня - добывает Камень раз в час\n'
+    build_wood_mine = icon('wood') + ' Строить Лесопилка - добывает Дерево раз в час\n'
+    build_iron_mine = icon('iron') + ' Строить Рудник - добывает Железо раз в час\n'
+    build_diamond_mine = icon('diamond') + ' Строить Прииск - добывает Кристаллы раз в час\n'
 
     if player.build.forge:
         build_forge = ''
@@ -241,7 +263,7 @@ def commands(player):
     # КРАФТ
 
     forge = '\n⬇ КУЗНИЦА ⬇\n\n' + icon('craft') + ' Кузница - крафт инфо\n'
-    pickaxes = icon('craft') + ' Кирки - Список кирок\n'
+    pickaxes = icon('craft') + ' Кирки - список кирок\n'
     craft_stone = icon('get') + icon('stone') + ' Ковать Каменная кирка\n'
     craft_iron = icon('get') + icon('iron') + ' Ковать Железная кирка\n'
     craft_diamond = icon('get') + icon('diamond') + ' Ковать Кристальная кирка\n'
@@ -266,15 +288,19 @@ def commands(player):
     # ВОЙНА
 
     war = '\n⬇ СРАЖЕНИЯ ⬇\n\n' + icon('war') + ' Война - война инфо\n'
-    war_search = icon('search') + ' Поиск - Поиск противника\n'
+    war_search = icon('search') + ' Поиск - поиск противника\n'
     war_scouting = icon('search') + ' Разведка - информация о противнике (10' + icon('diamond') + ')\n'
-    war_attack = icon('war') + ' Атака - Атака противника\n'
-    war_shield = icon('shield') + ' Щит - Наличие щита\n'
-    buy_info = icon('target') + ' Найм - Стоимость найма\n'
-    warrior = icon('sword') + ' Воин [кол-во] - Нанимает Воинов\n'
-    archer = icon('bow') + ' Лучник [кол-во] - Нанимает Лучников\n'
-    wizard = icon('orb') + ' Маг [кол-во] - Нанимает Магов\n'
-    army = icon('war') + ' Армия - Ваша армия\n'
+    war_attack = icon('war') + ' Атака - атака противника\n'
+    war_shield = icon('shield') + ' Щит - наличие щита\n'
+    buy_info = icon('target') + ' Найм - стоимость найма\n'
+    warrior = icon('sword') + ' Воин [кол-во] - нанимает Воинов\n'
+    archer = icon('bow') + ' Лучник [кол-во] - нанимает Лучников\n'
+    wizard = icon('orb') + ' Маг [кол-во] - нанимает Магов\n'
+    army = icon('war') + ' Армия - ваша армия\n'
+    buy_equally = ''
+
+    if player.build.barracks and player.build.archery and player.build.magic:
+        buy_equally = icon('war') + ' Нанять макс - нанимает на все ресурсы поровну\n'
 
     if player.lvl < 10:
         war_search = ''
@@ -297,8 +323,8 @@ def commands(player):
 
     # СУНДУКИ
 
-    chests = '\n⬇ СУНДУКИ ⬇\n\n' + icon('bonus') + icon('cube') + ' Сундуки - Список ваших сундуков\n'
-    open_chest = icon('bonus') + icon('cube') + ' Открыть [название сундука] - Открывает сундук\n'
+    chests = '\n⬇ СУНДУКИ ⬇\n\n' + icon('bonus') + icon('cube') + ' Сундуки - список ваших сундуков\n'
+    open_chest = icon('bonus') + icon('cube') + ' Открыть [название сундука] - открывает сундук\n'
 
     # РАЗНОЕ
 
@@ -353,6 +379,7 @@ def commands(player):
               warrior + \
               archer + \
               wizard + \
+              buy_equally + \
               army + \
               chests + \
               open_chest + \
@@ -361,14 +388,15 @@ def commands(player):
               caves + \
               bones + \
               market + \
+              icon('skull') + ' Алтарь - дары Хранителю Подземелья\n' + \
               icon('bonus') + ' Бонус - получить ежедневный бонус\n' + \
               icon('lvl') + ' Топ - посмотреть топ игроков\n' + \
               icon('profile') + ' Лорд - посмотреть свой профиль\n' + \
-              icon('other') + ' Ник [новый ник] - Сменить ник\n' + \
-              icon('gold') + ' Донат - Поддержка проекта\n' + \
-              icon('help') + ' Помощь - Подробное описание всех команд\n' + \
-              icon('other') + ' Репорт [текст] - Написать админам\n' + \
-              icon('skull') + ' Алтарь - Дары Хранителю Подземелья\n' + \
+              icon('other') + ' Ник [новый ник] - сменить ник\n' + \
+              '❤ ' + 'Донат - поддержка проекта\n' + \
+              icon('help') + ' Помощь - подробное описание всех команд\n' + \
+              '⚙ ' + '!команды - управление беседой\n' + \
+              icon('other') + ' Репорт [текст] - написать админам\n' + \
               '\nКоманды открываются с уровнем и постройкой зданий!\n' + \
               '\nЕсли вам что-то непонятно, воспользуйтесь командой "Репорт"'
     return message
@@ -499,6 +527,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('❤ Донат ❤', color=VkKeyboardColor.DEFAULT, payload={"command": "донат"})
         keyboard.add_line()
+        keyboard.add_button('💬 Беседы 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "беседы"})
         color = VkKeyboardColor.POSITIVE
         if action_time - player.bonus_time <= BONUS_TIME:
             color = VkKeyboardColor.NEGATIVE
@@ -626,6 +655,9 @@ def get_keyboard(player, action_time=0):
                 keyboard.add_button('🏹 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "лучник 5"})
             if player.build.magic:
                 keyboard.add_button('🔮 х5', color=VkKeyboardColor.POSITIVE, payload={"command": "маг 5"})
+        if player.build.barracks and player.build.archery and player.build.magic:
+            keyboard.add_line()
+            keyboard.add_button('Нанять макс. поровну 🗡=🏹=🔮', color=VkKeyboardColor.POSITIVE, payload={"command": "нанять поровну"})
         keyboard.add_line()
         keyboard.add_button('⚔ Армия', color=VkKeyboardColor.DEFAULT, payload={"command": "армия"})
 
@@ -761,10 +793,12 @@ def get_keyboard(player, action_time=0):
                                     payload={"command": "ковать каменная кирка"})
         if not diamond or not skull:
             keyboard.add_line()
-            keyboard.add_button('⛏ 💎 Кристальная', color=VkKeyboardColor.POSITIVE,
-                                payload={"command": "ковать кристальная кирка"})
-            keyboard.add_button('⛏ 💀 Костяная', color=VkKeyboardColor.POSITIVE,
-                                payload={"command": "ковать костяная кирка"})
+            if not diamond:
+                keyboard.add_button('⛏ 💎 Кристальная', color=VkKeyboardColor.POSITIVE,
+                                    payload={"command": "ковать кристальная кирка"})
+            if not skull:
+                keyboard.add_button('⛏ 💀 Костяная', color=VkKeyboardColor.POSITIVE,
+                                    payload={"command": "ковать костяная кирка"})
 
     # Таверна
 

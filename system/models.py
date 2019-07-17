@@ -24,6 +24,34 @@ class Chat(models.Model):
     is_admin = models.BooleanField(
         default=False,
     )
+    bones_on = models.BooleanField(
+        default=True,
+    )
+    alco_on = models.BooleanField(
+        default=True,
+    )
+
+    def bones_change(self):
+        if self.bones_on:
+            self.bones_on = False
+            mess = 'Вы запретили 🎲 Кости 🎲'
+        else:
+            self.bones_on = True
+            mess = 'Вы разрешили 🎲 Кости 🎲'
+
+        self.save(update_fields=['bones_on'])
+        return mess
+
+    def alco_change(self):
+        if self.alco_on:
+            self.alco_on = False
+            mess = 'Вы запретили 🍺 Эль 🍺'
+        else:
+            self.alco_on = True
+            mess = 'Вы разрешили 🍺 Эль 🍺'
+
+        self.save(update_fields=['alco_on'])
+        return mess
 
 
 class Message(models.Model):

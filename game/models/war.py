@@ -160,6 +160,35 @@ class War(models.Model):
             message = 'Сначала постройте Башню Магов!'
         return message
 
+    def craft_equally(self, action_time):
+        if self.player.build.barracks and self.player.build.archery and self.player.build.magic:
+            self.player.build.get_passive(action_time)
+            wood = ARCHER_WOOD + WIZARD_WOOD
+            iron = WARRIOR_IRON + ARCHER_IRON + WIZARD_IRON
+            diamond = WIZARD_DIAMOND
+
+            min_amount = self.player.buy_equally()
+
+            need_wood = min_amount * wood
+            need_iron = min_amount * iron
+            need_diamond = min_amount * diamond
+
+            print(self.player.build.stock.wood, self.player.build.stock.iron, self.player.build.stock.diamond)
+
+            self.player.build.stock.wood -= need_wood
+            self.player.build.stock.iron -= need_iron
+            self.player.build.stock.diamond -= need_diamond
+            self.player.build.stock.save(update_fields=['wood', 'iron', 'diamond'])
+
+            self.warrior += min_amount
+            self.archer += min_amount
+            self.wizard += min_amount
+            self.save(update_fields=['warrior', 'archer', 'wizard'])
+            mess = 'Вы наняли по ' + str(min_amount) + ' каждого типа юнитов.'
+        else:
+            mess = 'Доступно, когда открыты все виды воиск!'
+        return mess
+
     def find_enemy(self, lvl, action_time):
         if lvl < 10:
             message = 'Сражения и поиск противника доступны с 10 ур.'
@@ -167,8 +196,10 @@ class War(models.Model):
         find_time = action_time - self.find_last_time
         if find_time >= FIND_TIME:
             lvl = max(lvl - 12, 15)
+            if not self.enemy_id:
+                self.enemy_id = 0
             defenders = Player.objects.filter(build__citadel=True, lvl__gte=lvl, war__shield__lte=action_time).exclude(
-                user_id=self.user_id).all()
+                user_id__in=(self.user_id, self.enemy_id)).all()
 
             if defenders:
                 defender = random.choice(defenders)

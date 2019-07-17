@@ -134,10 +134,13 @@ class Product(models.Model):
 
                 item.seller.build.stock.gold += item.price
                 item.seller.build.stock.save(update_fields=['gold'])
-                sell_mess = 'У вас купили ' + str(item.amount) + icon(item.type) + \
+                buyer = '[id' + str(player.user_id) + '|' + player.nickname + ']'
+                sell_mess = 'Лорд ' + buyer + ' купил у вас ' + str(item.amount) + icon(item.type) + \
                             ' за ' + str(item.price) + icon('gold')
                 item.send_seller(sell_mess)
-                message = 'Вы купили ' + str(item.amount) + icon(item.type) + ' за ' + str(item.price) + icon('gold')
+                seller = '[id' + str(item.seller.user_id) + '|' + item.seller.nickname + ']'
+                message = 'Вы купили ' + str(item.amount) + icon(item.type) + ' за ' + str(item.price) + icon('gold') + \
+                          ' у Лорда ' + seller
                 item.delete()
             else:
                 message = 'Не хватает места на складе!'

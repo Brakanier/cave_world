@@ -294,41 +294,41 @@ def action(command, player, action_time, chat_info):
             answer += player.land_build()
 
     # Таверна
-
+    # TODO рефакторинг очень надо
     elif re.match(r'кости', command):
-        if re.search(r'дерево', command):
+        if chat_info['peer_id'] != chat_info['user_id']:
+            try:
+                chat = Chat.objects.get(peer_id=chat_info['peer_id'])
+                bones = chat.bones_on
+            except Chat.DoesNotExist:
+                bones = True
+        else:
+            bones = True
+        if re.search(r'дерево', command) and bones:
             count = amount(command)
             if count > 0:
                 answer = player.build.tavern_bones(action_time, 'wood', count)
             else:
                 answer = "Вы пытаетесь сыграть на 0 ресурса!"
-            stat['action'] = 'Wood'
-            stat['label'] = 'Кости_Дерево'
-        elif re.search(r'камень', command):
+        elif re.search(r'камень', command) and bones:
             count = amount(command)
             if count > 0:
                 answer = player.build.tavern_bones(action_time, 'stone', count)
             else:
                 answer = "Вы пытаетесь сыграть на 0 ресурса!"
-            stat['action'] = 'Stone'
-            stat['label'] = 'Кости_Камень'
-        elif re.search(r'железо', command):
+        elif re.search(r'железо', command) and bones:
             count = amount(command)
             if count > 0:
                 answer = player.build.tavern_bones(action_time, 'iron', count)
             else:
                 answer = "Вы пытаетесь сыграть на 0 ресурса!"
-            stat['action'] = 'Iron'
-            stat['label'] = 'Кости_Железо'
-        elif re.search(r'кристаллы', command):
+        elif re.search(r'кристаллы', command) and bones:
             count = amount(command)
             if count > 0:
                 answer = player.build.tavern_bones(action_time, 'diamond', count)
             else:
                 answer = "Вы пытаетесь сыграть на 0 ресурса!"
-            stat['action'] = 'Diamond'
-            stat['label'] = 'Кости_Кристалы'
-        elif re.search(r'золото', command):
+        elif re.search(r'золото', command) and bones:
             count = amount(command)
             if count > 1000:
                 answer = "Максимальная ставка золотом 1000!"
@@ -336,11 +336,10 @@ def action(command, player, action_time, chat_info):
                 answer = player.build.tavern_bones(action_time, 'gold', count)
             else:
                 answer = "Вы пытаетесь сыграть на 0 ресурса!"
-            stat['action'] = 'Gold'
-            stat['label'] = 'Кости_Золото'
+        elif not bones:
+            answer = 'Кости запрещены администратором беседы.'
         else:
             answer = player.bones()
-        stat['category'] = 'Bones'
 
     # Строительство
 
@@ -477,7 +476,7 @@ def action(command, player, action_time, chat_info):
         stat['action'] = 'Cave'
         stat['label'] = 'Подземелье'
         answer = player.cave()
-    elif command == 'mine':
+    elif command == 'mine' or command == 'шахта':
         stat['category'] = 'Place'
         stat['action'] = 'Mine'
         stat['label'] = 'Шахта'
@@ -538,6 +537,9 @@ def action(command, player, action_time, chat_info):
         stat['label'] = 'Лучник'
         stat['value'] = amount(command)
         answer = player.war.craft_wizard(player.build, action_time, amount(command))
+
+    elif command == 'нанять макс':
+        answer = player.war.craft_equally(action_time)
 
     # Охота
 
@@ -732,10 +734,52 @@ def action(command, player, action_time, chat_info):
     elif re.match(r'алтарь', command):
         answer = altar(command, player, action_time)
 
-    # Тест
+    # Эль
 
     elif command == 'всем эль!!!':
-        answer = player.alcohol(chat_info, action_time)
+        if chat_info['peer_id'] != chat_info['user_id']:
+            try:
+                chat = Chat.objects.get(peer_id=chat_info['peer_id'])
+                alco = chat.alco_on
+            except Chat.DoesNotExist:
+                alco = True
+        else:
+            alco = True
+        if alco:
+            answer = player.alcohol(chat_info, action_time)
+        else:
+            answer = 'Эль запрещен администратором беседы.'
+
+    # Настройки бесед
+
+    elif chat_info['peer_id'] != chat_info['user_id'] and command == '!команды' and is_admin(player.user_id, chat_info):
+        answer = 'Управление беседой:\n' + \
+                 '!кости - вкл/выкл кости\n' + \
+                 '!эль - вкл/выкл эль'
+
+    elif chat_info['peer_id'] != chat_info['user_id'] and command == '!кости' and is_admin(player.user_id, chat_info):
+        try:
+            chat = Chat.objects.get(peer_id=chat_info['peer_id'])
+            answer = chat.bones_on()
+        except Chat.DoesNotExist():
+            answer = 'Вашей беседы нет в базе. Свяжитесь с админом через команду "репорт".'
+
+    elif chat_info['peer_id'] != chat_info['user_id'] and command == '!эль' and is_admin(player.user_id, chat_info):
+        try:
+            chat = Chat.objects.get(peer_id=chat_info['peer_id'])
+            answer = chat.alco_on()
+        except Chat.DoesNotExist():
+            answer = 'Вашей беседы нет в базе. Свяжитесь с админом через команду "репорт".'
+
+    # Беседы
+
+    elif command == 'беседы':
+        answer = chat_list()
+
+    # Тест
+
+    elif command == 'тест':
+        answer = chat_list()
 
     # Рассылка
 

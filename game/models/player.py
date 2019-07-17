@@ -716,10 +716,25 @@ class Player(models.Model):
                 message += arch
             if self.build.magic:
                 message += wiz
+        if self.build.barracks and self.build.archery and self.build.magic:
+            equal_mess = '\nМакс. поровну: ' + str(self.buy_equally())
+            message += equal_mess
         else:
             message += '\nНет доступных воиск.\n' + \
                        'Постройте казармы/стрельбище/башню магов!'
         return message
+
+    def buy_equally(self):
+        wood = ARCHER_WOOD + WIZARD_WOOD
+        iron = WARRIOR_IRON + ARCHER_IRON + WIZARD_IRON
+        diamond = WIZARD_DIAMOND
+
+        max_amount_wood = self.build.stock.wood // wood
+        max_amount_iron = self.build.stock.iron // iron
+        max_amount_diamond = self.build.stock.diamond // diamond
+
+        min_amount = min(max_amount_wood, max_amount_iron, max_amount_diamond)
+        return min_amount
 
     def forge(self):
         if not self.build.forge:
@@ -1283,6 +1298,7 @@ class Player(models.Model):
         elif 90 <= rand <= 100:
             # Алтарь
             skull = 2 + (self.war.archer // 100)
+            skull = min(skull, 10)
             die = 1 + (self.war.archer // 20)
 
             mess = 'Ваши лучники нашли 💀 Древний Алтарь 💀\n' + \
@@ -1367,4 +1383,3 @@ class Player(models.Model):
         self.hunt_time = action_time + 7200
         self.save(update_fields=['hunt_time'])
         return mess
-
