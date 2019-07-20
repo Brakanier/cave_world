@@ -70,10 +70,10 @@ class Player(models.Model):
     hunt_time = models.BigIntegerField(
         default=0,
     )
-    fortuna_coin = models.IntegerField(
+    fortune_coin = models.IntegerField(
         default=2,
     )
-    fortuna_time = models.BigIntegerField(
+    fortune_time = models.BigIntegerField(
         default=0,
     )
     place = models.CharField(
@@ -401,6 +401,7 @@ class Player(models.Model):
             self.place = 'profile'
 
         self = energy(self, action_time)
+        coins(self, action_time)
         Player.objects.filter(user_id=self.user_id).update(energy=self.energy,
                                                            last_energy_action=self.last_energy_action,
                                                            place=self.place)
@@ -410,7 +411,8 @@ class Player(models.Model):
                   'Фамилия: ' + self.last_name + '\n' + \
                   'Уровень: ' + str(self.lvl) + icon('lvl') + '\n' + \
                   'Опыт: ' + str(self.exp) + '/' + str(exp_need(self.lvl)) + icon('exp') + '\n' + \
-                  'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy')
+                  'Энергия: ' + str(self.energy) + '/' + str(self.max_energy) + icon('energy') + '\n' + \
+                  'Монеты Фортуны: ' + str(self.fortune_coin) + '/2 🧿'
 
         return message
 

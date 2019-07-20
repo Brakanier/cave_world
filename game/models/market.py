@@ -293,10 +293,15 @@ class Product(models.Model):
         print(type)
         print(all_price)
         print(all_amount)
-        if len(products) < 3:
+        if len(products) < 10:
             avr = 2
-        if len(products) < 3 and type == 'skull':
+        if len(products) < 10 and type == 'skull':
             avr = 200
+
+        if avr > 300 and type == 'skull':
+            avr = 300
+        if avr > 4 and type in ('wood', 'stone', 'iron', 'diamond'):
+            avr = 4
 
         print(avr)
 

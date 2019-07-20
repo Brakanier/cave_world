@@ -148,6 +148,28 @@ def send(chat_info, message, keyboard=None):
             pass
 
 
+def send_comment(post_id, comment_id, message):
+    vk = vk_connect()
+    vk.wall.createComment(
+        owner_id=-176853872,
+        post_id=post_id,
+        from_group=1,
+        reply_to_comment=comment_id,
+        message=message,
+    )
+
+
+def coins(player, action_time):
+    delta = action_time - player.fortune_time
+    hours = delta // 3600
+    if hours >= 10:
+        coin_new = (hours // 10) * 1
+        coin_sum = coin_new + player.fortune_coin
+        if player.fortune_coin < 2:
+            player.fortune_coin = min(coin_sum, 2)
+        player.fortune_time = player.fortune_time + (coin_new * 3600 * 10)
+
+
 def keyboard_for_chat():
     keyboard = VkKeyboard()
 

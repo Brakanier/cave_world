@@ -13,6 +13,13 @@ class Registration(models.Model):
     )
 
 
+class FortunePost(models.Model):
+    post_id = models.BigIntegerField(
+        db_index=True,
+        unique=True,
+    )
+
+
 class Chat(models.Model):
     peer_id = models.BigIntegerField(
         db_index=True,

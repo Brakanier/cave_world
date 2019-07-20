@@ -16,7 +16,7 @@ from .models.market import Product
 from .models.cave import CaveMap, CaveProgress
 from .models.promocode import PromoCode
 
-from .fortune import fortune
+from .fortune.fortune import Fortune
 
 from .actions.functions import *
 from .actions.chests import *
@@ -37,7 +37,9 @@ def index(request):
             if data['type'] == 'confirmation':
                 return HttpResponse(confirmation_token, content_type="text/plain", status=200)
             if data['type'] == 'wall_reply_new':
-                fortune.write(json.dumps(data))
+                print('коммент')
+                comments_action(data['object'])
+                print('конец')
                 return HttpResponse('ok', content_type="text/plain", status=200)
             elif data['type'] == 'message_new':
                 from_id = data['object']['from_id']
@@ -792,7 +794,8 @@ def action(command, player, action_time, chat_info):
     # Тест
 
     elif command == 'тест':
-        answer = chat_list()
+        fortune = Fortune(629, player, {'date':879360})
+        answer = fortune.fortune()
 
     # Рассылка
 
@@ -874,3 +877,16 @@ def action(command, player, action_time, chat_info):
         elif re.match(r'топ пещер', command):
             answer = player.top_cave()
     '''
+
+
+def comments_action(comment):
+    try:
+        player = Player.objects.get(user_id=comment['from_id'])
+        print(comment['text'])
+        if comment['text'] in ('#играю', '#играть', '#крутить', '#крути', '#фортуна', '#удача', '#азино', '#поднятьбабла'):
+            print('старт фортуны')
+            fortune = Fortune(player, comment)
+            fortune.fortune()
+    except Player.DoesNotExist:
+        answer = 'Я вижу ты новенький!\nНачни играть и стань сильнейшим Лордом!\nvk.me/cave_world_bot'
+        send_comment(comment['post_id'], comment['id'], answer)
