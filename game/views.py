@@ -792,8 +792,7 @@ def action(command, player, action_time, chat_info):
     # Тест
 
     elif command == 'тест':
-        fortune = Fortune(629, player, {'date':879360})
-        answer = fortune.fortune()
+        pass
 
     # Рассылка
 

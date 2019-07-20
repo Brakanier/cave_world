@@ -182,7 +182,8 @@ def keyboard_for_chat():
 
 def chat_list():
     mess = 'Список бесед с ботом:\n' + \
-           '1) Игровая беседа #1 - https://vk.me/join/AJQ1d3CbaQ5UNU4dBAao3OhI'
+           '1) Игровая беседа #1 - https://vk.me/join/AJQ1d3CbaQ5UNU4dBAao3OhI \n' + \
+           '2) Cave World [CRYSTAL] - https://vk.me/join/AJQ1d2hdjxJkKpIXpWPM3v7K \n'
     return mess
 
 
