@@ -11,7 +11,7 @@ admin.site.register(FortunePost)
 
 @admin.register(Chat)
 class ChatAdmin(admin.ModelAdmin):
-    list_display = ('peer_id', 'is_admin', 'count_users')
+    list_display = ('peer_id', 'distribution', 'bones_on', 'alco_on', 'is_admin', 'count_users')
 
 
 @admin.register(Message)
