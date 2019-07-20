@@ -341,7 +341,7 @@ class Build(models.Model):
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                                       iron=self.stock.iron)
                     message = 'Казармы построены!\n' + \
-                              'Воины стали доступны в меню Земли > Нанять\n' + \
+                              'Воины стали доступны в меню Цитадель > Нанять\n' + \
                               'Или командой:\n' + \
                               'Воин [кол-во]\n'
                 else:
@@ -368,7 +368,7 @@ class Build(models.Model):
                     Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                                       wood=self.stock.wood)
                     message = 'Стрельбище построено!\n' + \
-                              'Лучники стали доступны в меню Земли > Нанять\n' + \
+                              'Лучники стали доступны в меню Цитадель > Нанять\n' + \
                               'Или командой:\n' + \
                               'Лучник [кол-во]\n'
                 else:
@@ -398,7 +398,7 @@ class Build(models.Model):
                                                                       wood=self.stock.wood,
                                                                       diamond=self.stock.diamond)
                     message = 'Башня Магов построена!\n' + \
-                              'Маги стали доступны в меню Земли > Нанять\n' + \
+                              'Маги стали доступны в меню Цитадель > Нанять\n' + \
                               'Или командой:\n' + \
                               'Маг [кол-во]\n'
                 else:

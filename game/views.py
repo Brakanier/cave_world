@@ -880,13 +880,19 @@ def action(command, player, action_time, chat_info):
 def comments_action(comment):
     if comment['from_id'] == -176853872:
         return True
+
     try:
         player = Player.objects.get(user_id=comment['from_id'])
-        print(comment['text'])
+    except Player.DoesNotExist:
+        player = False
+
+    if player:
         if comment['text'] in ('#играю', '#играть', '#крутить', '#крути', '#фортуна', '#удача', '#азино', '#поднятьбабла'):
-            print('старт фортуны')
             fortune = Fortune(player, comment)
             fortune.fortune()
-    except Player.DoesNotExist:
+    else:
         answer = 'Я вижу ты новенький!\nНачни играть и стань сильнейшим Лордом!\nvk.me/cave_world_bot'
         send_comment(comment['post_id'], comment['id'], answer)
+
+    return True
+
