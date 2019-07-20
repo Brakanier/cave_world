@@ -70,6 +70,12 @@ class Player(models.Model):
     hunt_time = models.BigIntegerField(
         default=0,
     )
+    fortuna_coin = models.IntegerField(
+        default=2,
+    )
+    fortuna_time = models.BigIntegerField(
+        default=0,
+    )
     place = models.CharField(
         max_length=50,
         default='cave',

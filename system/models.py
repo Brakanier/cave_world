@@ -30,6 +30,9 @@ class Chat(models.Model):
     alco_on = models.BooleanField(
         default=True,
     )
+    distribution = models.BooleanField(
+        default=True,
+    )
 
     def bones_change(self):
         if self.bones_on:
@@ -51,6 +54,18 @@ class Chat(models.Model):
             mess = 'Вы разрешили 🍺 Эль 🍺'
 
         self.save(update_fields=['alco_on'])
+        return mess
+
+    def distribution_change(self):
+        if self.distribution:
+            self.distribution = False
+            self.save(update_fields=['distribution'])
+            mess = '😢 Вы отключили рассылку в беседе! 😢\n' + \
+                   'Чтобы первым узнавать об обновлениях и розыгрышах напишите "!рассылка"'
+        else:
+            self.distribution = True
+            self.save(update_fields=['distribution'])
+            mess = '👍🏻 Вы включили рассылку в беседе! 👍🏻\nCпасибо, что вам интересен наш проект!'
         return mess
 
 

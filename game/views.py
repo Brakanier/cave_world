@@ -16,6 +16,8 @@ from .models.market import Product
 from .models.cave import CaveMap, CaveProgress
 from .models.promocode import PromoCode
 
+from .fortune import fortune
+
 from .actions.functions import *
 from .actions.chests import *
 from .actions.altar import *
@@ -34,7 +36,10 @@ def index(request):
         if data['secret'] == secret_token:
             if data['type'] == 'confirmation':
                 return HttpResponse(confirmation_token, content_type="text/plain", status=200)
-            if data['type'] == 'message_new':
+            if data['type'] == 'wall_reply_new':
+                fortune.write()
+                return HttpResponse('ok', content_type="text/plain", status=200)
+            elif data['type'] == 'message_new':
                 from_id = data['object']['from_id']
                 peer_id = data['object']['peer_id']
                 if from_id < 0:
@@ -755,7 +760,8 @@ def action(command, player, action_time, chat_info):
     elif chat_info['peer_id'] != chat_info['user_id'] and command == '!команды' and is_admin(player.user_id, chat_info):
         answer = 'Управление беседой:\n' + \
                  '!кости - вкл/выкл кости\n' + \
-                 '!эль - вкл/выкл эль'
+                 '!эль - вкл/выкл эль\n' + \
+                 '!рассылка - вкл/выкл рассылку в беседе\n'
 
     elif chat_info['peer_id'] != chat_info['user_id'] and command == '!кости' and is_admin(player.user_id, chat_info):
         try:
@@ -768,6 +774,13 @@ def action(command, player, action_time, chat_info):
         try:
             chat = Chat.objects.get(peer_id=chat_info['peer_id'])
             answer = chat.alco_change()
+        except Chat.DoesNotExist:
+            answer = 'Вашей беседы нет в базе. Свяжитесь с админом через команду "репорт".'
+
+    elif chat_info['peer_id'] != chat_info['user_id'] and command == '!рассылка' and is_admin(player.user_id, chat_info):
+        try:
+            chat = Chat.objects.get(peer_id=chat_info['peer_id'])
+            answer = chat.distribution_change()
         except Chat.DoesNotExist:
             answer = 'Вашей беседы нет в базе. Свяжитесь с админом через команду "репорт".'
 
