@@ -37,7 +37,7 @@ def index(request):
             if data['type'] == 'confirmation':
                 return HttpResponse(confirmation_token, content_type="text/plain", status=200)
             if data['type'] == 'wall_reply_new':
-                fortune.write(data)
+                fortune.write(json.dumps(data))
                 return HttpResponse('ok', content_type="text/plain", status=200)
             elif data['type'] == 'message_new':
                 from_id = data['object']['from_id']
