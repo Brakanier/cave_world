@@ -37,9 +37,7 @@ def index(request):
             if data['type'] == 'confirmation':
                 return HttpResponse(confirmation_token, content_type="text/plain", status=200)
             if data['type'] == 'wall_reply_new':
-                print('коммент')
                 comments_action(data['object'])
-                print('конец')
                 return HttpResponse('ok', content_type="text/plain", status=200)
             elif data['type'] == 'message_new':
                 from_id = data['object']['from_id']
@@ -880,6 +878,8 @@ def action(command, player, action_time, chat_info):
 
 
 def comments_action(comment):
+    if comment['from_id'] == -176853872:
+        return True
     try:
         player = Player.objects.get(user_id=comment['from_id'])
         print(comment['text'])
