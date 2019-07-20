@@ -18,7 +18,7 @@ class Command(BaseCommand):
             message = Message.objects.get(pk=options['id'])
         except Message.DoesNotExist:
             raise CommandError('Message "%s" does not exist' % options['id'])
-        chats = Chat.objects.values_list('peer_id').all()
+        chats = Chat.objects.filter(distribution=True).values_list('peer_id').all()
         chat_errors = 0
         vk = self.vk_connect()
         for chat_peer in chats:
