@@ -17,6 +17,7 @@ from .models.cave import CaveMap, CaveProgress
 from .models.promocode import PromoCode
 
 from .fortune.fortune import Fortune
+from .caves.caves import CaveGenerator
 
 from .actions.functions import *
 from .actions.chests import *
@@ -792,7 +793,11 @@ def action(command, player, action_time, chat_info):
     # Тест
 
     elif command == 'тест':
-        pass
+        gen = CaveGenerator()
+        gen.gen_enter_exit()
+        gen.draw_path()
+        gen.find_path()
+        answer = gen.draw_path()
 
     # Рассылка
 

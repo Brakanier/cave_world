@@ -15,68 +15,88 @@ class CaveMap(models.Model):
 
     @staticmethod
     def generate():
-        cave_map = {}
-        for level in range(1, 4):
-            one = random.randint(3, 4)
-            two = random.randint(3, 4)
-            one, two = CaveMap.change(one, two)
-            cave_map[level] = {
-                1: one,
-                2: two,
-            }
-        for level in range(4, 11):
-            one = random.randint(2, 4)
-            if one != 2:
-                two = 2
-            else:
-                two = random.randint(3, 4)
-            one, two = CaveMap.change(one, two)
-            cave_map[level] = {
-                1: one,
-                2: two,
-            }
-        for level in range(11, 21):
-            one = random.randint(1, 5)
-            if one in (1, 2):
-                two = random.randint(3, 5)
-            else:
-                two = random.randint(1, 3)
-            one, two = CaveMap.change(one, two)
-            cave_map[level] = {
-                1: one,
-                2: two,
-            }
-        for level in range(21, 26):
-            one = random.randint(0, 6)
-            if one in (0, 1, 2):
-                two = random.randint(3, 6)
-            else:
-                two = random.randint(0, 3)
-            one, two = CaveMap.change(one, two)
-            cave_map[level] = {
-                1: one,
-                2: two,
-            }
-        for level in range(26, 30):
-            one = random.randint(0, 6)
-            if one in (0, 1, 2):
-                two = random.randint(3, 6)
-            else:
-                two = random.randint(0, 2)
-            one, two = CaveMap.change(one, two)
-            cave_map[level] = {
-                1: one,
-                2: two,
-            }
-        cave_map[30] = {
-            1: 7,
-            2: 7,
+        y = random.randint(5, 6)
+        x = random.randint(5, 6)
+        print('Y: ' + str(y) + ' X: ' + str(x))
+
+        cave_map = [[0] * x for i in range(y)]
+
+        ic = {
+            'unknown': '🌫',
+            'way': '🐾',
+            'flower': '🍀',
+            'chest': '📦',
+            'stop': '🚧',
+            'break': '🕳',
+            'enemy': '🦇',
+            'die': '☠',
+            'down': '🚪',
+            'enter': ''
+        }
+        events = {
+            0: 'unknown',
+            1: 'way',
+            2: 'flower',
+            3: 'chest',
+            4: 'stop',
+            5: 'break',
+            6: 'enemy',
+            7: 'die',
+            8: 'down',
         }
 
-        for lvl in cave_map:
-            print(str(lvl) + ' Право: ' + str(cave_map[lvl][1]) + ' | Лево: ' + str(cave_map[lvl][2]))
-        cave_map = json.dumps(cave_map)
-        return cave_map
+        def gen_bad_event(y, x):
+            event = random.randint(4, 7)
+            event_y = random.randint(0, y - 1)
+            event_x = random.randint(0, x - 1)
+            print('Y: ' + str(y) + ' X: ' + str(x))
+            if cave_map[event_y][event_x] == 0:
+                print(events[event] + ' - Y: ' + str(event_y) + ' X: ' + str(event_x))
+                cave_map[event_y][event_x] = event
+            else:
+                gen_bad_event(y, x)
+
+        def down(y, x):
+            event = 8
+            event_y = random.randint(0, y - 1)
+            event_x = random.randint(0, x - 1)
+            if cave_map[event_y][event_x] == 0:
+                print(events[event] + ' - Y: ' + str(event_y) + ' X: ' + str(event_x))
+                cave_map[event_y][event_x] = event
+                return event_y, event_x
+            else:
+                down(y, x)
+
+        exit_y, exit_x = down(y, x)
+
+        for i in range(min(y, x) - 1):
+            if CaveMap.find_path(0, 0, exit_y, exit_x, y, x, cave_map):
+                continue
+            else:
+                break
+
+        def gen_good_event(x, y):
+            event = random.randint(2, 3)
+            event_y = random.randint(0, y - 1)
+            event_x = random.randint(0, x - 1)
+            if cave_map[event_y][event_x] == 0:
+                print(events[event] + ' - Y: ' + str(event_y) + ' X: ' + str(event_x))
+                cave_map[event_y][event_x] = event
+            else:
+                gen_good_event(x, y)
+
+        for i in range(max(x, y)):
+            gen_good_event(x, y)
+        '''
+        x_map = ''
+        for y in cave_map:
+            for x in y:
+                x_map += ' ' + ic[events[x]] + ' '
+            x_map += '\n'
+        print(x_map)
+        #cave_map = json.dumps(cave_map)
+        '''
+        return 'test'
 
     @staticmethod
     def change(one, two):
@@ -84,6 +104,48 @@ class CaveMap(models.Model):
         if rand == 1:
             one, two = two, one
         return one, two
+
+    @staticmethod
+    def find_path(enter_y, enter_x, exit_y, exit_x, size_y, size_x, cave_map):
+
+        # Нормализация
+        for y in range(len(cave_map)):
+            for x in range(len(cave_map[y])):
+                if cave_map[y][x] in [4, 5, 6, 7]:
+                    cave_map[y][x] = -2
+                else:
+                    cave_map[y][x] = 0
+
+        cave_map[enter_y][enter_x] = 1
+        cave_map[exit_y][exit_x] = -1
+
+        wave = 1
+        for i in range(len(cave_map) * len(cave_map[0])):
+            wave += 1
+            for y in range(len(cave_map)):
+                for x in range(len(cave_map[y])):
+                    if cave_map[y][x] == -2:
+                        continue
+                    if cave_map[y][x] == wave - 1:
+                        if y > 0 and cave_map[y - 1][x] == 0:
+                            cave_map[y - 1][x] = wave
+                        if y < (len(cave_map) - 1) and cave_map[y + 1][x] == 0:
+                            cave_map[y + 1][x] = wave
+                        if x > 0 and cave_map[y][x - 1] == 0:
+                            cave_map[y][x - 1] = wave
+                        if x < (len(cave_map[y]) - 1) and cave_map[y][x + 1] == 0:
+                            cave_map[y][x + 1] = wave
+
+                        if (abs(y - exit_y) + abs(x - exit_x)) == 1:
+                            cave_map[exit_y][exit_x] = wave
+                            x_map = ''
+                            for n in range(len(cave_map)):
+                                for m in range(len(cave_map[n])):
+                                    x_map += ' ' + str(cave_map[n][m]) + ' '
+                                x_map += '\n'
+                            print(x_map)
+                            return True
+        return False
 
 
 class CaveProgress(models.Model):
