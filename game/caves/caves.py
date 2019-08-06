@@ -260,7 +260,7 @@ class CaveManager:
         if player.cave_progress.player_map:
             self.player_map = json.loads(player.cave_progress.player_map)
         else:
-            self.__set_player_map(self)
+            self.__set_player_map()
 
     def start(self, player, action_time):
         if action_time < player.cave_progress.time:
