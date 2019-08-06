@@ -795,13 +795,13 @@ def action(command, player, action_time, chat_info):
     elif command == 'тест старт' and player.user_id == 55811116:
         cave_manager = CaveManager(player)
         answer = cave_manager.start(player, action_time)
-    elif command == 'тест вниз':
+    elif command == 'тест вниз' and player.user_id == 55811116:
         cave_manager = CaveManager(player)
         answer = cave_manager.go_down(player)
-    elif command == 'тест вверх':
+    elif command == 'тест вверх' and player.user_id == 55811116:
         cave_manager = CaveManager(player)
         answer = cave_manager.go_up(player)
-    elif re.match(r'тест', command):
+    elif re.match(r'тест', command) and player.user_id == 55811116:
         cave_manager = CaveManager(player)
         answer = cave_manager.move(player, command)
 
