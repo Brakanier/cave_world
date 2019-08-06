@@ -17,7 +17,7 @@ from .models.cave import CaveMap, CaveProgress
 from .models.promocode import PromoCode
 
 from .fortune.fortune import Fortune
-from .caves.caves import CaveGenerator
+from .caves.caves import CaveGenerator, CaveManager
 
 from .actions.functions import *
 from .actions.chests import *
@@ -792,12 +792,18 @@ def action(command, player, action_time, chat_info):
 
     # Тест
 
-    elif command == 'тест':
-        gen = CaveGenerator()
-        gen.gen_enter_exit()
-        gen.draw_path()
-        gen.find_path()
-        answer = gen.draw_path()
+    elif command == 'тест старт' and player.user_id == 55811116:
+        cave_manager = CaveManager(player)
+        answer = cave_manager.start(player, action_time)
+    elif command == 'тест вниз':
+        cave_manager = CaveManager(player)
+        answer = cave_manager.go_down(player)
+    elif command == 'тест вверх':
+        cave_manager = CaveManager(player)
+        answer = cave_manager.go_up(player)
+    elif re.match(r'тест', command):
+        cave_manager = CaveManager(player)
+        answer = cave_manager.move(player, command)
 
     # Рассылка
 
