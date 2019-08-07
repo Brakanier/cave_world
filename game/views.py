@@ -848,8 +848,9 @@ def action(command, player, action_time, chat_info):
     else:
         keyboard = get_keyboard(player, action_time)
 
-    if answer and player.user_id != 55811116:
-        answer = player.alcohol_mess(action_time, answer)
+    if player.place not in ('cave_go', 'cave_down', 'cave_up'):
+        if answer and player.user_id != 55811116:
+            answer = player.alcohol_mess(action_time, answer)
 
     send(chat_info, answer, keyboard)
 
