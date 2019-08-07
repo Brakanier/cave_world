@@ -848,7 +848,27 @@ def action(command, player, action_time, chat_info):
     else:
         keyboard = get_keyboard(player, action_time)
 
-    if player.place not in ('cave_go', 'cave_down', 'cave_up'):
+    alco_except = (
+    'пещеры', 
+    'пещеры войти', 
+    'пещеры север', 
+    'пещеры запад', 
+    'пещеры восток', 
+    'пещеры юг', 
+    'п с', 
+    'п в', 
+    'п з', 
+    'п ю', 
+    'пещеры с', 
+    'пещеры з', 
+    'пещеры в', 
+    'пещеры ю', 
+    'пещеры вниз', 
+    'пещеры вверх', 
+    'п вниз', 
+    'п вверх'
+    )
+    if command not in alco_except:
         if answer and player.user_id != 55811116:
             answer = player.alcohol_mess(action_time, answer)
 
