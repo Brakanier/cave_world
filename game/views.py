@@ -793,6 +793,21 @@ def action(command, player, action_time, chat_info):
     # Пещеры
 
     elif re.match(r'пещеры', command) or re.match(r'п', command):
+        move_commands = (
+            'пещеры', 
+            'пещеры север', 
+            'пещеры запад', 
+            'пещеры восток', 
+            'пещеры юг', 
+            'п с', 
+            'п в', 
+            'п з', 
+            'п ю', 
+            'пещеры с', 
+            'пещеры з', 
+            'пещеры в', 
+            'пещеры ю'
+            )
         if not player.cave_progress:
             cave = CaveMap.objects.get()
             cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
@@ -826,7 +841,7 @@ def action(command, player, action_time, chat_info):
         elif command in ('пещеры вверх', 'п вверх'):
             cave_manager = CaveManager(player)
             answer = cave_manager.go_up(player)
-        else:
+        elif command in move_commands:
             cave_manager = CaveManager(player)
             answer = cave_manager.move(player, command)
 
