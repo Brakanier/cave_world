@@ -790,20 +790,45 @@ def action(command, player, action_time, chat_info):
     elif command == 'беседы':
         answer = chat_list()
 
-    # Тест
+    # Пещеры
 
-    elif command == 'тест старт' and player.user_id == 55811116:
-        cave_manager = CaveManager(player)
-        answer = cave_manager.start(player, action_time)
-    elif command == 'тест вниз' and player.user_id == 55811116:
-        cave_manager = CaveManager(player)
-        answer = cave_manager.go_down(player)
-    elif command == 'тест вверх' and player.user_id == 55811116:
-        cave_manager = CaveManager(player)
-        answer = cave_manager.go_up(player)
-    elif re.match(r'тест', command) and player.user_id == 55811116:
-        cave_manager = CaveManager(player)
-        answer = cave_manager.move(player, command)
+    elif re.match(r'пещеры', command) or re.match(r'п', command):
+        if not player.cave_progress:
+            cave = CaveMap.objects.get()
+            cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
+            player.cave_progress = cave_progress
+            player.save(update_fields=['cave_progress'])
+        if command == 'пещеры':
+            answer = '🕸 Пещеры 🕸 - представляют собой лабиринт.\n' + \
+            'На каждом из уровней вы можете найти хорошее, плохое или проход на уровень дальше.\n' + \
+            'Карта пещер для всех общая.\n' + \
+            'Когда игрок добирается до сокровищ, происходит обвал, пещеры генерируются заново!\n\n' + \
+            'Команды:\n' + \
+            '- Пещеры войти - начать исследование пещер\n' + \
+            '- Пещеры север - выбор пути\n' + \
+            '- Пещеры восток - выбор пути\n' + \
+            '- Пещеры запад - выбор пути\n' + \
+            '- Пещеры юг - выбор пути\n' + \
+            '- Пещеры вверх - вернуться на прошлый уровень\n' + \
+            '- Пещеры вниз - спуститься на след. уровень\n'
+        elif command == 'пещеры инфо':
+            answer = player.cave_progress.info()
+        elif command == 'пещеры войти':
+            army = player.lvl * 3
+            if player.war.sum_army() < army:
+                answer = 'Для исследования пещер вам нужно минимум ' + str(army) + ' ⚔ армии!'
+            else:
+                cave_manager = CaveManager(player)
+                answer = cave_manager.start(player, action_time)
+        elif command in ('пещеры вниз', 'п вниз'):
+            cave_manager = CaveManager(player)
+            answer = cave_manager.go_down(player)
+        elif command in ('пещеры вверх', 'п вверх'):
+            cave_manager = CaveManager(player)
+            answer = cave_manager.go_up(player)
+        else:
+            cave_manager = CaveManager(player)
+            answer = cave_manager.move(player, command)
 
     # Рассылка
 
@@ -823,7 +848,7 @@ def action(command, player, action_time, chat_info):
     else:
         keyboard = get_keyboard(player, action_time)
 
-    if answer:
+    if answer and player.user_id != 55811116:
         answer = player.alcohol_mess(action_time, answer)
 
     send(chat_info, answer, keyboard)
@@ -837,56 +862,6 @@ def action(command, player, action_time, chat_info):
         # Отправка статистики
         threading.Thread(target=track, args=(player.user_id, stat)).start()
 
-    '''
-        # Пещеры
-
-        elif command == 'пещеры':
-            answer = '🕸 Пещеры 🕸 - представляют собой лабиринт.\n' + \
-                     'На каждом из уровней вы можете найти хорошее, плохое или проход на уровень дальше.\n' + \
-                     'Карта пещер для всех общая.\n' + \
-                     'Когда игрок добирается до сокровищ, происходит обвал, пещеры генерируются заново!\n' + \
-                     'Команды: \n' + \
-                     '- Пещеры инфо\n' + \
-                     '- Пещеры войти - начать исследование пещер\n' + \
-                     '- Пещеры налево - выбор пути\n' + \
-                     '- Пещеры направо - выбор пути\n' + \
-                     '\n'
-        elif command == 'пещеры инфо':
-            if not player.cave_progress:
-                cave = CaveMap.objects.get()
-                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-                player.cave_progress = cave_progress
-                player.save(update_fields=['cave_progress'])
-            answer = player.cave_progress.info()
-        elif command == 'пещеры войти' or command == 'пещеры вход':
-            if not player.cave_progress:
-                cave = CaveMap.objects.get()
-                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-                player.cave_progress = cave_progress
-                player.save(update_fields=['cave_progress'])
-            if player.place == 'cave_go':
-                answer = 'Вы уже в пещерах!'
-            else:
-                answer = player.cave_progress.start(action_time)
-        elif command == 'пещеры налево' or command == 'пещеры л':
-            if not player.cave_progress:
-                cave = CaveMap.objects.get()
-                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-                player.cave_progress = cave_progress
-                player.save(update_fields=['cave_progress'])
-            answer = player.cave_progress.go(1, action_time)
-        elif command == 'пещеры направо' or command == 'пещеры п':
-            if not player.cave_progress:
-                cave = CaveMap.objects.get()
-                cave_progress = CaveProgress.objects.create(user_id=player.user_id, cave=cave)
-                player.cave_progress = cave_progress
-                player.save(update_fields=['cave_progress'])
-            answer = player.cave_progress.go(2, action_time)
-        elif re.match(r'топ пещер', command):
-            answer = player.top_cave()
-    '''
-
-
 def comments_action(comment):
     if comment['from_id'] == -176853872:
         return True
@@ -897,7 +872,7 @@ def comments_action(comment):
         player = False
 
     if player:
-        if comment['text'] in ('#играю', '#играть', '#крутить', '#крути', '#фортуна', '#удача', '#азино', '#поднятьбабла'):
+        if comment['text'].lower() in ('#играю', '#играть', '#крутить', '#крути', '#фортуна', '#удача', '#азино', '#поднятьбабла'):
             fortune = Fortune(player, comment)
             fortune.fortune()
     else:

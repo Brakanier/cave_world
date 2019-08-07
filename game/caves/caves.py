@@ -143,7 +143,7 @@ class CaveManager:
             player.place = 'cave_go'
         elif event == 2:
             if self.__is_known_event(event):
-                event_mess = 'Вы тут уже были!'
+                event_mess = 'Вы уже забрали цветок...'
             else:
                 event_mess = 'Вы нашли Цветок Жизни +2 ⚡'
                 player.energy += 2
@@ -151,7 +151,7 @@ class CaveManager:
             player.place = 'cave_go'
         elif event == 3:
             if self.__is_known_event(event):
-                event_mess = 'Вы тут уже были!'
+                event_mess = 'Вы уже забрали сундук...'
             else:
                 event_mess = 'Вы нашли Пещерный сундук 🎁'
                 chest = get_chest('cave_chest')
@@ -184,7 +184,6 @@ class CaveManager:
             player.war.archer -= lost_arch
             player.war.wizard -= lost_wiz
             player.war.save(update_fields=['warrior', 'archer', 'wizard'])
-            #TODO сражение с заблудшими
             player.place = 'cave_go'
         elif event == 7:
             lost_part = 20
@@ -294,13 +293,13 @@ class CaveManager:
         player.cave_progress.level = 1
         player.cave_progress.time = action_time + 3600
         player.cave_progress.player_map = json.dumps(self.player_map)
-        # TODO Вернуть сохранение времени входа
-        player.cave_progress.save(update_fields=['level', 'cave', 'player_map', 'y', 'x'])
+        player.cave_progress.save(update_fields=['level', 'cave', 'player_map', 'y', 'x', 'time'])
         player.place = 'cave_go'
         player.save(update_fields=['place'])
         mess += 'Вы зашли в пещеры!\n' + \
                 'Вы сейчас на ' + str(player.cave_progress.level) + ' ур. пещер.\n' + \
-                'Выберите в какую сторону идти\n'
+                'Нажмите 💬 Инфо 💬 для подробростей или напишите "пещеры инфо".\n' + \
+                'Выберите в какую сторону идти.'
         
         mess = self.draw_level(self.player_map) + mess
         return mess
@@ -314,9 +313,9 @@ class CaveManager:
             'chest': '🎁',
             'stop': '🚧',
             'enemy': '👻',
-            'die': '☠',
+            'die': '💨',
             'exit': '🕳',
-            'enter': '📍',
+            'enter': '🚩',
             'lord': '🤴',
             'used_flower': '🍁',
             'used_chest': '📦',
@@ -356,7 +355,7 @@ class CaveManager:
         x_map += '⬛⬛\n\n'
 
         print(x_map)
-        lvl_mess = 'Пещера - ' + lvl + ' ур.\n'
+        lvl_mess = '🕸 Пещеры - ' + lvl + ' ур. 🕸\n'
         return lvl_mess + x_map
 
     def get_event(self, y, x):
@@ -463,8 +462,8 @@ class CaveGenerator:
 
     def generate(self):
         # максимум по ширине 8 символов, 2 из них рамка
-        y =  random.randint(4, 6)
-        x = random.randint(4, 8)
+        y =  random.randint(4, 8)
+        x = random.randint(4, 6)
         for i in range(10):
             self.gen_null()
             self.enter = (0, 0)

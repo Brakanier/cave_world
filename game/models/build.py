@@ -560,7 +560,8 @@ class Build(models.Model):
                       'Каменоломня ' + str(self.stone_mine_lvl) + ' ур.: ' + str(stone_passive) + icon('stone') + ' в час\n' + \
                       'Лесопилка ' + str(self.wood_mine_lvl) + ' ур.: ' + str(wood_passive) + icon('wood') + ' в час\n' + \
                       'Рудник ' + str(self.iron_mine_lvl) + ' ур.: ' + str(iron_passive) + icon('iron') + ' в час\n' + \
-                      'Прииск ' + str(self.diamond_mine_lvl) + ' ур.: ' + str(diamond_passive) + icon('diamond') + ' в час\n'
+                      'Прииск ' + str(self.diamond_mine_lvl) + ' ур.: ' + str(diamond_passive) + icon('diamond') + ' в час\n' + \
+                      'Склад ' + str(self.stock.lvl) + ' ур.: ' + str(self.stock.max) + ' макс.\n'
         return message
 
     def tavern_bones(self, action_time, res, amount):

@@ -350,8 +350,7 @@ def commands(player):
 
     # РАЗНОЕ
 
-    # caves = icon('web') + ' Пещеры - Исследование пещер\n'
-    caves = ''
+    caves = icon('web') + ' Пещеры - Исследование пещер\n'
 
     hunt = icon('target') + ' Охота - информация об охоте\n'
     market = icon('gold') + ' Рынок - купить/продать ресурсы\n'
@@ -733,7 +732,7 @@ def get_keyboard(player, action_time=0):
             keyboard.add_button('⚒ Кузница', color=VkKeyboardColor.DEFAULT, payload={"command": "кузница"})
         if player.lvl >= 5 or player.build.tavern:
             keyboard.add_line()
-            # keyboard.add_button('🕸 Пещеры', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры войти"})
+            keyboard.add_button('🕸 Пещеры', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры войти"})
             if player.build.tavern:
                 keyboard.add_button('🍺 Таверна', color=VkKeyboardColor.DEFAULT, payload={"command": "таверна"})
             if player.lvl >= 5:
@@ -879,34 +878,36 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('💬 Инфо 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры инфо"})
         keyboard.add_line()
-        keyboard.add_button('На Север', color=VkKeyboardColor.POSITIVE, payload={"command": "тест север"})
+        keyboard.add_button('⬆ На Север ⬆', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры север"})
         keyboard.add_line()
-        keyboard.add_button('На Запад', color=VkKeyboardColor.POSITIVE, payload={"command": "тест запад"})
-        keyboard.add_button('На Восток', color=VkKeyboardColor.POSITIVE, payload={"command": "тест восток"})
+        keyboard.add_button('⬅ На Запад', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры запад"})
+        keyboard.add_button('На Восток ➡', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры восток"})
         keyboard.add_line()
-        keyboard.add_button('На Юг', color=VkKeyboardColor.POSITIVE, payload={"command": "тест юг"})
+        keyboard.add_button('⬇ На Юг ⬇', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры юг"})
     elif player.place == 'cave_up':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('💬 Инфо 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры инфо"})
-        keyboard.add_button('Подняться', color=VkKeyboardColor.POSITIVE, payload={"command": "тест вверх"})
         keyboard.add_line()
-        keyboard.add_button('На Север', color=VkKeyboardColor.POSITIVE, payload={"command": "тест север"})
+        keyboard.add_button('⬆ На Север ⬆', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры север"})
         keyboard.add_line()
-        keyboard.add_button('На Запад', color=VkKeyboardColor.POSITIVE, payload={"command": "тест запад"})
-        keyboard.add_button('На Восток', color=VkKeyboardColor.POSITIVE, payload={"command": "тест восток"})
+        keyboard.add_button('⬅ На Запад', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры запад"})
+        keyboard.add_button('На Восток ➡', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры восток"})
         keyboard.add_line()
-        keyboard.add_button('На Юг', color=VkKeyboardColor.POSITIVE, payload={"command": "тест юг"})
+        keyboard.add_button('⬇ На Юг ⬇', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры юг"})
+        keyboard.add_line()
+        keyboard.add_button('⏫ Вверх ⏫', color=VkKeyboardColor.POSITIVE, payload={"command": "пещеры вверх"})
     elif player.place == 'cave_down':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
         keyboard.add_button('💬 Инфо 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры инфо"})
-        keyboard.add_button('Спуститься', color=VkKeyboardColor.POSITIVE, payload={"command": "тест вниз"})
         keyboard.add_line()
-        keyboard.add_button('На Север', color=VkKeyboardColor.POSITIVE, payload={"command": "тест север"})
+        keyboard.add_button('⬆ На Север ⬆', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры север"})
         keyboard.add_line()
-        keyboard.add_button('На Запад', color=VkKeyboardColor.POSITIVE, payload={"command": "тест запад"})
-        keyboard.add_button('На Восток', color=VkKeyboardColor.POSITIVE, payload={"command": "тест восток"})
+        keyboard.add_button('⬅ На Запад', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры запад"})
+        keyboard.add_button('На Восток ➡', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры восток"})
         keyboard.add_line()
-        keyboard.add_button('На Юг', color=VkKeyboardColor.POSITIVE, payload={"command": "тест юг"})
+        keyboard.add_button('⬇ На Юг ⬇', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры юг"})
+        keyboard.add_line()
+        keyboard.add_button('⏬ Вниз ⏬', color=VkKeyboardColor.POSITIVE, payload={"command": "пещеры вниз"})
 
     # Алтарь
 
@@ -916,7 +917,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_button('🤴 Ник - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь ник"})
         keyboard.add_button('🛡 Щит - 20 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь щит"})
         keyboard.add_line()
-        keyboard.add_button('⚔ Атака - 2 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь атака"})
+        keyboard.add_button('⚔ Атака - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь атака"})
         keyboard.add_button('🎯 Разведка - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь разведка"})
         keyboard.add_line()
         keyboard.add_button('💬 Инфо 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "алтарь"})
