@@ -11,7 +11,7 @@ class CaveManager:
         self.direction = None
         self.__get_or_create_cave()
         # Небольшой костыль, раньше по умолчанию уровнь был 0, теперь начинается с 1
-        if player.cave_progress.level == 0 or player.cave_progress == None:
+        if player.cave_progress.level == 0 or player.cave_progress.level == None or player.cave_progress.level > 10:
             player.cave_progress.level = 1
         self.level = player.cave_progress.level
         self.level_map = self.full_cave[str(self.level)]['map']
