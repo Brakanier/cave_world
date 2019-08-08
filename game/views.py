@@ -907,9 +907,10 @@ def action(command, player, action_time, chat_info):
     )
     if command not in alco_except:
         if answer and player.user_id != 55811116:
-            answer = player.alcohol_mess(action_time, answer)
+            if chat_info['peer_id'] != chat_info['user_id']:
+                answer = player.alcohol_mess(action_time, answer)
 
-    send(chat_info, answer, keyboard)
+    threading.Thread(target=send, args=(chat_info, answer, keyboard)).start()
 
     # Обновление инфы из бесед, если была команда для бота
     if answer and chat_info['user_id'] != chat_info['peer_id']:
