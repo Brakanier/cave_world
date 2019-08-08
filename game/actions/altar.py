@@ -147,10 +147,7 @@ def altar(command, player, action_time, chat_info):
             shield = 'нет'
 
         # Склад макс.
-        if target.build.stock.lvl >= 30:
-            stock_max = target.build.stock.lvl * STOCK_MAX_X30
-        else:
-            stock_max = target.build.stock.lvl * STOCK_MAX_X
+        stock_max = (STOCK_MAX_X + ((target.build.stock.lvl // 10) * 20)) * target.build.stock.lvl
 
         # Добыча
         stone = 0
