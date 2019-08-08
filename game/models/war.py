@@ -476,7 +476,10 @@ class War(models.Model):
                         defender.build.stock.diamond -= cost_diamond
                         defender.build.stock.gold -= cost_gold
 
-                        defender.war.shield = action_time + (8 * 3600)
+                        if defender.war.shield >= action_time:
+                            defender.war.shield += 10 * 3600
+                        else:
+                            defender.war.shield = action_time + (10 * 3600)
 
                         # Выдаём победителю
 

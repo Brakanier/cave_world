@@ -88,16 +88,18 @@ def altar(command, player, action_time, chat_info):
                 id = get_id(part[2])
             try:
                 target = Player.objects.select_related('war', 'build', 'build__stock').get(user_id=id)
+                if target.lvl < 14:
+                    return 'Лорд слишком низкого уровня!'
             except Player.DoesNotExist:
-                return "Игрок не найден!"
-            if player.build.stock.skull >= 5:
+                return 'Лорд не найден!'
+            if player.build.stock.skull >= 10:
                 player.war.enemy_id = id
                 mess = player.war.attack(player, action_time, chat_info, altar=True)
                 mess = 'Хранитель Подземелья отправил вашу армию в бой!\n' + mess
                 player.build.stock.skull -= 10
                 player.build.stock.save(update_fields=['skull'])
             else:
-                mess = 'Не хватает черепов - нужно 5' + icon('skull')
+                mess = 'Не хватает черепов - нужно 10' + icon('skull')
             return mess
 
         elif player.war.war_last_time + 3600 <= action_time:
