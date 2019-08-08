@@ -682,7 +682,10 @@ def action(command, player, action_time, chat_info):
             answer = "Неверный ID лота!"
 
     # Админ
-
+    elif command == 'online' and player.user_id == 55811116:
+        this_day = action_time - 86400
+        count = Player.objects.filter(last_energy_action__gte=this_day).count()
+        answer = 'Онлайн за сутки: ' + str(count)
     elif command == 'all gold' and player.user_id == 55811116:
         stocks = Stock.objects.all()
         gold = 0
