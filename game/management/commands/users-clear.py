@@ -5,7 +5,7 @@ from system.models import Registration
 
 
 class Command(BaseCommand):
-    help = 'Send message for all users and chats'
+    help = 'Delete users with level = 1'
 
     def handle(self, *args, **options):
         self.stdout.write('Start clearing')

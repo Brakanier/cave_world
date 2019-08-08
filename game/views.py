@@ -269,6 +269,8 @@ def action(command, player, action_time, chat_info):
         answer = player.top_gold()
     elif command in ('топ здания', 'топ строителей'):
         answer = player.top_build()
+    elif re.match(r'топ пещер', command):
+        answer = player.top_cave()
     elif command == 'склад' or command == 'ресурсы':
         answer = player.build.stock.stock(player.build, action_time)
         stat['category'] = 'Menu'
@@ -634,6 +636,8 @@ def action(command, player, action_time, chat_info):
         answer = Product.market_res(player, 'skull')
     elif command == "мои лоты":
         answer = Product.my_lots(player)
+    elif command == 'снять все':
+        answer = Product.del_all_lots(player)
     elif re.match(r'снять', command):
         id = Product.get_id(command)
         if id:
@@ -738,7 +742,7 @@ def action(command, player, action_time, chat_info):
     elif command == 'алтарь':
         answer = altar_info(player)
     elif re.match(r'алтарь', command):
-        answer = altar(command, player, action_time)
+        answer = altar(command, player, action_time, chat_info)
 
     # Эль
 
@@ -790,6 +794,8 @@ def action(command, player, action_time, chat_info):
     elif command == 'беседы':
         answer = chat_list()
 
+    elif command == 'тест':
+        answer = Product.del_all_lots(player)
     # Пещеры
 
     elif re.match(r'пещеры', command) or re.match(r'п', command):
@@ -881,7 +887,8 @@ def action(command, player, action_time, chat_info):
     'пещеры вниз', 
     'пещеры вверх', 
     'п вниз', 
-    'п вверх'
+    'п вверх',
+    'всем эль!!!'
     )
     if command not in alco_except:
         if answer and player.user_id != 55811116:

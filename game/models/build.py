@@ -174,22 +174,14 @@ class Build(models.Model):
         return self.stock
 
     def build_stock(self, action_time):
-        if self.stock.lvl >= 80:
+        if self.stock.lvl >= 100:
             return 'Склад максимального уровня!'
         self.stock = self.get_passive(action_time)
-        if self.stock.lvl >= 50:
-            stone_need = self.stock.lvl * STOCK_STONE * 3
-        elif self.stock.lvl >= 10:
-            stone_need = self.stock.lvl * STOCK_STONE * 2
-        else:
-            stone_need = self.stock.lvl * STOCK_STONE
+        stone_need = int(self.stock.max * 0.8)
         if self.stock.stone >= stone_need:
             self.stock.stone = self.stock.stone - stone_need
             self.stock.lvl = self.stock.lvl + 1
-            if self.stock.lvl >= 30:
-                self.stock.max = self.stock.lvl * STOCK_MAX_X30
-            else:
-                self.stock.max = self.stock.lvl * STOCK_MAX_X
+            self.stock.max =(STOCK_MAX_X + ((self.stock.lvl // 10) * 20)) * self.stock.lvl
             Stock.objects.filter(user_id=self.user_id).update(stone=self.stock.stone,
                                                               lvl=self.stock.lvl,
                                                               max=self.stock.max)

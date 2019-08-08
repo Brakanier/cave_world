@@ -437,13 +437,13 @@ class Player(models.Model):
         self.place = 'top'
         Player.objects.filter(user_id=self.user_id).update(place=self.place)
         message = 'Выберите топ:\n' + \
-                  'По уровню 👑 - топ лвл\n' + \
-                  'По зданиям 🔨 - топ здания\n' + \
-                  'По успешным нападениям ⚔ - топ атака\n' + \
-                  'По успешным оборонам 🛡 - топ защита\n' + \
-                  'По черепам 💀 - топ череп\n' + \
-                  'По золоту ✨ - топ золото\n'
-        # 'По пещерам 🕸 - топ пещеры\n'
+                'По уровню 👑 - топ лвл\n' + \
+                'По зданиям 🔨 - топ здания\n' + \
+                'По успешным нападениям ⚔ - топ атака\n' + \
+                'По успешным оборонам 🛡 - топ защита\n' + \
+                'По черепам 💀 - топ череп\n' + \
+                'По золоту ✨ - топ золото\n' + \
+                'По пещерам 🕸 - топ пещеры\n'
         return message
 
     def top_lvl(self):
@@ -530,12 +530,8 @@ class Player(models.Model):
         if not self.place == 'cave_build':
             self.place = 'cave_build'
             Player.objects.filter(user_id=self.user_id).update(place=self.place)
-        if self.build.stock.lvl >= 50:
-            stone_need = self.build.stock.lvl * STOCK_STONE * 3
-        elif self.build.stock.lvl >= 10:
-            stone_need = self.build.stock.lvl * STOCK_STONE * 2
-        else:
-            stone_need = self.build.stock.lvl * STOCK_STONE
+
+        stone_need = int(self.build.stock.max * 0.8)
         message_stock = 'Склад' + icon('stock') + ': ' + str(stone_need) + icon('stone') + '\n'
         message_forge = 'Кузница' + icon('craft') + ': ' + str(FORGE_STONE) + icon('stone') + '\n'
         message_tavern = 'Таверна' + icon('tavern') + ': ' + str(TAVERN_STONE) + icon('stone') + ' + ' + \

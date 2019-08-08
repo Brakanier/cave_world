@@ -361,25 +361,25 @@ class War(models.Model):
         iron_wiz = wiz_die * WIZARD_IRON
         wood_arch = arch_die * ARCHER_WOOD
         wood_wiz = wiz_die * WIZARD_WOOD
-        diamond = int(wiz_die * WIZARD_DIAMOND * 1.2)
-        iron = int((iron_war + iron_arch + iron_wiz) * 1.2)
-        wood = int((wood_arch + wood_wiz) * 1.2)
+        diamond = int(wiz_die * WIZARD_DIAMOND * 1.1)
+        iron = int((iron_war + iron_arch + iron_wiz) * 1.1)
+        wood = int((wood_arch + wood_wiz) * 1.1)
         stone = int((iron + wood + diamond) / 3)
         return stone, wood, iron, diamond
 
-    def attack(self, player, action_time, chat_info):
+    def attack(self, player, action_time, chat_info, altar=False):
         if player.lvl < 10:
             message = 'Нападения доступны с 10 ур.'
             return message
         war_time = action_time - self.war_last_time
-        if war_time >= WAR_TIME:
+        if war_time >= WAR_TIME or altar:
             if self.enemy_id:
 
                 # Проверка противника на наличие щита
 
                 defender = Player.objects.select_related('war', 'build', 'build__stock').get(user_id=self.enemy_id)
 
-                if defender.war.shield > action_time:
+                if defender.war.shield > action_time and not altar:
                     message = 'Вы опоздали!\n' + \
                               'На [id' + str(defender.user_id) + '|' + defender.nickname + '] уже напали!\n' + \
                               'Найдите нового противника!'

@@ -39,10 +39,11 @@ class CaveManager:
             player.cave_progress.y = None
             player.cave_progress.x = None
             player.cave_progress.level = 1
-            player.cave_progress.save(update_fields=['cave', 'time'])
+            player.cave_progress.player_map = None
+            player.cave_progress.save(update_fields=['cave', 'time', 'player_map', 'level', 'x', 'y'])
             player.place = 'cave'
             player.save(update_fields=['place'])
-            return 'Кто-то нашёл сокровища...\n' + \
+            return 'Кто-то нашёл сокровищницу...\n' + \
             'Произошёл обвал...\n' + \
             'Пути в пещерах изменились, начните исследование заново!\n' + \
             '- Пещеры войти'
@@ -69,16 +70,19 @@ class CaveManager:
     def go_up(self, player):
         if player.place not in ('cave_go', 'cave_down', 'cave_up'):
             return 'Вы не в пещерах!'
+        if player.place != ('cave_up'):
+            return 'Вы должны находиться в точке входа!'
         if not player.cave_progress.cave:
             player.cave_progress.cave = CaveMap.objects.get()
             player.cave_progress.time = 0
             player.cave_progress.y = None
             player.cave_progress.x = None
             player.cave_progress.level = 1
-            player.cave_progress.save(update_fields=['cave', 'time'])
+            player.cave_progress.player_map = None
+            player.cave_progress.save(update_fields=['cave', 'time', 'player_map', 'level', 'x', 'y'])
             player.place = 'cave'
             player.save(update_fields=['place'])
-            return 'Кто-то нашёл сокровища...\n' + \
+            return 'Кто-то нашёл сокровищницу...\n' + \
             'Произошёл обвал...\n' + \
             'Пути в пещерах изменились, начните исследование заново!\n' + \
             '- Пещеры войти'
@@ -101,16 +105,19 @@ class CaveManager:
     def go_down(self, player):
         if player.place not in ('cave_go', 'cave_down', 'cave_up'):
             return 'Вы не в пещерах!'
+        if player.place != ('cave_down'):
+            return 'Вы должны находиться в точке спуска!'
         if not player.cave_progress.cave:
             player.cave_progress.cave = CaveMap.objects.get()
             player.cave_progress.time = 0
             player.cave_progress.y = None
             player.cave_progress.x = None
             player.cave_progress.level = 1
-            player.cave_progress.save(update_fields=['cave', 'time'])
+            player.cave_progress.player_map = None
+            player.cave_progress.save(update_fields=['cave', 'time', 'player_map', 'level', 'x', 'y'])
             player.place = 'cave'
             player.save(update_fields=['place'])
-            return 'Кто-то нашёл сокровища...\n' + \
+            return 'Кто-то нашёл сокровищницу...\n' + \
             'Произошёл обвал...\n' + \
             'Пути в пещерах изменились, начните исследование заново!\n' + \
             '- Пещеры войти'
@@ -165,10 +172,14 @@ class CaveManager:
             event_mess = '- Что это за хрип?\n - Заблудшие!\n\n'
             mind = random.randint(0, 1)
             mind_mess = '\n\nЛорд! В какую сторону отступать!?'
+
             if mind:
                 player.place = 'cave'
-                mind_mess = '- Лорд потерял сознание!\n- Хватайте его и убираемся отсюда!!!\nВас вернули домой...'
-            lost_part = 10
+                mind_mess = '\n\n- Лорд потерял сознание!\n- Хватайте его и убираемся отсюда!!!\nВас вернули домой...'
+            else:
+                player.place = 'cave_go'
+
+            lost_part = 20
             lost_war = player.war.warrior // lost_part
             lost_arch = player.war.archer // lost_part
             lost_wiz = player.war.wizard // lost_part
@@ -184,7 +195,6 @@ class CaveManager:
             player.war.archer -= lost_arch
             player.war.wizard -= lost_wiz
             player.war.save(update_fields=['warrior', 'archer', 'wizard'])
-            player.place = 'cave_go'
         elif event == 7:
             lost_part = 20
             lost_war = player.war.warrior // lost_part
@@ -212,7 +222,7 @@ class CaveManager:
                 add_chest(player, chest, 10)
                 player.build.stock.stone += 500
                 player.build.stock.wood += 500
-                player.build.stock.iron += 250
+                player.build.stock.iron += 500
                 player.build.stock.diamond += 500
                 player.build.stock.gold += 500
                 player.build.stock.skull += 10
@@ -220,11 +230,11 @@ class CaveManager:
                 player.energy += 20
                 player.save(update_fields=['energy'])
                 event_mess = 'Поздравляю!!!\n' + \
-                'Вы нашли сокровища Хранителя Подземелья!\n' + \
+                'Вы нашли сокровищницу Хранителя Подземелья!\n' + \
                 '+10 Пещерных сундуков 🎁\n' + \
                 '+500 ◾\n' + \
                 '+500 🌲\n' + \
-                '+250 ◽\n' + \
+                '+500 ◽\n' + \
                 '+500 ✨\n' + \
                 '+10 💀\n' + \
                 '+20 ⚡'
@@ -262,7 +272,7 @@ class CaveManager:
             self.__set_player_map()
 
     def start(self, player, action_time):
-        if action_time < player.cave_progress.time:
+        if action_time < player.cave_progress.time and player.place not in ('cave_go', 'cave_down', 'cave_up'):
             cave_time = player.cave_progress.time - action_time
             sec = cave_time
             minutes = sec // 60
@@ -462,9 +472,9 @@ class CaveGenerator:
 
     def generate(self):
         # максимум по ширине 8 символов, 2 из них рамка
-        y =  random.randint(4, 8)
-        x = random.randint(4, 6)
         for i in range(10):
+            y =  random.randint(4, 8)
+            x = random.randint(4, 6)
             self.gen_null()
             self.enter = (0, 0)
             self.exit = (0, 0)

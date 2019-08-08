@@ -226,6 +226,32 @@ class Product(models.Model):
         return message
 
     @staticmethod
+    def del_all_lots(player):
+        if player.build.market_lvl == 0:
+            return 'Сначала постройте Рынок!\nКоманда: Строить рынок'
+        items = player.products.all()
+        if not items.exists():
+            return "У вас нет лотов!"
+        mess = 'Вы сняли с продажи:\n'
+        for item in items:
+            print(item)
+            if item.type == 'wood':
+                player.build.stock.wood += item.amount
+            elif item.type == 'stone':
+                player.build.stock.stone += item.amount
+            elif item.type == 'iron':
+                player.build.stock.iron += item.amount
+            elif item.type == 'diamond':
+                player.build.stock.diamond += item.amount
+            elif item.type == 'skull':
+                player.build.stock.skull += item.amount
+            mess += 'ID: ' + str(item.id) + ' | ' + str(item.amount) + icon(item.type) + ' | ' + str(item.price) + icon('gold') + '\n'
+            item.delete()
+        player.build.stock.save(update_fields=['wood', 'stone', 'iron', 'diamond', 'skull'])
+        return mess
+
+
+    @staticmethod
     def get_param(command):
         part = command.split()
         if len(part) == 4 and part[2].isdigit() and part[3].isdigit():
@@ -264,6 +290,7 @@ class Product(models.Model):
                   'Команды:\n' + \
                   'Мои лоты - список ваших лотов в продаже.\n' + \
                   'Снять [ID] - снимает с продажи ваш лот номер [ID].\n' + \
+                  'Снять все - снимает с продажи все ваши лоты.\n' + \
                   'Купить [ID] - купить лот номер [ID].\n' + \
                   'Рынок [ресурс] - список лотов для покупки.\n' + \
                   'Продать [ресурс] [кол-во] [цена] - выставить на продажу ресурс.\n' + \

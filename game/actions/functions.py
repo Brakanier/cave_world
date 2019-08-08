@@ -590,10 +590,8 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('💀 По черепам 💀', color=VkKeyboardColor.DEFAULT, payload={"command": "топ череп"})
         keyboard.add_button('✨ По золоту ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "топ золото"})
-        '''
         keyboard.add_line()
         keyboard.add_button('🕸 По пещерам 🕸', color=VkKeyboardColor.DEFAULT, payload={"command": "топ пещеры"})
-        '''
 
     # Земли
 
@@ -870,6 +868,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('💀 Черепа 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "рынок череп"})
         keyboard.add_line()
+        keyboard.add_button('Снять все', color=VkKeyboardColor.DEFAULT, payload={"command": "снять все"})
         keyboard.add_button('✨ Мои лоты ✨', color=VkKeyboardColor.DEFAULT, payload={"command": "мои лоты"})
 
     # Пещеры
@@ -913,12 +912,15 @@ def get_keyboard(player, action_time=0):
 
     elif player.place == 'altar':
         keyboard.add_button('Подземелье', color=VkKeyboardColor.PRIMARY, payload={"command": "cave"})
+        keyboard.add_button('❤ Донат ❤', color=VkKeyboardColor.DEFAULT, payload={"command": "донат"})
         keyboard.add_line()
         keyboard.add_button('🤴 Ник - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь ник"})
         keyboard.add_button('🛡 Щит - 20 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь щит"})
         keyboard.add_line()
         keyboard.add_button('⚔ Атака - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь атака"})
         keyboard.add_button('🎯 Разведка - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь разведка"})
+        keyboard.add_line()
+        keyboard.add_button('🕸 Пещеры - 5 💀', color=VkKeyboardColor.POSITIVE, payload={"command": "алтарь пещеры"})
         keyboard.add_line()
         keyboard.add_button('💬 Инфо 💬', color=VkKeyboardColor.DEFAULT, payload={"command": "алтарь"})
         keyboard.add_button('🏤 Склад', color=VkKeyboardColor.DEFAULT, payload={"command": "склад"})
