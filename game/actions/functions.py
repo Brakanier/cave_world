@@ -906,7 +906,7 @@ def get_keyboard(player, action_time=0):
         keyboard.add_line()
         keyboard.add_button('⬇ На Юг ⬇', color=VkKeyboardColor.DEFAULT, payload={"command": "пещеры юг"})
         keyboard.add_line()
-        keyboard.add_button('⏬ Вниз ⏬', color=VkKeyboardColor.POSITIVE, payload={"command": "пещеры вниз"})
+        keyboard.add_button('⏬ На след. ур. ⏬', color=VkKeyboardColor.POSITIVE, payload={"command": "пещеры вниз"})
 
     # Алтарь
 
