@@ -21,8 +21,6 @@ class Command(BaseCommand):
                 player.inventory.trophy.all().delete()
             if player.inventory and player.inventory.chests:
                 player.inventory.chests.all().delete()
-            if player.inventory and player.inventory.items:
-                player.inventory.items.all().delete()
             if player.inventory:
                 player.inventory.delete()
             if player.cave_progress:
