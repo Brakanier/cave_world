@@ -683,9 +683,19 @@ def action(command, player, action_time, chat_info):
 
     # Админ
     elif command == 'online' and player.user_id == 55811116:
-        this_day = action_time - 86400
-        count = Player.objects.filter(last_energy_action__gte=this_day).count()
-        answer = 'Онлайн за сутки: ' + str(count)
+        day = 86400
+        this_day = action_time - day
+        this_week = action_time - day * 7
+        this_month = action_time - day * 30
+        count_day = Player.objects.filter(last_energy_action__gte=this_day).count()
+        count_week = Player.objects.filter(last_energy_action__gte=this_week).count()
+        count_month = Player.objects.filter(last_energy_action__gte=this_month).count()
+        count_all = Player.objects.count()
+        answer = '🌐 Онлайн 🌐\n'+  \
+        'День: ' + str(count_day) + '\n' + \
+        'Неделя: ' + str(count_week) + '\n' + \
+        'Месяц: ' + str(count_month) + '\n' + \
+        'Всего в базе: ' + str(count_all)
     elif command == 'all gold' and player.user_id == 55811116:
         stocks = Stock.objects.all()
         gold = 0
