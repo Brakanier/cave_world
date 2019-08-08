@@ -888,7 +888,8 @@ def action(command, player, action_time, chat_info):
     'пещеры вверх', 
     'п вниз', 
     'п вверх',
-    'всем эль!!!'
+    'всем эль!!!',
+    'беседы'
     )
     if command not in alco_except:
         if answer and player.user_id != 55811116:

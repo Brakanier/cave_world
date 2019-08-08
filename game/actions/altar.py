@@ -90,11 +90,14 @@ def altar(command, player, action_time, chat_info):
                 target = Player.objects.select_related('war', 'build', 'build__stock').get(user_id=id)
             except Player.DoesNotExist:
                 return "Игрок не найден!"
-            player.war.enemy_id = id
-            mess = player.war.attack(player, action_time, chat_info, altar=True)
-            mess = 'Хранитель Подземелья отправил вашу армию в бой!\n' + mess
-            player.build.stock.skull -= 10
-            player.build.stock.save(update_fields=['skull'])
+            if player.build.stock.skull >= 5:
+                player.war.enemy_id = id
+                mess = player.war.attack(player, action_time, chat_info, altar=True)
+                mess = 'Хранитель Подземелья отправил вашу армию в бой!\n' + mess
+                player.build.stock.skull -= 10
+                player.build.stock.save(update_fields=['skull'])
+            else:
+                mess = 'Не хватает черепов - нужно 5' + icon('skull')
             return mess
 
         elif player.war.war_last_time + 3600 <= action_time:
