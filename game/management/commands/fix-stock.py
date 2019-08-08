@@ -13,6 +13,7 @@ class Command(BaseCommand):
         for stock in stocks:
             print(stock.max)
             stock.max = (STOCK_MAX_X + ((stock.lvl // 10) * 20)) * stock.lvl
+            stock.save(update_fields=['max'])
             print(stock.max)
             self.stdout.write(str(stock.user_id) + ' fixed!')
             count += 1

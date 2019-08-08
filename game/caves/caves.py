@@ -239,6 +239,8 @@ class CaveManager:
                 '+10 💀\n' + \
                 '+20 ⚡'
                 player.place = 'cave'
+                player.cave_progress.success += 1
+                player.cave_progress.save(update_fields=['success'])
             else:
                 event_mess = 'Вы нашли спуск на следующий уровень пещер!\n' + \
                 'Хотите спуститься на ' + str(self.level + 1) + ' уровень?'
