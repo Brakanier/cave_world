@@ -52,7 +52,7 @@ class CaveProgress(models.Model):
         default=0,
     )
 
-    def info(self):
+    def info(self, action_time):
         mess = 'Легенда карты:\n' + \
         '🌫 - неизвестная клетка\n' + \
         '🐾 - ваш путь\n' + \
@@ -64,7 +64,20 @@ class CaveProgress(models.Model):
         '🚩 - вход на уровень\n' + \
         '🕳 - проход на след. уровень\n' + \
         '🤴 - вы\n\n' + \
-        'Сокровищ найдено: ' + str(self.success)
+        'Сокровищ найдено: ' + str(self.success) + '\n'
+        if action_time < self.time and self.player.place not in ('cave_go', 'cave_down', 'cave_up'):
+            cave_time = self.time - action_time
+            sec = cave_time
+            minutes = sec // 60
+            hour = minutes // 60
+            time_mess = 'В пещеры можно отправиться раз в час.\n' + \
+                        'До следующего раза: ' + \
+                        str(hour % 24) + ' ч. ' + \
+                        str(minutes % 60) + ' м. ' + \
+                        str(sec % 60) + ' сек. ⏳'
+            mess += time_mess
+        else:
+            mess += 'Вы можете войти в пещеры.'
         return mess
 
     def start(self, action_time):

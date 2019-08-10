@@ -48,30 +48,34 @@ class Fortune:
                     self.reward_icon[reward[1]],
                     self.reward_icon[reward[2]],
                 )
+                win = False
                 if reward[0] == reward[1] == reward[2]:
                     if 'skull' in reward:
                         self.player.build.stock.skull += 10
                         self.player.build.stock.save(update_fields=['skull'])
                         reward_mess = '🎉 Вы выиграли 10 черепов! 🎉\n'
+                        win = True
                     elif 'gold' in reward:
                         self.player.build.stock.gold += 1000
                         self.player.build.stock.save(update_fields=['gold'])
                         reward_mess = '🎉 Вы выиграли 1000 золота! 🎉\n'
+                        win = True
                     elif 'energy' in reward:
                         self.player = energy(self.player, self.comment['date'])
                         self.player.energy += 30
                         reward_mess = '🎉 Вы выиграли 30 энергии! 🎉\n'
+                        win = True
                     elif 'chest' in reward:
                         chest = Chest.objects.get(slug='present_chest')
                         add_chest(self.player, chest, 5)
-                        reward_mess = '🎉 Вы выйграли 5 Подарочных Сундуков! 🎉\n'
-
+                        reward_mess = '🎉 Вы выиграли 5 Подарочных Сундуков! 🎉\n'
+                        win = True
                 else:
                     reward_mess = 'Где ваша удача?\n'
 
                 self.player.save(update_fields=['fortune_coin', 'fortune_time', 'energy'])
                 coin_mess = 'Монет осталось: ' + str(self.player.fortune_coin) + ' 🧿'
-                mess = self.create_mess(ic)
+                mess = self.create_mess(ic, win)
                 mess += '\n\n' + reward_mess + coin_mess
             else:
                 mess = 'У вас нет 🧿 Монет Фортуны 🧿'
@@ -80,13 +84,16 @@ class Fortune:
             except:
                 pass
 
-    def create_mess(self, ic):
-        head = '\n╔═════════╗\n' + \
-               '║۞ Fortune ۞ ║\n'
-        mess = '╠===╦===╦===╣\n' + \
-               '║ ' + ic[0] + '║ ' + ic[1] + '║ ' + ic[2] + '║\n' + \
-               '╚===╩===╩===╝'
-        mess = head + mess
+    def create_mess(self, ic, win):
+        if win:
+            mess = '🌑🌕🌑🌕🌑🌕🌑\n' + \
+                   '🌑' + ic[0] + '🌑' + ic[1] + '🌑' + ic[2] + '🌑\n' + \
+                   '🌑🌕🌑🌕🌑🌕🌑'
+        else:
+            mess = '🌑🌑🌑🌑🌑🌑🌑\n' + \
+                   '🌑' + ic[0] + '🌑' + ic[1] + '🌑' + ic[2] + '🌑\n' + \
+                   '🌑🌑🌑🌑🌑🌑🌑'
+
         return mess
 
     def check_coin(self):

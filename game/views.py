@@ -636,7 +636,7 @@ def action(command, player, action_time, chat_info):
         answer = Product.market_res(player, 'skull')
     elif command == "мои лоты":
         answer = Product.my_lots(player)
-    elif command == 'снять все':
+    elif command in ('снять все', 'снять всё'):
         answer = Product.del_all_lots(player)
     elif re.match(r'снять', command):
         id = Product.get_id(command)
@@ -738,7 +738,7 @@ def action(command, player, action_time, chat_info):
         id = Product.get_id(command)
         answer = Product.admin_del_lot(id)
 
-    elif command == 'код двамесяца':
+    elif command == 'коддвамесяца123442635banned':
         try:
             code = PromoCode.objects.get(user_id=player.user_id, code='двамесяца')
             answer = 'Вы уже использовали этот код!'
@@ -846,7 +846,7 @@ def action(command, player, action_time, chat_info):
             '- Пещеры вверх - вернуться на прошлый уровень\n' + \
             '- Пещеры вниз - спуститься на след. уровень\n'
         elif command == 'пещеры инфо':
-            answer = player.cave_progress.info()
+            answer = player.cave_progress.info(action_time)
         elif command == 'пещеры войти':
             army = player.lvl * 3
             if player.war.sum_army() < army:
